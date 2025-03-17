@@ -4,7 +4,10 @@ import org.antlr.v4.runtime.tree.*;
 public class Main {
   public static void main(String[] args) throws Exception {
 	// create a CharStream that reads from standard input
-	CharStream input = CharStreams.fromStream(System.in);
+//	CharStream input = CharStreams.fromStream(System.in);
+
+//	CharStream input = CharStreams.fromString("draw \"A\" square (10, 20) size 6");
+  	CharStream input = CharStreams.fromString("color \"a\" red");
 
 	// create a lexer that feeds off of input CharStream
 	CmdPaintLexer lexer = new CmdPaintLexer(input);
