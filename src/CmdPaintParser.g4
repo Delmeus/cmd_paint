@@ -5,17 +5,18 @@ options { tokenVocab=CmdPaintLexer; }
 program: command+ EOF;
 
 command
-    : DRAW NAME shape ('color' COLOR)?
+    : DRAW NAME shape
     | COLORC NAME COLOR
     | ROTATE NAME INT
     | MOVE NAME position
+    | SAVE NAME
     ;
 
 shape
-    : SQUARE position SIZE INT
-    | CIRCLE position RADIUS INT
-    | RECTANGLE position WIDTH INT HEIGHT INT
-    | LINE position
+    : SQUARE position SIZE INT ('color' COLOR)?
+    | CIRCLE position RADIUS INT ('color' COLOR)?
+    | RECTANGLE position WIDTH INT HEIGHT INT ('color' COLOR)?
+    | LINE position ('color' COLOR)?
     ;
 
 position

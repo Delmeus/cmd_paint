@@ -6,8 +6,8 @@ public class Main {
 	// create a CharStream that reads from standard input
 //	CharStream input = CharStreams.fromStream(System.in);
 
-//	CharStream input = CharStreams.fromString("draw \"A\" square (10, 20) size 6");
-  	CharStream input = CharStreams.fromString("color \"a\" red");
+	CharStream input = CharStreams.fromString("draw \"A\" square (10, 20) size 6 color blue");
+//  	CharStream input = CharStreams.fromString("color \"a\" red");
 
 	// create a lexer that feeds off of input CharStream
 	CmdPaintLexer lexer = new CmdPaintLexer(input);

@@ -19,6 +19,7 @@ SIZE   : 'size';
 RADIUS : 'radius';
 WIDTH  : 'width';
 HEIGHT : 'height';
+SAVE   : 'save';
 
 LPAREN : '(';
 RPAREN : ')';
