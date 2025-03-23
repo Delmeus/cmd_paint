@@ -4,6 +4,8 @@ abstract class Shape {
     String name;
     int x, y;
     Color color = Color.black;
+    protected int rotationAngle = 0;
+    protected boolean hollow = false;
 
     public Shape(String name, int x, int y) {
         this.name = name;
@@ -27,9 +29,18 @@ abstract class Shape {
         this.y = newY;
     }
 
-    //TODO implement somehow
     public void rotate(int angle) {
         System.out.println(name + " rotated by " + angle + " degrees");
+        rotationAngle += angle;
+
+    }
+
+    public void hollow() {
+        hollow = true;
+    }
+
+    public void fill(){
+        hollow = false;
     }
 
     @Override
@@ -50,8 +61,25 @@ class Square extends Shape {
 
     @Override
     public void draw(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(color);
+
+        g2d.translate(x + size / 2, y + size / 2);
+        g2d.rotate(Math.toRadians(rotationAngle));
+
+        if(hollow)
+            g2d.drawRect(-size / 2, -size / 2, size, size);
+        else
+            g2d.fillRect(-size / 2, -size / 2, size, size);
+
+        g2d.rotate(-Math.toRadians(rotationAngle));
+        g2d.translate(-(x + size / 2), -(y + size / 2));
         g.setColor(color);
-        g.fillRect(x, y, size, size);
+
+      //  if(hollow)
+        //    g.drawRect(x, y, size, size);
+        //else
+          //  g.fillRect(x, y, size, size);
     }
 }
 
@@ -66,7 +94,11 @@ class Circle extends Shape {
     @Override
     public void draw(Graphics g) {
         g.setColor(color);
-        g.fillOval(x, y, radius, radius);
+
+        if(hollow)
+            g.drawOval(x, y, radius, radius);
+        else
+            g.fillOval(x, y, radius, radius);
     }
 }
 
@@ -81,8 +113,22 @@ class Rectangle extends Shape {
 
     @Override
     public void draw(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(color);
+
+        g2d.translate(x + width / 2, y + height / 2);
+        g2d.rotate(Math.toRadians(rotationAngle));
+
+        if(hollow)
+            g2d.drawRect(-width / 2, -height / 2, width, height);
+        else
+            g2d.fillRect(-width / 2, -height / 2, width, height);
+
+        g2d.rotate(-Math.toRadians(rotationAngle));
+        g2d.translate(-(x + width / 2), -(y + height / 2));
         g.setColor(color);
-        g.fillRect(x, y, width, height);
+        //g.setColor(color);
+        //g.fillRect(x, y, width, height);
     }
 }
 

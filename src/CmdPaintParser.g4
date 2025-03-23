@@ -15,10 +15,10 @@ command
     ;
 
 shape
-    : SQUARE position SIZE INT ('color' COLOR)?
-    | CIRCLE position RADIUS INT ('color' COLOR)?
-    | RECTANGLE position WIDTH INT HEIGHT INT ('color' COLOR)?
-    | LINE line_pos ('color' COLOR)?
+    : SQUARE position SIZE INT ('color' COLOR)? HOLLOW?
+    | CIRCLE position RADIUS INT ('color' COLOR)? HOLLOW?
+    | RECTANGLE position WIDTH INT HEIGHT INT ('color' COLOR)? HOLLOW?
+    | LINE line_pos ('color' COLOR)? HOLLOW?
     ;
 
 position

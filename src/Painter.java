@@ -75,6 +75,9 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
             shape.setColor(color);
         }
 
+        if (shapeCtx.HOLLOW() != null)
+            shape.hollow();
+
         shapes.put(shape.name, shape);
         System.out.println("Created shape " + shape.getClass().getName() + " " + shape);
         painterFrame.repaint();
@@ -103,13 +106,28 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
 
     //TODO Implement
     private Boolean visitRotate(CmdPaintParser.CommandContext ctx){
-        System.out.println("Visit rotate"); // placeholder for rotating shapes
+        System.out.println("Visit rotate");
+        String name = parseName(ctx);
+        if (!shapes.containsKey(name)){
+            System.out.println("There is no shape with name: " + name);
+            return false;
+        }
+
+        int rotationAngle;
+        try {
+            rotationAngle = Integer.parseInt(ctx.INT().getText());
+        }catch (Exception e){
+            System.err.println("Invalid angle: " + ctx.INT().getText());
+            rotationAngle = 0;
+        }
+
+        shapes.get(name).rotate(rotationAngle);
         return true;
     }
 
     private Boolean visitMove(CmdPaintParser.CommandContext ctx){
         System.out.println("Visit move");
-        String name = ctx.NAME(0).getText().replace("\"", "");
+        String name = parseName(ctx);
         if (!shapes.containsKey(name)){
             System.out.println("There is no shape with name: " + name);
             return false;
@@ -133,13 +151,32 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
 
     private Boolean visitDelete(CmdPaintParser.CommandContext ctx){
         System.out.println("Visit delete");
+        String name = parseName(ctx);
+        if (name.equals(error_name))
+            return false;
+        if (!shapes.containsKey(name)){
+            System.out.println("There is no shape with name: " + name);
+            return false;
+        }
+        shapes.remove(name);
+        painterFrame.repaint();
         return true;
     }
 
     private Boolean visitRename(CmdPaintParser.CommandContext ctx){
         System.out.println("Visit rename");
+        String oldName = ctx.NAME(0).getText().replace("\"", "");
+        if (!shapes.containsKey(oldName)){
+            System.out.println("There is no shape with name: " + oldName);
+            return false;
+        }
+        String newName = ctx.NAME(1).getText().replace("\"", "");
+
+        shapes.put(newName, shapes.remove(oldName));
         return true;
     }
+
+/////////////////////////////// UTILITY METHODS ///////////////////////////////////
 
     private String parseName(CmdPaintParser.CommandContext ctx){
         String name = "";
@@ -151,5 +188,11 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
             name = error_name;
         }
         return name;
+    }
+
+    private void print_shapes(){
+        for (Shape shape : shapes.values()){
+            System.out.println(shape.toString());
+        }
     }
 }

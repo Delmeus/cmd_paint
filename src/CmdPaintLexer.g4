@@ -12,6 +12,7 @@ MOVE   : 'move';
 DELETE : 'delete';
 RENAME : 'rename';
 
+
 SQUARE    : 'square';
 CIRCLE    : 'circle';
 RECTANGLE : 'rectangle';
@@ -21,6 +22,7 @@ SIZE   : 'size';
 RADIUS : 'radius';
 WIDTH  : 'width';
 HEIGHT : 'height';
+HOLLOW : 'hollow';
 SAVE   : 'save';
 
 LPAREN : '(';
