@@ -1,29 +1,41 @@
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
+import java.util.Scanner;
+
 public class Main {
-  public static void main(String[] args) throws Exception {
-	// create a CharStream that reads from standard input
-//	CharStream input = CharStreams.fromStream(System.in);
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		Painter visitor = new Painter();
 
-	CharStream input = CharStreams.fromString("draw \"A\" square (10, 20) size 6 color blue");
-//  	CharStream input = CharStreams.fromString("color \"a\" red");
+		System.out.println("CmdPaint Interactive Mode. Type 'exit' to quit.");
 
-	// create a lexer that feeds off of input CharStream
-	CmdPaintLexer lexer = new CmdPaintLexer(input);
+		while (true) {
+			System.out.print("> ");
+			String inputLine = scanner.nextLine();
 
-	// create a buffer of tokens pulled from the lexer
-	CommonTokenStream tokens = new CommonTokenStream(lexer);
+			if (inputLine.equalsIgnoreCase("exit")) {
+				System.out.println("Exiting CmdPaint.");
+				break;
+			}
 
-	// create a parser that feeds off the tokens buffer
-	CmdPaintParser parser = new CmdPaintParser(tokens);
+			processCommand(inputLine, visitor);
+		}
 
-	// start parsing at the program rule
-	ParseTree tree = parser.program();
-	// System.out.println(tree.toStringTree(parser));
+		scanner.close();
+	}
 
-	// create a visitor to traverse the parse tree
-	Painter visitor = new Painter();
-	System.out.println(visitor.visit(tree));
-  }
+	private static void processCommand(String command, Painter visitor) {
+		try {
+			CharStream input = CharStreams.fromString(command);
+			CmdPaintLexer lexer = new CmdPaintLexer(input);
+			CommonTokenStream tokens = new CommonTokenStream(lexer);
+			CmdPaintParser parser = new CmdPaintParser(tokens);
+
+			ParseTree tree = parser.program();
+			visitor.visit(tree);
+		} catch (Exception e) {
+			System.err.println("Error processing command: " + e.getMessage());
+		}
+	}
 }

@@ -2,7 +2,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
-    private final Map<String, Shape> shapes = new HashMap<>(); // after command redraw shapes (I guess)
+
+    private final String error_name = "CHANGE THIS NAME";
+    private final Map<String, Shape> shapes = new HashMap<>();
+    private final PainterFrame painterFrame = new PainterFrame(shapes);
 
     @Override
     public Boolean visitProgram(CmdPaintParser.ProgramContext ctx) {
@@ -10,6 +13,7 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         for (CmdPaintParser.CommandContext command : ctx.command()) {
             result &= visit(command);
         }
+        painterFrame.repaint();
         return result;
     }
 
@@ -25,13 +29,17 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
             return visitMove(ctx);
         } else if (ctx.SAVE() != null) {
             return visitSave(ctx);
+        } else if (ctx.DELETE() != null) {
+            return visitDelete(ctx);
+        } else if (ctx.RENAME() != null) {
+            return visitRename(ctx);
         }
         return false;
     }
 
     private Boolean visitDraw(CmdPaintParser.CommandContext ctx){
         System.out.println("Visit draw");
-        String name = ctx.NAME().getText().replace("\"", "");
+        String name = parseName(ctx);
         Shape shape = null;
 
         CmdPaintParser.ShapeContext shapeCtx = ctx.shape();
@@ -52,9 +60,11 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
             int radius = Integer.parseInt(shapeCtx.INT().getFirst().getText());
             shape = new Circle(name, x, y, radius);
         } else if (shapeCtx.LINE() != null) {
-            int x = Integer.parseInt(shapeCtx.position().INT(0).getText());
-            int y = Integer.parseInt(shapeCtx.position().INT(1).getText());
-            shape = new Line(name, x, y);
+            int x = Integer.parseInt(shapeCtx.line_pos().INT(0).getText());
+            int y = Integer.parseInt(shapeCtx.line_pos().INT(1).getText());
+            int x2 = Integer.parseInt(shapeCtx.line_pos().INT(2).getText());
+            int y2 = Integer.parseInt(shapeCtx.line_pos().INT(3).getText());
+            shape = new Line(name, x, y, x2, y2);
         }
 
         if(shape == null)
@@ -67,24 +77,27 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
 
         shapes.put(shape.name, shape);
         System.out.println("Created shape " + shape.getClass().getName() + " " + shape);
+        painterFrame.repaint();
         return true;
     }
-
+    //TODO - FIX ME: java.lang.NullPointerException: Cannot invoke "CmdPaintParser$ShapeContext.COLORC()" because the return value of "CmdPaintParser$CommandContext.shape()" is null
     private Boolean visitColor(CmdPaintParser.CommandContext ctx){
         System.out.println("Visit color");
-        String name = ctx.NAME().getText().replace("\"", "");
+        String name = parseName(ctx);
+        if (name.equals(error_name))
+            return false;
         if (!shapes.containsKey(name)){
             System.out.println("There is no shape with name: " + name);
             return false;
         }
 
         try {
-            shapes.get(name).setColor(ctx.shape().COLOR().getText());
+            shapes.get(name).setColor(ctx.shape().COLORC().getText());
         }catch (Exception e){
             System.out.println(e);
             return false;
         }
-
+        painterFrame.repaint();
         return true;
     }
 
@@ -94,9 +107,21 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         return true;
     }
 
-    //TODO Implement
     private Boolean visitMove(CmdPaintParser.CommandContext ctx){
-        System.out.println("Visit move"); // placeholder for moving shapes
+        System.out.println("Visit move");
+        String name = ctx.NAME(0).getText().replace("\"", "");
+        if (!shapes.containsKey(name)){
+            System.out.println("There is no shape with name: " + name);
+            return false;
+        }
+
+        try {
+            shapes.get(name).move(Integer.parseInt(ctx.position().INT(0).getText()), Integer.parseInt(ctx.position().INT(1).getText()));
+        }catch (Exception e){
+            System.out.println(e);
+            return false;
+        }
+        painterFrame.repaint();
         return true;
     }
 
@@ -104,5 +129,27 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
     private Boolean visitSave(CmdPaintParser.CommandContext ctx){
         System.out.println("Visit save"); // placeholder for file saving
         return true;
+    }
+
+    private Boolean visitDelete(CmdPaintParser.CommandContext ctx){
+        System.out.println("Visit delete");
+        return true;
+    }
+
+    private Boolean visitRename(CmdPaintParser.CommandContext ctx){
+        System.out.println("Visit rename");
+        return true;
+    }
+
+    private String parseName(CmdPaintParser.CommandContext ctx){
+        String name = "";
+        try{
+            name = ctx.NAME(0).getText().replace("\"", "");
+        }catch (Exception e){
+            System.err.println("Error in parsing name, name set to " +
+                    error_name + "\n failing to provide proper name will lead do overriding this shape");
+            name = error_name;
+        }
+        return name;
     }
 }
