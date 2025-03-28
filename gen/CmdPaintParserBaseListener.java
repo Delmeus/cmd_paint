@@ -64,6 +64,18 @@ public class CmdPaintParserBaseListener implements CmdPaintParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterPoly_pos(CmdPaintParser.Poly_posContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPoly_pos(CmdPaintParser.Poly_posContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterLine_pos(CmdPaintParser.Line_posContext ctx) { }
 	/**
 	 * {@inheritDoc}

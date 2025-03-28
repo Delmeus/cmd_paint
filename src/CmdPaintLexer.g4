@@ -16,6 +16,7 @@ RENAME : 'rename';
 SQUARE    : 'square';
 CIRCLE    : 'circle';
 RECTANGLE : 'rectangle';
+POLYGON : 'polygon';
 LINE : 'line';
 
 SIZE   : 'size';

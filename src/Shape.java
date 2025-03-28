@@ -156,4 +156,56 @@ class Line extends Shape {
     }
 }
 
+class Polygon extends Shape {
+    int[] x_points;
+    int[] y_points;
+
+    public Polygon(String name, int[] x_points, int[] y_points) {
+        super(name, x_points[0], y_points[0]);
+        this.x_points = x_points;
+        this.y_points = y_points;
+    }
+
+    @Override
+    public void move(int newX, int newY) {
+        for(int i = 0; i < x_points.length; i++) {
+            x_points[i] += x_points[i];
+            y_points[i] += y_points[i];
+        }
+    }
+
+    @Override
+    public void draw(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(color);
+
+        int cx = 0, cy = 0;
+        for (int i = 0; i < x_points.length; i++) {
+            cx += x_points[i];
+            cy += y_points[i];
+        }
+        cx /= x_points.length;
+        cy /= y_points.length;
+
+        // Rotate each point around the centroid
+        int[] rotatedX = new int[x_points.length];
+        int[] rotatedY = new int[y_points.length];
+        double radians = Math.toRadians(rotationAngle);
+
+        for (int i = 0; i < x_points.length; i++) {
+            int x = x_points[i] - cx;
+            int y = y_points[i] - cy;
+            rotatedX[i] = (int) (x * Math.cos(radians) - y * Math.sin(radians)) + cx;
+            rotatedY[i] = (int) (x * Math.sin(radians) + y * Math.cos(radians)) + cy;
+        }
+
+        //g2d.rotate(Math.toRadians(rotationAngle));
+        if(hollow)
+            g2d.drawPolygon(rotatedX, rotatedY, x_points.length);
+        else
+            g2d.fillPolygon(rotatedY, rotatedY, x_points.length);
+
+        //g2d.rotate(-Math.toRadians(rotationAngle));
+    }
+}
 //More shapes? E.g. ellipse, triangle and so on

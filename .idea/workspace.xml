@@ -12,6 +12,10 @@
       <change beforePath="$PROJECT_DIR$/gen/CmdPaintParser.interp" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParser.interp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gen/CmdPaintParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gen/CmdPaintParser.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParser.tokens" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CmdPaintParserBaseListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParserBaseListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CmdPaintParserBaseVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParserBaseVisitor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CmdPaintParserListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParserListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CmdPaintParserVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParserVisitor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/CmdPaintLexer.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/CmdPaintLexer.g4" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/CmdPaintParser.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/CmdPaintParser.g4" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Painter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Painter.java" afterDir="false" />
@@ -57,7 +61,7 @@
     &quot;git-widget-placeholder&quot;: &quot;wip&quot;,
     &quot;jdk.selected.JAVA_MODULE&quot;: &quot;openjdk-21&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/antek/studia/magisterka/semI/MiASI/antlr-4.13.2-complete.jar&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/antek/studia/magisterka/semI/MiASI&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -94,7 +98,9 @@
       <workItem from="1742730379479" duration="1018000" />
       <workItem from="1742731408132" duration="2049000" />
       <workItem from="1742733469904" duration="4689000" />
-      <workItem from="1742738173867" duration="1284000" />
+      <workItem from="1742738173867" duration="1411000" />
+      <workItem from="1743091605838" duration="192000" />
+      <workItem from="1743157713358" duration="3038000" />
     </task>
     <servers />
   </component>

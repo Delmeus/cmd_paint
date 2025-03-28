@@ -65,6 +65,19 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
             int x2 = Integer.parseInt(shapeCtx.line_pos().INT(2).getText());
             int y2 = Integer.parseInt(shapeCtx.line_pos().INT(3).getText());
             shape = new Line(name, x, y, x2, y2);
+        } else if (shapeCtx.POLYGON() != null) {
+            if (shapeCtx.poly_pos(0).getChildCount() == shapeCtx.poly_pos(1).getChildCount()) {
+                int size = shapeCtx.poly_pos(0).INT().size();
+                int[] x = new int[size];
+                int[] y = new int[size];
+                for (int i = 0; i < size; i++) {
+                    x[i] = Integer.parseInt(shapeCtx.poly_pos(0).INT(i).getText());
+                    y[i] = Integer.parseInt(shapeCtx.poly_pos(1).INT(i).getText());
+                }
+                shape = new Polygon(name, x, y);
+            } else {
+                System.out.println("X.size = " + shapeCtx.poly_pos(0).INT().size() + " != Y.size = " + shapeCtx.poly_pos(1).INT().size());
+            }
         }
 
         if(shape == null)

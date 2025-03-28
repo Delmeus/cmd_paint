@@ -34,6 +34,12 @@ public interface CmdPaintParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitPosition(CmdPaintParser.PositionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link CmdPaintParser#poly_pos}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPoly_pos(CmdPaintParser.Poly_posContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link CmdPaintParser#line_pos}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

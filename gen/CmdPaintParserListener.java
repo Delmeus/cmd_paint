@@ -47,6 +47,16 @@ public interface CmdPaintParserListener extends ParseTreeListener {
 	 */
 	void exitPosition(CmdPaintParser.PositionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link CmdPaintParser#poly_pos}.
+	 * @param ctx the parse tree
+	 */
+	void enterPoly_pos(CmdPaintParser.Poly_posContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CmdPaintParser#poly_pos}.
+	 * @param ctx the parse tree
+	 */
+	void exitPoly_pos(CmdPaintParser.Poly_posContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link CmdPaintParser#line_pos}.
 	 * @param ctx the parse tree
 	 */
