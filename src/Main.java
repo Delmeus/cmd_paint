@@ -8,7 +8,7 @@ public class Main {
 		Scanner scanner = new Scanner(System.in);
 		Painter visitor = new Painter();
 
-		System.out.println("CmdPaint Interactive Mode. Type 'exit' to quit.");
+		System.out.println("CmdPaint Interactive Mode. Type 'exit' or close the window to quit.");
 
 		while (true) {
 			System.out.print("> ");

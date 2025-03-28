@@ -1,4 +1,4 @@
-// Generated from /home/antek/studia/magisterka/semI/MiASI/cmd_paint/src/CmdPaintParser.g4 by ANTLR 4.13.2
+// Generated from G:/Projekty_Studia/MiASI/cmdPaint/src/CmdPaintParser.g4 by ANTLR 4.13.2
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -66,4 +66,34 @@ public interface CmdPaintParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitLine_pos(CmdPaintParser.Line_posContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CmdPaintParser#rgb_color}.
+	 * @param ctx the parse tree
+	 */
+	void enterRgb_color(CmdPaintParser.Rgb_colorContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CmdPaintParser#rgb_color}.
+	 * @param ctx the parse tree
+	 */
+	void exitRgb_color(CmdPaintParser.Rgb_colorContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CmdPaintParser#colors}.
+	 * @param ctx the parse tree
+	 */
+	void enterColors(CmdPaintParser.ColorsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CmdPaintParser#colors}.
+	 * @param ctx the parse tree
+	 */
+	void exitColors(CmdPaintParser.ColorsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CmdPaintParser#colorDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void enterColorDefinition(CmdPaintParser.ColorDefinitionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CmdPaintParser#colorDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void exitColorDefinition(CmdPaintParser.ColorDefinitionContext ctx);
 }

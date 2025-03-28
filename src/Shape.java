@@ -6,6 +6,7 @@ abstract class Shape {
     Color color = Color.black;
     protected int rotationAngle = 0;
     protected boolean hollow = false;
+    protected boolean showName = false;
 
     public Shape(String name, int x, int y) {
         this.name = name;
@@ -24,6 +25,10 @@ abstract class Shape {
         }
     }
 
+    public void setColor(Color color){
+        this.color = color;
+    }
+
     public void move(int newX, int newY) {
         this.x = newX;
         this.y = newY;
@@ -32,7 +37,6 @@ abstract class Shape {
     public void rotate(int angle) {
         System.out.println(name + " rotated by " + angle + " degrees");
         rotationAngle += angle;
-
     }
 
     public void hollow() {
@@ -43,6 +47,9 @@ abstract class Shape {
         hollow = false;
     }
 
+    public void toggleName() {
+        showName = !showName;
+    }
     @Override
     public String toString() {
         return name + " at (" + x + ", " + y + ") color: " + color;
@@ -75,11 +82,6 @@ class Square extends Shape {
         g2d.rotate(-Math.toRadians(rotationAngle));
         g2d.translate(-(x + size / 2), -(y + size / 2));
         g.setColor(color);
-
-      //  if(hollow)
-        //    g.drawRect(x, y, size, size);
-        //else
-          //  g.fillRect(x, y, size, size);
     }
 }
 
@@ -166,12 +168,19 @@ class Polygon extends Shape {
         this.y_points = y_points;
     }
 
+    //kinda wonky? fix
     @Override
     public void move(int newX, int newY) {
-        for(int i = 0; i < x_points.length; i++) {
-            x_points[i] += x_points[i];
-            y_points[i] += y_points[i];
+        int dx = newX - x;
+        int dy = newY - y;
+
+        for (int i = 0; i < x_points.length; i++) {
+            x_points[i] += dx;
+            y_points[i] += dy;
         }
+
+        this.x = newX;
+        this.y = newY;
     }
 
     @Override
@@ -187,7 +196,6 @@ class Polygon extends Shape {
         cx /= x_points.length;
         cy /= y_points.length;
 
-        // Rotate each point around the centroid
         int[] rotatedX = new int[x_points.length];
         int[] rotatedY = new int[y_points.length];
         double radians = Math.toRadians(rotationAngle);
@@ -199,13 +207,16 @@ class Polygon extends Shape {
             rotatedY[i] = (int) (x * Math.sin(radians) + y * Math.cos(radians)) + cy;
         }
 
-        //g2d.rotate(Math.toRadians(rotationAngle));
         if(hollow)
             g2d.drawPolygon(rotatedX, rotatedY, x_points.length);
         else
-            g2d.fillPolygon(rotatedY, rotatedY, x_points.length);
+            g2d.fillPolygon(rotatedX, rotatedY, x_points.length);
 
-        //g2d.rotate(-Math.toRadians(rotationAngle));
+        // smart coloring should be implemented
+        if(showName){
+            g2d.setColor(Color.BLACK);
+            g2d.setFont(new Font("Arial", Font.BOLD, 14));
+            g2d.drawString(name, cx - 10, cy);
+        }
     }
 }
-//More shapes? E.g. ellipse, triangle and so on

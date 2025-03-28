@@ -1,4 +1,4 @@
-// Generated from /home/antek/studia/magisterka/semI/MiASI/cmd_paint/src/CmdPaintParser.g4 by ANTLR 4.13.2
+// Generated from G:/Projekty_Studia/MiASI/cmdPaint/src/CmdPaintParser.g4 by ANTLR 4.13.2
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -45,4 +45,22 @@ public interface CmdPaintParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitLine_pos(CmdPaintParser.Line_posContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CmdPaintParser#rgb_color}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRgb_color(CmdPaintParser.Rgb_colorContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CmdPaintParser#colors}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitColors(CmdPaintParser.ColorsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CmdPaintParser#colorDefinition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitColorDefinition(CmdPaintParser.ColorDefinitionContext ctx);
 }

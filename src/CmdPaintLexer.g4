@@ -5,24 +5,26 @@ COLOR : 'red' | 'green' | 'blue' | 'yellow' | 'black' | 'white';
 INT   : '-'?[0-9]+;
 WS    : [ \t\r\n]+ -> skip;
 
-DRAW   : 'draw';
+DRAW   : 'draw' | 'd';
 COLORC : 'color';
-ROTATE : 'rotate';
-MOVE   : 'move';
-DELETE : 'delete';
-RENAME : 'rename';
+ROTATE : 'rotate' | 'rot' | 'rt';
+MOVE   : 'move' | 'mv';
+DELETE : 'delete' | 'del' | 'rm' | 'remove';
+BACKGROUND : 'background' | 'back' | 'b';
+SHOW_NAMES : 'names';
+RENAME : 'rename' | 'name';
+FILL : 'fill';
 
-
-SQUARE    : 'square';
-CIRCLE    : 'circle';
-RECTANGLE : 'rectangle';
-POLYGON : 'polygon';
+SQUARE    : 'square' | 'sq';
+CIRCLE    : 'circle' | 'circ';
+RECTANGLE : 'rectangle' | 'rect';
+POLYGON : 'polygon' | 'poly';
 LINE : 'line';
 
-SIZE   : 'size';
-RADIUS : 'radius';
-WIDTH  : 'width';
-HEIGHT : 'height';
+SIZE   : 'size' | 's';
+RADIUS : 'radius' | 'r';
+WIDTH  : 'width' | 'w';
+HEIGHT : 'height' | 'h';
 HOLLOW : 'hollow';
 SAVE   : 'save';
 

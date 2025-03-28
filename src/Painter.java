@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,6 +34,10 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
             return visitDelete(ctx);
         } else if (ctx.RENAME() != null) {
             return visitRename(ctx);
+        } else if (ctx.SHOW_NAMES() != null){
+            return visitShowNames();
+        } else if (ctx.BACKGROUND() != null){
+            return visitBackground(ctx);
         }
         return false;
     }
@@ -83,9 +88,11 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         if(shape == null)
             return false;
 
-        if (shapeCtx.COLOR() != null) {
-            String color = shapeCtx.COLOR().getText();
+        if (shapeCtx.colorDefinition().colors().COLOR() != null) {
+            String color = shapeCtx.colorDefinition().colors().COLOR().getText();
             shape.setColor(color);
+        } else if(shapeCtx.colorDefinition().colors().rgb_color() != null){
+            shape.setColor(parseRgb(shapeCtx));
         }
 
         if (shapeCtx.HOLLOW() != null)
@@ -96,7 +103,7 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         painterFrame.repaint();
         return true;
     }
-    //TODO - FIX ME: java.lang.NullPointerException: Cannot invoke "CmdPaintParser$ShapeContext.COLORC()" because the return value of "CmdPaintParser$CommandContext.shape()" is null
+
     private Boolean visitColor(CmdPaintParser.CommandContext ctx){
         System.out.println("Visit color");
         String name = parseName(ctx);
@@ -108,7 +115,10 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         }
 
         try {
-            shapes.get(name).setColor(ctx.shape().COLORC().getText());
+            if(ctx.colors().COLOR() != null)
+                shapes.get(name).setColor(ctx.colors().COLOR().getText());
+            else if(ctx.colors().rgb_color() != null)
+                shapes.get(name).setColor(parseRgb(ctx));
         }catch (Exception e){
             System.out.println(e);
             return false;
@@ -117,7 +127,6 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         return true;
     }
 
-    //TODO Implement
     private Boolean visitRotate(CmdPaintParser.CommandContext ctx){
         System.out.println("Visit rotate");
         String name = parseName(ctx);
@@ -189,10 +198,32 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         return true;
     }
 
-/////////////////////////////// UTILITY METHODS ///////////////////////////////////
+    private Boolean visitShowNames(){
+        printShapes();
+        for(Shape s : shapes.values()){
+            s.toggleName();
+        }
+        return true;
+    }
 
+    private Boolean visitBackground(CmdPaintParser.CommandContext ctx){
+        if(ctx.colorDefinition().colors().COLOR() != null)
+            painterFrame.setBackgroundColor(ctx.colorDefinition().colors().COLOR().getText());
+        else if(ctx.colorDefinition().colors().rgb_color() != null)
+            painterFrame.setBackgroundColor(parseRgb(ctx));
+        return true;
+    }
+
+/////////////////////////////// UTILITY METHODS ///////////////////////////////////
+    //error catchin is kinda bad, fix (name gets set to <missing NAME>) instead of error_name
     private String parseName(CmdPaintParser.CommandContext ctx){
         String name = "";
+        if(ctx.NAME() == null){
+            System.err.println("No name was provided, name set to " +
+                    error_name + "\n failing to provide proper name will lead do overriding this shape");
+            name = error_name;
+            return name;
+        }
         try{
             name = ctx.NAME(0).getText().replace("\"", "");
         }catch (Exception e){
@@ -203,9 +234,44 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         return name;
     }
 
-    private void print_shapes(){
+    private void printShapes(){
         for (Shape shape : shapes.values()){
             System.out.println(shape.toString());
         }
+    }
+
+    private Color parseRgb(CmdPaintParser.CommandContext ctx){
+        int[] rgb = new int[3];
+        if(ctx.colorDefinition() != null) {
+            for (int i = 0; i < 3; i++) {
+                rgb[i] = Integer.parseInt(ctx.colorDefinition().colors().rgb_color().INT(i).getText());
+                if (rgb[i] < 0)
+                    rgb[i] = 0;
+                else if (rgb[i] > 255)
+                    rgb[i] = 255;
+            }
+        }
+        else{
+            for (int i = 0; i < 3; i++) {
+                rgb[i] = Integer.parseInt(ctx.colors().rgb_color().INT(i).getText());
+                if (rgb[i] < 0)
+                    rgb[i] = 0;
+                else if (rgb[i] > 255)
+                    rgb[i] = 255;
+            }
+        }
+        return new Color(rgb[0], rgb[1], rgb[2]);
+    }
+
+    private Color parseRgb(CmdPaintParser.ShapeContext ctx){
+        int[] rgb = new int[3];
+        for(int i = 0; i < 3; i++){
+            rgb[i] = Integer.parseInt(ctx.colorDefinition().colors().rgb_color().INT(i).getText());
+            if(rgb[i] < 0)
+                rgb[i] = 0;
+            else if (rgb[i] > 255)
+                rgb[i] = 255;
+        }
+        return new Color(rgb[0], rgb[1], rgb[2]);
     }
 }
