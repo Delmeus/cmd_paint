@@ -29,7 +29,7 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         } else if (ctx.MOVE() != null) {
             return visitMove(ctx);
         } else if (ctx.SAVE() != null) {
-            return visitSave(ctx);
+            return visitSave();
         } else if (ctx.DELETE() != null) {
             return visitDelete(ctx);
         } else if (ctx.RENAME() != null) {
@@ -38,6 +38,10 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
             return visitShowNames();
         } else if (ctx.BACKGROUND() != null){
             return visitBackground(ctx);
+        } else if (ctx.FILL() != null){
+            return visitFill(ctx);
+        } else if (ctx.HOLLOW() != null){
+            return visitHollow(ctx);
         }
         return false;
     }
@@ -165,10 +169,8 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         return true;
     }
 
-    //TODO Implement, needs handling for adding extension if provided filename is invalid
-    private Boolean visitSave(CmdPaintParser.CommandContext ctx){
-        System.out.println("Visit save"); // placeholder for file saving
-        return true;
+    private Boolean visitSave(){
+        return painterFrame.saveAsImage();
     }
 
     private Boolean visitDelete(CmdPaintParser.CommandContext ctx){
@@ -211,6 +213,28 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
             painterFrame.setBackgroundColor(ctx.colorDefinition().colors().COLOR().getText());
         else if(ctx.colorDefinition().colors().rgb_color() != null)
             painterFrame.setBackgroundColor(parseRgb(ctx));
+        return true;
+    }
+
+    private Boolean visitFill(CmdPaintParser.CommandContext ctx){
+        String name = parseName(ctx);
+        try {
+            shapes.get(name).fill();
+        }catch (Exception e){
+            System.err.println("No such shape, couldn't fill");
+            return false;
+        }
+        return true;
+    }
+
+    private Boolean visitHollow(CmdPaintParser.CommandContext ctx){
+        String name = parseName(ctx);
+        try {
+            shapes.get(name).hollow();
+        }catch (Exception e){
+            System.err.println("No such shape, couldn't fill");
+            return false;
+        }
         return true;
     }
 

@@ -82,6 +82,13 @@ class Square extends Shape {
         g2d.rotate(-Math.toRadians(rotationAngle));
         g2d.translate(-(x + size / 2), -(y + size / 2));
         g.setColor(color);
+
+        // smart coloring should be implemented
+        if(showName){
+            g2d.setColor(Color.BLACK);
+            g2d.setFont(new Font("Arial", Font.BOLD, 14));
+            g2d.drawString(name, x + size / 2 - 10, y + size / 2);
+        }
     }
 }
 
@@ -101,6 +108,13 @@ class Circle extends Shape {
             g.drawOval(x, y, radius, radius);
         else
             g.fillOval(x, y, radius, radius);
+
+        // smart coloring should be implemented
+        if(showName){
+            g.setColor(Color.BLACK);
+            g.setFont(new Font("Arial", Font.BOLD, 14));
+            g.drawString(name, x + radius / 2 - 10, y + radius / 2);
+        }
     }
 }
 
@@ -129,8 +143,13 @@ class Rectangle extends Shape {
         g2d.rotate(-Math.toRadians(rotationAngle));
         g2d.translate(-(x + width / 2), -(y + height / 2));
         g.setColor(color);
-        //g.setColor(color);
-        //g.fillRect(x, y, width, height);
+
+        // smart coloring should be implemented
+        if(showName){
+            g2d.setColor(Color.BLACK);
+            g2d.setFont(new Font("Arial", Font.BOLD, 14));
+            g2d.drawString(name, x + width / 2 - 10, y + height / 2);
+        }
     }
 }
 
@@ -143,10 +162,29 @@ class Line extends Shape {
         this.y2 = y2;
     }
 
+    //add rotation
     @Override
     public void draw(Graphics g) {
-        g.setColor(color);
-        g.drawLine(x, y, x2, y2);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(color);
+        int centerX = (x + x2) / 2;
+        int centerY = (y + y2) / 2;
+
+        g2d.translate(centerX, centerY);
+        g2d.rotate(Math.toRadians(rotationAngle));
+
+        // Draw the line, but now with the origin at the center of the line
+        g2d.drawLine(x - centerX, y - centerY, x2 - centerX, y2 - centerY);
+
+        g2d.rotate(-Math.toRadians(rotationAngle));
+        g2d.translate(-centerX, -centerY);
+
+        // smart coloring should be implemented
+        if(showName){
+            g.setColor(Color.BLACK);
+            g.setFont(new Font("Arial", Font.BOLD, 14));
+            g.drawString(name, centerX, centerY + 10);
+        }
     }
 
     @Override

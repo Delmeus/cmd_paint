@@ -9,7 +9,7 @@ command
     | COLORC NAME colors
     | ROTATE NAME INT
     | MOVE NAME position
-    | SAVE NAME
+    | SAVE
     | DELETE NAME
     | BACKGROUND colorDefinition
     | RENAME NAME NAME
