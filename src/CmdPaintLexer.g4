@@ -1,11 +1,12 @@
 lexer grammar CmdPaintLexer;
 
 NAME  : '"' [a-zA-Z_][a-zA-Z0-9_]* '"';
-COLOR : 'red' | 'green' | 'blue' | 'yellow' | 'black' | 'white';
+//'red' | 'green' | 'blue' | 'yellow' | 'black' | 'white';
 INT   : '-'?[0-9]+;
 WS    : [ \t\r\n]+ -> skip;
 
 DRAW   : 'draw' | 'd';
+DEFINE : 'define' | 'def';
 COLORC : 'color';
 ROTATE : 'rotate' | 'rot' | 'rt';
 MOVE   : 'move' | 'mv';
@@ -31,3 +32,5 @@ SAVE   : 'save';
 LPAREN : '(';
 RPAREN : ')';
 COMMA  : ',';
+COLOR : [a-zA-Z_][a-zA-Z0-9_]*;
+//CUSTOM_COLOR : [a-zA-Z_][a-zA-Z0-9_]*;

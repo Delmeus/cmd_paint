@@ -6,6 +6,7 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
 
     private final String error_name = "CHANGE THIS NAME";
     private final Map<String, Shape> shapes = new HashMap<>();
+    private final Map<String, Color> definedColros = new HashMap<>();
     private final PainterFrame painterFrame = new PainterFrame(shapes);
 
     @Override
@@ -17,38 +18,14 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         painterFrame.repaint();
         return result;
     }
-
     @Override
-    public Boolean visitCommand(CmdPaintParser.CommandContext ctx) {
-        if (ctx.DRAW() != null) {
-            return visitDraw(ctx);
-        } else if (ctx.COLORC() != null) {
-            return visitColor(ctx);
-        } else if (ctx.ROTATE() != null) {
-            return visitRotate(ctx);
-        } else if (ctx.MOVE() != null) {
-            return visitMove(ctx);
-        } else if (ctx.SAVE() != null) {
-            return visitSave();
-        } else if (ctx.DELETE() != null) {
-            return visitDelete(ctx);
-        } else if (ctx.RENAME() != null) {
-            return visitRename(ctx);
-        } else if (ctx.SHOW_NAMES() != null){
-            return visitShowNames();
-        } else if (ctx.BACKGROUND() != null){
-            return visitBackground(ctx);
-        } else if (ctx.FILL() != null){
-            return visitFill(ctx);
-        } else if (ctx.HOLLOW() != null){
-            return visitHollow(ctx);
-        }
-        return false;
-    }
-
-    private Boolean visitDraw(CmdPaintParser.CommandContext ctx){
+    public Boolean visitDrawOp(CmdPaintParser.DrawOpContext ctx) {
         System.out.println("Visit draw");
-        String name = parseName(ctx);
+        String name = "";
+        if (ctx.NAME() == null)
+            name = parseName(name);
+        else
+            name = parseName(ctx.NAME().getText());
         Shape shape = null;
 
         CmdPaintParser.ShapeContext shapeCtx = ctx.shape();
@@ -94,7 +71,11 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
 
         if (shapeCtx.colorDefinition().colors().COLOR() != null) {
             String color = shapeCtx.colorDefinition().colors().COLOR().getText();
-            shape.setColor(color);
+            if (definedColros.containsKey(color)) {
+                shape.setColor(definedColros.get(color));
+            } else {
+                shape.setColor(color);
+            }
         } else if(shapeCtx.colorDefinition().colors().rgb_color() != null){
             shape.setColor(parseRgb(shapeCtx));
         }
@@ -108,9 +89,14 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         return true;
     }
 
-    private Boolean visitColor(CmdPaintParser.CommandContext ctx){
+    @Override
+    public Boolean visitColorOp(CmdPaintParser.ColorOpContext ctx) {
         System.out.println("Visit color");
-        String name = parseName(ctx);
+        String name = "";
+        if (ctx.NAME() == null)
+            name = parseName(name);
+        else
+            name = parseName(ctx.NAME().getText());
         if (name.equals(error_name))
             return false;
         if (!shapes.containsKey(name)){
@@ -120,9 +106,14 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
 
         try {
             if(ctx.colors().COLOR() != null)
-                shapes.get(name).setColor(ctx.colors().COLOR().getText());
+                if(definedColros.containsKey(ctx.colors().COLOR().getText())) {
+                    shapes.get(name).setColor(definedColros.get(ctx.colors().COLOR().getText()));
+                    System.out.println(ctx.colors().COLOR().getText() + " to " + definedColros.get(ctx.colors().COLOR().getText()).toString());
+                }
+                else
+                    shapes.get(name).setColor(ctx.colors().COLOR().getText());
             else if(ctx.colors().rgb_color() != null)
-                shapes.get(name).setColor(parseRgb(ctx));
+                shapes.get(name).setColor(parseRgb(ctx.colors()));
         }catch (Exception e){
             System.out.println(e);
             return false;
@@ -131,9 +122,14 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         return true;
     }
 
-    private Boolean visitRotate(CmdPaintParser.CommandContext ctx){
+    @Override
+    public Boolean visitRotateOp(CmdPaintParser.RotateOpContext ctx) {
         System.out.println("Visit rotate");
-        String name = parseName(ctx);
+        String name = "";
+        if (ctx.NAME() == null)
+            name = parseName(name);
+        else
+            name = parseName(ctx.NAME().getText());
         if (!shapes.containsKey(name)){
             System.out.println("There is no shape with name: " + name);
             return false;
@@ -151,9 +147,14 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         return true;
     }
 
-    private Boolean visitMove(CmdPaintParser.CommandContext ctx){
+    @Override
+    public Boolean visitMoveOp(CmdPaintParser.MoveOpContext ctx) {
         System.out.println("Visit move");
-        String name = parseName(ctx);
+        String name = "";
+        if (ctx.NAME() == null)
+            name = parseName(name);
+        else
+            name = parseName(ctx.NAME().getText());
         if (!shapes.containsKey(name)){
             System.out.println("There is no shape with name: " + name);
             return false;
@@ -169,13 +170,19 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         return true;
     }
 
-    private Boolean visitSave(){
+    @Override
+    public Boolean visitSaveOp(CmdPaintParser.SaveOpContext ctx) {
         return painterFrame.saveAsImage();
     }
 
-    private Boolean visitDelete(CmdPaintParser.CommandContext ctx){
+    @Override
+    public Boolean visitDeleteOp(CmdPaintParser.DeleteOpContext ctx) {
         System.out.println("Visit delete");
-        String name = parseName(ctx);
+        String name = "";
+        if (ctx.NAME() == null)
+            name = parseName(name);
+        else
+            name = parseName(ctx.NAME().getText());
         if (name.equals(error_name))
             return false;
         if (!shapes.containsKey(name)){
@@ -187,7 +194,20 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         return true;
     }
 
-    private Boolean visitRename(CmdPaintParser.CommandContext ctx){
+    @Override
+    public Boolean visitBackgroundOp(CmdPaintParser.BackgroundOpContext ctx) {
+        if(ctx.colorDefinition().colors().COLOR() != null)
+            if(definedColros.containsKey(ctx.colorDefinition().colors().COLOR().getText()))
+                painterFrame.setBackgroundColor(definedColros.get(ctx.colorDefinition().colors().COLOR().getText()));
+            else
+                painterFrame.setBackgroundColor(ctx.colorDefinition().colors().COLOR().getText());
+        else if(ctx.colorDefinition().colors().rgb_color() != null)
+            painterFrame.setBackgroundColor(parseRgb(ctx.colorDefinition().colors()));
+        return true;
+    }
+
+    @Override
+    public Boolean visitRenameOp(CmdPaintParser.RenameOpContext ctx) {
         System.out.println("Visit rename");
         String oldName = ctx.NAME(0).getText().replace("\"", "");
         if (!shapes.containsKey(oldName)){
@@ -200,7 +220,8 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         return true;
     }
 
-    private Boolean visitShowNames(){
+    @Override
+    public Boolean visitShowNamesOp(CmdPaintParser.ShowNamesOpContext ctx) {
         printShapes();
         for(Shape s : shapes.values()){
             s.toggleName();
@@ -208,48 +229,45 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         return true;
     }
 
-    private Boolean visitBackground(CmdPaintParser.CommandContext ctx){
-        if(ctx.colorDefinition().colors().COLOR() != null)
-            painterFrame.setBackgroundColor(ctx.colorDefinition().colors().COLOR().getText());
-        else if(ctx.colorDefinition().colors().rgb_color() != null)
-            painterFrame.setBackgroundColor(parseRgb(ctx));
-        return true;
-    }
-
-    private Boolean visitFill(CmdPaintParser.CommandContext ctx){
-        String name = parseName(ctx);
-        try {
-            shapes.get(name).fill();
-        }catch (Exception e){
-            System.err.println("No such shape, couldn't fill");
-            return false;
-        }
-        return true;
-    }
-
-    private Boolean visitHollow(CmdPaintParser.CommandContext ctx){
-        String name = parseName(ctx);
-        try {
-            shapes.get(name).hollow();
-        }catch (Exception e){
-            System.err.println("No such shape, couldn't fill");
-            return false;
-        }
-        return true;
-    }
-
-/////////////////////////////// UTILITY METHODS ///////////////////////////////////
-    //error catchin is kinda bad, fix (name gets set to <missing NAME>) instead of error_name
-    private String parseName(CmdPaintParser.CommandContext ctx){
+    @Override
+    public Boolean visitHollowOp(CmdPaintParser.HollowOpContext ctx) {
         String name = "";
-        if(ctx.NAME() == null){
-            System.err.println("No name was provided, name set to " +
-                    error_name + "\n failing to provide proper name will lead do overriding this shape");
-            name = error_name;
-            return name;
+        if (ctx.NAME() == null)
+            name = parseName(name);
+        else
+            name = parseName(ctx.NAME().getText());
+        try {
+            if(ctx.HOLLOW() != null)
+                shapes.get(name).hollow();
+            else
+                shapes.get(name).fill();
+        }catch (Exception e){
+            System.err.println(e);
+            return false;
         }
+        return true;
+    }
+
+    @Override
+    public Boolean visitDefineOp(CmdPaintParser.DefineOpContext ctx) {
+        String name = "";
+        if (ctx.NAME() == null)
+            return false;
+        else
+            name = parseName(ctx.NAME().getText());
+        Color color = parseRgb(ctx.colors());
+        definedColros.put(name, color);
+        return true;
+    }
+    private String parseName(String passedName){
+        if (passedName.isEmpty()){
+            System.err.println("Name not provided, name set to " +
+                    error_name + "\n failing to provide proper name will lead do overriding this shape");
+            return error_name;
+        }
+        String name = "";
         try{
-            name = ctx.NAME(0).getText().replace("\"", "");
+            name = passedName.replace("\"", "");
         }catch (Exception e){
             System.err.println("Error in parsing name, name set to " +
                     error_name + "\n failing to provide proper name will lead do overriding this shape");
@@ -264,26 +282,34 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         }
     }
 
-    private Color parseRgb(CmdPaintParser.CommandContext ctx){
+    private Color parseRgb(CmdPaintParser.ColorsContext ctx){
+//        int[] rgb = new int[3];
+//        if(ctx.colorDefinition() != null) {
+//            for (int i = 0; i < 3; i++) {
+//                rgb[i] = Integer.parseInt(ctx.colorDefinition().colors().rgb_color().INT(i).getText());
+//                if (rgb[i] < 0)
+//                    rgb[i] = 0;
+//                else if (rgb[i] > 255)
+//                    rgb[i] = 255;
+//            }
+//        }
+//        else{
+//            for (int i = 0; i < 3; i++) {
+//                rgb[i] = Integer.parseInt(ctx.colors().rgb_color().INT(i).getText());
+//                if (rgb[i] < 0)
+//                    rgb[i] = 0;
+//                else if (rgb[i] > 255)
+//                    rgb[i] = 255;
+//            }
+//        }
+//        return new Color(rgb[0], rgb[1], rgb[2]);
         int[] rgb = new int[3];
-        if(ctx.colorDefinition() != null) {
-            for (int i = 0; i < 3; i++) {
-                rgb[i] = Integer.parseInt(ctx.colorDefinition().colors().rgb_color().INT(i).getText());
-                if (rgb[i] < 0)
-                    rgb[i] = 0;
-                else if (rgb[i] > 255)
-                    rgb[i] = 255;
-            }
+
+        for (int i = 0; i < 3; i++) {
+            rgb[i] = Integer.parseInt(ctx.rgb_color().INT(i).getText());
+            rgb[i] = Math.max(0, Math.min(255, rgb[i])); // Clamp to [0, 255]
         }
-        else{
-            for (int i = 0; i < 3; i++) {
-                rgb[i] = Integer.parseInt(ctx.colors().rgb_color().INT(i).getText());
-                if (rgb[i] < 0)
-                    rgb[i] = 0;
-                else if (rgb[i] > 255)
-                    rgb[i] = 255;
-            }
-        }
+
         return new Color(rgb[0], rgb[1], rgb[2]);
     }
 

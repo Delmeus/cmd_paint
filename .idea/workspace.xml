@@ -6,12 +6,20 @@
   <component name="ChangeListManager">
     <list default="true" id="0ee44014-11a2-4f1b-a214-f161d7cd943b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CmdPaintLexer.interp" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintLexer.interp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CmdPaintLexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintLexer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CmdPaintLexer.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintLexer.tokens" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gen/CmdPaintParser.interp" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParser.interp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gen/CmdPaintParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CmdPaintParser.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParser.tokens" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CmdPaintParserBaseListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParserBaseListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CmdPaintParserBaseVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParserBaseVisitor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CmdPaintParserListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParserListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CmdPaintParserVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParserVisitor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CmdPaintLexer.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/CmdPaintLexer.g4" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/CmdPaintParser.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/CmdPaintParser.g4" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Painter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Painter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/PainterFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/PainterFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Shape.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Shape.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,6 +36,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
 }</component>
@@ -39,34 +50,34 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Main.executor": "Run",
-    "Application.cmdPaint.executor": "Run",
-    "Downloaded.Files.Path.Enabled": "false",
-    "Repository.Attach.Annotations": "false",
-    "Repository.Attach.JavaDocs": "false",
-    "Repository.Attach.Sources": "false",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "wip",
-    "jdk.selected.JAVA_MODULE": "openjdk-21",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/antek/studia/magisterka/semI/MiASI",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Libraries",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.keymap",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.cmdPaint.executor&quot;: &quot;Run&quot;,
+    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;wip&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;openjdk-21&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/antek/studia/magisterka/semI/MiASI&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="cmdPaint" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="Main" />
@@ -79,8 +90,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
-        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
+        <option value="jdk-21.0.2-openjdk-21.0.2-3183f394aec4-aba903c2" />
       </set>
     </attachedChunks>
   </component>
@@ -103,6 +113,7 @@
       <workItem from="1742738173867" duration="1411000" />
       <workItem from="1743091605838" duration="192000" />
       <workItem from="1743157713358" duration="3038000" />
+      <workItem from="1744535341413" duration="5003000" />
     </task>
     <servers />
   </component>

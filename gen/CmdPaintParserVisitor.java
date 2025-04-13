@@ -16,11 +16,82 @@ public interface CmdPaintParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitProgram(CmdPaintParser.ProgramContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link CmdPaintParser#command}.
+	 * Visit a parse tree produced by the {@code drawOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitCommand(CmdPaintParser.CommandContext ctx);
+	T visitDrawOp(CmdPaintParser.DrawOpContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code colorOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitColorOp(CmdPaintParser.ColorOpContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code rotateOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRotateOp(CmdPaintParser.RotateOpContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code moveOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMoveOp(CmdPaintParser.MoveOpContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code saveOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSaveOp(CmdPaintParser.SaveOpContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code deleteOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeleteOp(CmdPaintParser.DeleteOpContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code backgroundOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBackgroundOp(CmdPaintParser.BackgroundOpContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code renameOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRenameOp(CmdPaintParser.RenameOpContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code showNamesOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitShowNamesOp(CmdPaintParser.ShowNamesOpContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code hollowOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitHollowOp(CmdPaintParser.HollowOpContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code defineOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDefineOp(CmdPaintParser.DefineOpContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CmdPaintParser#shape}.
 	 * @param ctx the parse tree

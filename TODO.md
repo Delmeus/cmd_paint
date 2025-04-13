@@ -1,5 +1,6 @@
 - miejsce do wpisywania komend w oknie
 - wybor figur za pomoca myszki i ich modyfikacja za pomocą suwaków/pól tekstowych
+- warstwy
 # konsy
 - definicja kolorow
 - serializacja, z wywolaniem utwoerzenia figury

@@ -17,15 +17,137 @@ public interface CmdPaintParserListener extends ParseTreeListener {
 	 */
 	void exitProgram(CmdPaintParser.ProgramContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CmdPaintParser#command}.
+	 * Enter a parse tree produced by the {@code drawOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
 	 * @param ctx the parse tree
 	 */
-	void enterCommand(CmdPaintParser.CommandContext ctx);
+	void enterDrawOp(CmdPaintParser.DrawOpContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link CmdPaintParser#command}.
+	 * Exit a parse tree produced by the {@code drawOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
 	 * @param ctx the parse tree
 	 */
-	void exitCommand(CmdPaintParser.CommandContext ctx);
+	void exitDrawOp(CmdPaintParser.DrawOpContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code colorOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void enterColorOp(CmdPaintParser.ColorOpContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code colorOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void exitColorOp(CmdPaintParser.ColorOpContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code rotateOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void enterRotateOp(CmdPaintParser.RotateOpContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code rotateOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void exitRotateOp(CmdPaintParser.RotateOpContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code moveOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void enterMoveOp(CmdPaintParser.MoveOpContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code moveOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void exitMoveOp(CmdPaintParser.MoveOpContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code saveOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void enterSaveOp(CmdPaintParser.SaveOpContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code saveOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void exitSaveOp(CmdPaintParser.SaveOpContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code deleteOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeleteOp(CmdPaintParser.DeleteOpContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code deleteOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeleteOp(CmdPaintParser.DeleteOpContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code backgroundOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void enterBackgroundOp(CmdPaintParser.BackgroundOpContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code backgroundOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void exitBackgroundOp(CmdPaintParser.BackgroundOpContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code renameOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void enterRenameOp(CmdPaintParser.RenameOpContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code renameOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void exitRenameOp(CmdPaintParser.RenameOpContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code showNamesOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void enterShowNamesOp(CmdPaintParser.ShowNamesOpContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code showNamesOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void exitShowNamesOp(CmdPaintParser.ShowNamesOpContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code hollowOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void enterHollowOp(CmdPaintParser.HollowOpContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code hollowOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void exitHollowOp(CmdPaintParser.HollowOpContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code defineOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void enterDefineOp(CmdPaintParser.DefineOpContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code defineOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void exitDefineOp(CmdPaintParser.DefineOpContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CmdPaintParser#shape}.
 	 * @param ctx the parse tree

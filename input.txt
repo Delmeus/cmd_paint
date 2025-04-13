@@ -1,0 +1,5 @@
+draw "B" square (80, 90) size 100 color (80, 80, 80)
+color "B" red
+draw "rect" rect (150, 200) w 70 h 100 color green
+define "purple" (128, 0, 128)
+color "rect" purple

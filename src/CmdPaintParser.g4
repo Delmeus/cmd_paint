@@ -5,17 +5,18 @@ options { tokenVocab=CmdPaintLexer; }
 program: command+ EOF;
 
 command
-    : DRAW NAME shape
-    | COLORC NAME colors
-    | ROTATE NAME INT
-    | MOVE NAME position
-    | SAVE
-    | DELETE NAME
-    | BACKGROUND colorDefinition
-    | RENAME NAME NAME
-    | SHOW_NAMES
-    | HOLLOW NAME
-    | FILL NAME
+    : DRAW NAME shape #drawOp
+    | COLORC NAME colors #colorOp
+    | ROTATE NAME INT #rotateOp
+    | MOVE NAME position #moveOp
+    | SAVE #saveOp
+    | DELETE NAME #deleteOp
+    | BACKGROUND colorDefinition #backgroundOp
+    | RENAME NAME NAME #renameOp
+    | SHOW_NAMES #showNamesOp
+    | HOLLOW NAME #hollowOp
+    | FILL NAME #hollowOp
+    | DEFINE NAME colors #defineOp
     ;
 
 shape
