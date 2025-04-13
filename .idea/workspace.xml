@@ -6,16 +6,24 @@
   <component name="ChangeListManager">
     <list default="true" id="0ee44014-11a2-4f1b-a214-f161d7cd943b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gen/CmdPaintLexer.interp" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintLexer.interp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gen/CmdPaintLexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintLexer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gen/CmdPaintLexer.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintLexer.tokens" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gen/CmdPaintParser.interp" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParser.interp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gen/CmdPaintParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gen/CmdPaintParser.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParser.tokens" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CmdPaintParserBaseListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParserBaseListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CmdPaintParserBaseVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParserBaseVisitor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CmdPaintParserListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParserListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CmdPaintParserVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParserVisitor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/input.txt" beforeDir="false" afterPath="$PROJECT_DIR$/input.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/CmdPaintLexer.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/CmdPaintLexer.g4" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/CmdPaintParser.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/CmdPaintParser.g4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DrawingPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DrawingPanel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Painter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Painter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/PainterFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/PainterFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Shape.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Shape.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,6 +40,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
 }</component>
@@ -46,29 +57,63 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.cmdPaint.executor&quot;: &quot;Run&quot;,
+    &quot;Application.fromFile.executor&quot;: &quot;Run&quot;,
+    &quot;Application.fromFileInteractive.executor&quot;: &quot;Run&quot;,
     &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
     &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
     &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
     &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;wip&quot;,
     &quot;jdk.selected.JAVA_MODULE&quot;: &quot;openjdk-21&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;G:/Projekty_Studia/MiASI/antlr-4.13.2-complete.jar&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/antek/studia/magisterka/semI/MiASI&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RunManager" selected="Application.fromFile">
+    <configuration name="cmdPaint" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="Main" />
+      <module name="cmdPaint" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="fromFile" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="Main" />
+      <module name="cmdPaint" />
+      <option name="PROGRAM_PARAMETERS" value="input.txt" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="fromFileInteractive" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="Main" />
+      <module name="cmdPaint" />
+      <option name="PROGRAM_PARAMETERS" value="input.txt interactive" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.cmdPaint" />
+      <item itemvalue="Application.fromFile" />
+      <item itemvalue="Application.fromFileInteractive" />
+    </list>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -89,10 +134,23 @@
       <workItem from="1742234149416" duration="1153000" />
       <workItem from="1742240751158" duration="1418000" />
       <workItem from="1742242572640" duration="1993000" />
+      <workItem from="1742730379479" duration="1018000" />
+      <workItem from="1742731408132" duration="2049000" />
+      <workItem from="1742733469904" duration="4689000" />
+      <workItem from="1742738173867" duration="1411000" />
+      <workItem from="1743091605838" duration="192000" />
+      <workItem from="1743157713358" duration="3038000" />
+      <workItem from="1744535341413" duration="11873000" />
+      <workItem from="1744563140717" duration="318000" />
+      <workItem from="1744575116956" duration="4008000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

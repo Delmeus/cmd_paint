@@ -1,0 +1,17 @@
+draw "B" square (80, 90) size 100 color (80, 80, 80)
+color "B" red
+draw "rect" rect (150, 200) w 70 h 100 color green
+define "purple" (128, 0, 128)
+color "rect" purple
+draw "rect1" rect (170, 220) w 70 h 100 color green
+move "rect" up
+draw "c" square (300, 300) size 100 color (200, 0, 200) layer 2
+draw "d" square (300, 300) size 100 color (200, 200, 0) layer 1
+layer "d" 3
+serialize "B"
+delete "B"
+load "file"
+draw "rect1" rect (150, 200) w 70 h 100 color green hollow
+draw "rect5" rect (300, 200) w 70 h 100 color green hollow st 5
+draw "line" line (10, 500, 500, 500) color (128, 128, 0)
+stroke "line" 15
