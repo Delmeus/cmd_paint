@@ -10,6 +10,8 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
     private final Map<String, Color> definedColros = new HashMap<>();
     private final PainterFrame painterFrame = new PainterFrame(shapes);
 
+    boolean namesVisible = false;
+
     @Override
     public Boolean visitProgram(CmdPaintParser.ProgramContext ctx) {
         boolean result = true;
@@ -242,10 +244,14 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
 
     @Override
     public Boolean visitShowNamesOp(CmdPaintParser.ShowNamesOpContext ctx) {
-        printShapes();
-        for(Shape s : shapes.values()){
-            s.toggleName();
-        }
+        if(!namesVisible){
+            printShapes();
+            for(Shape s : shapes.values()){
+                s.showName();
+            }
+        } else
+            for(Shape s : shapes.values())
+                s.hideName();
         return true;
     }
 
@@ -350,6 +356,24 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         return true;
     }
 
+    @Override
+    public Boolean visitCloneOp(CmdPaintParser.CloneOpContext ctx) {
+        int[] pos = getPosition(ctx);
+        String name = "";
+        if (ctx.NAME() == null)
+            if(painterFrame.hasShapeSelected())
+                name = painterFrame.getSelectedShape().name;
+            else
+                name = parseName(name);
+        else
+            name = parseName(ctx.NAME().getText());
+        if(!shapes.containsKey(name))
+            return false;
+        Shape shape = shapes.get(name).clone(pos[0], pos[1]);
+        shapes.put(shape.name, shape);
+        return true;
+    }
+
 //--------------------------------------------------
 //               UTILITY METHODS
 //--------------------------------------------------
@@ -408,6 +432,22 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         else {
             x = Integer.parseInt(shapeCtx.position().INT(0).getText());
             y = Integer.parseInt(shapeCtx.position().INT(1).getText());
+        }
+        int[] pos = new int[2];
+        pos[0] = x;
+        pos[1] = y;
+        return pos;
+    }
+
+    private int[] getPosition(CmdPaintParser.CloneOpContext ctx){
+        int x, y;
+        if (ctx.position() == null){
+            x = painterFrame.getSelectedX();
+            y = painterFrame.getSelectedY();
+        }
+        else {
+            x = Integer.parseInt(ctx.position().INT(0).getText());
+            y = Integer.parseInt(ctx.position().INT(1).getText());
         }
         int[] pos = new int[2];
         pos[0] = x;

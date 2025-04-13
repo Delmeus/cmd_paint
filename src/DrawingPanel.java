@@ -50,25 +50,34 @@ public class DrawingPanel extends JPanel implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        int mouseX = e.getX();
-        int mouseY = e.getY();
-        selectedX = mouseX;
-        selectedY = mouseY;
+        if(e.getButton() == MouseEvent.BUTTON1) {
+            int mouseX = e.getX();
+            int mouseY = e.getY();
+            selectedX = mouseX;
+            selectedY = mouseY;
 
-        List<Shape> sortedShapes = new ArrayList<>(shapes.values());
-        sortedShapes.sort((s1, s2) -> Integer.compare(s2.layer, s1.layer));
-        selectedShape = null;
-        for (Shape shape : sortedShapes) {
-            if (shape.contains(mouseX, mouseY)) {
-                selectedShape = shape;
-                System.out.println("Clicked on: " + selectedShape.name);
-                break;
+            List<Shape> sortedShapes = new ArrayList<>(shapes.values());
+            sortedShapes.sort((s1, s2) -> Integer.compare(s2.layer, s1.layer));
+            selectedShape = null;
+            for (Shape shape : sortedShapes) {
+                if (shape.contains(mouseX, mouseY)) {
+                    selectedShape = shape;
+                    System.out.println("Clicked on: " + selectedShape.name);
+                    break;
+                }
+            }
+
+            for (Shape shape : shapes.values()) {
+                if (shape != selectedShape)
+                    shape.unselect();
             }
         }
 
-        for (Shape shape : shapes.values()) {
-            if (shape != selectedShape)
+        if (e.getButton() == MouseEvent.BUTTON3) {
+            selectedShape = null;
+            for (Shape shape : shapes.values()) {
                 shape.unselect();
+            }
         }
 
         repaint();

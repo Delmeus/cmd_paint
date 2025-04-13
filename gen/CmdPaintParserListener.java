@@ -161,6 +161,18 @@ public interface CmdPaintParserListener extends ParseTreeListener {
 	 */
 	void exitLayerOp(CmdPaintParser.LayerOpContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code cloneOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void enterCloneOp(CmdPaintParser.CloneOpContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code cloneOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void exitCloneOp(CmdPaintParser.CloneOpContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code serializeOp}
 	 * labeled alternative in {@link CmdPaintParser#command}.
 	 * @param ctx the parse tree

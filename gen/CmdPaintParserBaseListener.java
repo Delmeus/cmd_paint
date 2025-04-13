@@ -172,6 +172,18 @@ public class CmdPaintParserBaseListener implements CmdPaintParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterCloneOp(CmdPaintParser.CloneOpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCloneOp(CmdPaintParser.CloneOpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterSerializeOp(CmdPaintParser.SerializeOpContext ctx) { }
 	/**
 	 * {@inheritDoc}

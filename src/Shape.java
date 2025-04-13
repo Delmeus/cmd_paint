@@ -55,8 +55,12 @@ public abstract class Shape implements Comparable<Shape>, Serializable {
         hollow = false;
     }
 
-    public void toggleName() {
-        showName = !showName;
+    public void hideName() {
+        showName = false;
+    }
+
+    public void showName() {
+        showName = true;
     }
 
     public void setThickness(int thickness) {
@@ -97,6 +101,8 @@ public abstract class Shape implements Comparable<Shape>, Serializable {
     public abstract boolean contains(int x, int y);
 
     public abstract void draw(Graphics g);
+
+    public abstract Shape clone(int x, int y);
 }
 
 class Square extends Shape {
@@ -150,6 +156,17 @@ class Square extends Shape {
 
         return Math.abs(rx) <= size / 2 && Math.abs(ry) <= size / 2;
     }
+
+    @Override
+    public Shape clone(int x, int y) {
+        Square cloned = new Square(this.name + "_copy", x, y, this.size);
+        cloned.setColor(this.color);
+        cloned.setLayer(this.layer);
+        cloned.setThickness(this.thickness);
+        if (hollow)
+            cloned.hollow();
+        return cloned;
+    }
 }
 
 class Circle extends Shape {
@@ -189,6 +206,11 @@ class Circle extends Shape {
         double dx = px - centerX;
         double dy = py - centerY;
         return dx * dx + dy * dy <= (radius / 2.0) * (radius / 2.0);
+    }
+
+    @Override
+    public Shape clone(int x, int y) {
+        return null;
     }
 }
 
@@ -243,6 +265,11 @@ class Rectangle extends Shape {
         double ry = dx * Math.sin(radians) + dy * Math.cos(radians);
 
         return Math.abs(rx) <= width / 2 && Math.abs(ry) <= height / 2;
+    }
+
+    @Override
+    public Shape clone(int x, int y) {
+        return null;
     }
 }
 
@@ -306,6 +333,11 @@ class Line extends Shape {
         double ry = dx * Math.sin(-radians) + dy * Math.cos(-radians) + centerY;
 
         return Line2D.ptSegDist(x, y, x2, y2, rx, ry) <= 3; // 3 px tolerance
+    }
+
+    @Override
+    public Shape clone(int x, int y) {
+        return null;
     }
 }
 
@@ -378,5 +410,10 @@ class Polygon extends Shape {
     @Override
     public boolean contains(int px, int py) {
         return false;
+    }
+
+    @Override
+    public Shape clone(int x, int y) {
+        return null;
     }
 }
