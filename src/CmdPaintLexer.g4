@@ -14,6 +14,7 @@ DELETE : 'delete' | 'del' | 'rm' | 'remove';
 BACKGROUND : 'background' | 'back' | 'b';
 SHOW_NAMES : 'names';
 RENAME : 'rename' | 'name';
+LAYER : 'layer' | 'l';
 FILL : 'fill';
 
 SQUARE    : 'square' | 'sq';
@@ -28,6 +29,8 @@ WIDTH  : 'width' | 'w';
 HEIGHT : 'height' | 'h';
 HOLLOW : 'hollow';
 SAVE   : 'save';
+DOWN   : 'down';
+UP     : 'up';
 
 LPAREN : '(';
 RPAREN : ')';

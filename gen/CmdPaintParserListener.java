@@ -149,6 +149,18 @@ public interface CmdPaintParserListener extends ParseTreeListener {
 	 */
 	void exitDefineOp(CmdPaintParser.DefineOpContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code layerOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void enterLayerOp(CmdPaintParser.LayerOpContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code layerOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void exitLayerOp(CmdPaintParser.LayerOpContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link CmdPaintParser#shape}.
 	 * @param ctx the parse tree
 	 */
@@ -218,4 +230,14 @@ public interface CmdPaintParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitColorDefinition(CmdPaintParser.ColorDefinitionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CmdPaintParser#layerDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void enterLayerDefinition(CmdPaintParser.LayerDefinitionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CmdPaintParser#layerDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void exitLayerDefinition(CmdPaintParser.LayerDefinitionContext ctx);
 }

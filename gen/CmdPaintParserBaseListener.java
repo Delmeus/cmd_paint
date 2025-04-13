@@ -160,6 +160,18 @@ public class CmdPaintParserBaseListener implements CmdPaintParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterLayerOp(CmdPaintParser.LayerOpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLayerOp(CmdPaintParser.LayerOpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterShape(CmdPaintParser.ShapeContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -239,6 +251,18 @@ public class CmdPaintParserBaseListener implements CmdPaintParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitColorDefinition(CmdPaintParser.ColorDefinitionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterLayerDefinition(CmdPaintParser.LayerDefinitionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLayerDefinition(CmdPaintParser.LayerDefinitionContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

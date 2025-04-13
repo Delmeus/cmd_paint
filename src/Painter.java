@@ -1,6 +1,6 @@
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 
 public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
 
@@ -82,6 +82,9 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
 
         if (shapeCtx.HOLLOW() != null)
             shape.hollow();
+
+        if (shapeCtx.layerDefinition() != null)
+            shape.setLayer(Integer.parseInt(shapeCtx.layerDefinition().INT().getText()));
 
         shapes.put(shape.name, shape);
         System.out.println("Created shape " + shape.getClass().getName() + " " + shape);
@@ -259,6 +262,33 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         definedColros.put(name, color);
         return true;
     }
+
+    @Override
+    public Boolean visitLayerOp(CmdPaintParser.LayerOpContext ctx) {
+        String name = "";
+        if (ctx.NAME() == null)
+            name = parseName(name);
+        else
+            name = parseName(ctx.NAME().getText());
+
+        if (!shapes.containsKey(name))
+            return false;
+
+        if(ctx.INT() != null)
+            shapes.get(name).setLayer(Math.max(0, Integer.parseInt(ctx.INT().getText())));
+        else if (ctx.DOWN() != null)
+            shapes.get(name).moveDown();
+        else if (ctx.UP() != null)
+            shapes.get(name).moveUp();
+        else
+            return false;
+        return true;
+    }
+
+
+//--------------------------------------------------
+//               UTILITY METHODS
+//--------------------------------------------------
     private String parseName(String passedName){
         if (passedName.isEmpty()){
             System.err.println("Name not provided, name set to " +
@@ -283,26 +313,6 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
     }
 
     private Color parseRgb(CmdPaintParser.ColorsContext ctx){
-//        int[] rgb = new int[3];
-//        if(ctx.colorDefinition() != null) {
-//            for (int i = 0; i < 3; i++) {
-//                rgb[i] = Integer.parseInt(ctx.colorDefinition().colors().rgb_color().INT(i).getText());
-//                if (rgb[i] < 0)
-//                    rgb[i] = 0;
-//                else if (rgb[i] > 255)
-//                    rgb[i] = 255;
-//            }
-//        }
-//        else{
-//            for (int i = 0; i < 3; i++) {
-//                rgb[i] = Integer.parseInt(ctx.colors().rgb_color().INT(i).getText());
-//                if (rgb[i] < 0)
-//                    rgb[i] = 0;
-//                else if (rgb[i] > 255)
-//                    rgb[i] = 255;
-//            }
-//        }
-//        return new Color(rgb[0], rgb[1], rgb[2]);
         int[] rgb = new int[3];
 
         for (int i = 0; i < 3; i++) {

@@ -1,5 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 
 public class DrawingPanel extends JPanel {
@@ -15,9 +18,11 @@ public class DrawingPanel extends JPanel {
     }
     @Override
     protected void paintComponent(Graphics g) {
+        List<Shape> sortedShapes = new ArrayList<>(shapes.values());
+        sortedShapes.sort(Comparator.naturalOrder());
         super.paintComponent(g);
         setBackground(backgroundColor);
-        for (Shape shape : shapes.values()) {
+        for (Shape shape : sortedShapes) {
             shape.draw(g);
         }
     }

@@ -17,14 +17,16 @@ command
     | HOLLOW NAME #hollowOp
     | FILL NAME #hollowOp
     | DEFINE NAME colors #defineOp
+    | LAYER NAME INT #layerOp
+    | MOVE NAME (DOWN | UP) #layerOp
     ;
 
 shape
-    : SQUARE position SIZE INT colorDefinition? HOLLOW?
-    | CIRCLE position RADIUS INT colorDefinition? HOLLOW?
-    | RECTANGLE position WIDTH INT HEIGHT INT colorDefinition? HOLLOW?
-    | LINE line_pos colorDefinition? HOLLOW?
-    | POLYGON poly_pos poly_pos colorDefinition? HOLLOW?
+    : SQUARE position SIZE INT colorDefinition? HOLLOW? layerDefinition?
+    | CIRCLE position RADIUS INT colorDefinition? HOLLOW? layerDefinition?
+    | RECTANGLE position WIDTH INT HEIGHT INT colorDefinition? HOLLOW? layerDefinition?
+    | LINE line_pos colorDefinition? HOLLOW? layerDefinition?
+    | POLYGON poly_pos poly_pos colorDefinition? HOLLOW? layerDefinition?
     ;
 
 position
@@ -49,4 +51,8 @@ colors
 
 colorDefinition
     : 'color' colors
+    ;
+
+layerDefinition
+    : LAYER INT
     ;

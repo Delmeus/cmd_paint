@@ -1,8 +1,10 @@
 import java.awt.*;
 
-abstract class Shape {
+abstract class Shape implements Comparable<Shape> {
     String name;
     int x, y;
+    int layer = 0;
+    int thickness = 1;
     Color color = Color.black;
     protected int rotationAngle = 0;
     protected boolean hollow = false;
@@ -50,9 +52,32 @@ abstract class Shape {
     public void toggleName() {
         showName = !showName;
     }
+
+    public void setThickness(int thickness) {
+        this.thickness = thickness;
+    }
+
+    public void setLayer(int layer){
+        this.layer = layer;
+    }
+
+    public void moveDown(){
+        if(layer > 0)
+            layer--;
+    }
+
+    public void moveUp(){
+        layer++;
+    }
+
     @Override
     public String toString() {
         return name + " at (" + x + ", " + y + ") color: " + color;
+    }
+
+    @Override
+    public int compareTo(Shape other) {
+        return Integer.compare(this.layer, other.layer);
     }
 
     public abstract void draw(Graphics g);
@@ -102,18 +127,20 @@ class Circle extends Shape {
 
     @Override
     public void draw(Graphics g) {
-        g.setColor(color);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(color);
+        g2d.setStroke(new BasicStroke(thickness));
 
         if(hollow)
-            g.drawOval(x, y, radius, radius);
+            g2d.drawOval(x, y, radius, radius);
         else
-            g.fillOval(x, y, radius, radius);
+            g2d.fillOval(x, y, radius, radius);
 
         // smart coloring should be implemented
         if(showName){
-            g.setColor(Color.BLACK);
-            g.setFont(new Font("Arial", Font.BOLD, 14));
-            g.drawString(name, x + radius / 2 - 10, y + radius / 2);
+            g2d.setColor(Color.BLACK);
+            g2d.setFont(new Font("Arial", Font.BOLD, 14));
+            g2d.drawString(name, x + radius / 2 - 10, y + radius / 2);
         }
     }
 }
@@ -131,6 +158,7 @@ class Rectangle extends Shape {
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(color);
+        g2d.setStroke(new BasicStroke(thickness));
 
         g2d.translate(x + width / 2, y + height / 2);
         g2d.rotate(Math.toRadians(rotationAngle));
@@ -167,6 +195,8 @@ class Line extends Shape {
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(color);
+        g2d.setStroke(new BasicStroke(thickness));
+
         int centerX = (x + x2) / 2;
         int centerY = (y + y2) / 2;
 
@@ -225,6 +255,7 @@ class Polygon extends Shape {
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(color);
+        g2d.setStroke(new BasicStroke(thickness));
 
         int cx = 0, cy = 0;
         for (int i = 0; i < x_points.length; i++) {
