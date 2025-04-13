@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.awt.image.BufferedImage;
 
-public class PainterFrame extends JFrame {
+public class PainterFrame extends JFrame{
     private final Map<String, Shape> shapes;
     private final DrawingPanel drawingPanel;
 
@@ -39,6 +40,15 @@ public class PainterFrame extends JFrame {
     public void setBackgroundColor(Color color) {
         drawingPanel.setBackgroundColor(color);
     }
+
+    public Shape getSelectedShape(){
+        return drawingPanel.getSelectedShape();
+    }
+
+    public boolean hasShapeSelected(){
+        return drawingPanel.getSelectedShape() != null;
+    }
+
     @Override
     public void repaint() {
         drawingPanel.repaint();

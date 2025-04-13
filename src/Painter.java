@@ -97,11 +97,12 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         System.out.println("Visit color");
         String name = "";
         if (ctx.NAME() == null)
-            name = parseName(name);
+            if(painterFrame.hasShapeSelected())
+                name = painterFrame.getSelectedShape().name;
+            else
+                name = parseName(name);
         else
             name = parseName(ctx.NAME().getText());
-        if (name.equals(error_name))
-            return false;
         if (!shapes.containsKey(name)){
             System.out.println("There is no shape with name: " + name);
             return false;
@@ -130,7 +131,10 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         System.out.println("Visit rotate");
         String name = "";
         if (ctx.NAME() == null)
-            name = parseName(name);
+            if(painterFrame.hasShapeSelected())
+                name = painterFrame.getSelectedShape().name;
+            else
+                name = parseName(name);
         else
             name = parseName(ctx.NAME().getText());
         if (!shapes.containsKey(name)){
@@ -155,7 +159,10 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         System.out.println("Visit move");
         String name = "";
         if (ctx.NAME() == null)
-            name = parseName(name);
+            if(painterFrame.hasShapeSelected())
+                name = painterFrame.getSelectedShape().name;
+            else
+                name = parseName(name);
         else
             name = parseName(ctx.NAME().getText());
         if (!shapes.containsKey(name)){
@@ -183,7 +190,10 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         System.out.println("Visit delete");
         String name = "";
         if (ctx.NAME() == null)
-            name = parseName(name);
+            if(painterFrame.hasShapeSelected())
+                name = painterFrame.getSelectedShape().name;
+            else
+                name = parseName(name);
         else
             name = parseName(ctx.NAME().getText());
         if (name.equals(error_name))
@@ -236,7 +246,10 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
     public Boolean visitHollowOp(CmdPaintParser.HollowOpContext ctx) {
         String name = "";
         if (ctx.NAME() == null)
-            name = parseName(name);
+            if(painterFrame.hasShapeSelected())
+                name = painterFrame.getSelectedShape().name;
+            else
+                name = parseName(name);
         else
             name = parseName(ctx.NAME().getText());
         try {
@@ -267,7 +280,10 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
     public Boolean visitLayerOp(CmdPaintParser.LayerOpContext ctx) {
         String name = "";
         if (ctx.NAME() == null)
-            name = parseName(name);
+            if(painterFrame.hasShapeSelected())
+                name = painterFrame.getSelectedShape().name;
+            else
+                name = parseName(name);
         else
             name = parseName(ctx.NAME().getText());
 

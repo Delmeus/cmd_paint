@@ -1,6 +1,7 @@
 import java.awt.*;
+import java.awt.geom.Line2D;
 
-abstract class Shape implements Comparable<Shape> {
+public abstract class Shape implements Comparable<Shape> {
     String name;
     int x, y;
     int layer = 0;
@@ -9,6 +10,7 @@ abstract class Shape implements Comparable<Shape> {
     protected int rotationAngle = 0;
     protected boolean hollow = false;
     protected boolean showName = false;
+    protected boolean selected = false;
 
     public Shape(String name, int x, int y) {
         this.name = name;
@@ -70,6 +72,14 @@ abstract class Shape implements Comparable<Shape> {
         layer++;
     }
 
+    public void select(){
+        selected = true;
+    }
+
+    public void unselect(){
+        selected = false;
+    }
+
     @Override
     public String toString() {
         return name + " at (" + x + ", " + y + ") color: " + color;
@@ -79,6 +89,8 @@ abstract class Shape implements Comparable<Shape> {
     public int compareTo(Shape other) {
         return Integer.compare(this.layer, other.layer);
     }
+
+    public abstract boolean contains(int x, int y);
 
     public abstract void draw(Graphics g);
 }
@@ -95,6 +107,9 @@ class Square extends Shape {
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(color);
+
+        if(selected)
+            g2d.setColor(Color.MAGENTA);
 
         g2d.translate(x + size / 2, y + size / 2);
         g2d.rotate(Math.toRadians(rotationAngle));
@@ -115,6 +130,22 @@ class Square extends Shape {
             g2d.drawString(name, x + size / 2 - 10, y + size / 2);
         }
     }
+
+    @Override
+    public boolean contains(int px, int py) {
+        double radians = Math.toRadians(-rotationAngle);
+        int centerX = x + size / 2;
+        int centerY = y + size / 2;
+
+        // Translate and rotate point around the square center
+        double dx = px - centerX;
+        double dy = py - centerY;
+
+        double rx = dx * Math.cos(radians) - dy * Math.sin(radians);
+        double ry = dx * Math.sin(radians) + dy * Math.cos(radians);
+
+        return Math.abs(rx) <= size / 2 && Math.abs(ry) <= size / 2;
+    }
 }
 
 class Circle extends Shape {
@@ -131,6 +162,9 @@ class Circle extends Shape {
         g2d.setColor(color);
         g2d.setStroke(new BasicStroke(thickness));
 
+        if(selected)
+            g2d.setColor(Color.MAGENTA);
+
         if(hollow)
             g2d.drawOval(x, y, radius, radius);
         else
@@ -142,6 +176,15 @@ class Circle extends Shape {
             g2d.setFont(new Font("Arial", Font.BOLD, 14));
             g2d.drawString(name, x + radius / 2 - 10, y + radius / 2);
         }
+    }
+
+    @Override
+    public boolean contains(int px, int py) {
+        int centerX = x + radius / 2;
+        int centerY = y + radius / 2;
+        double dx = px - centerX;
+        double dy = py - centerY;
+        return dx * dx + dy * dy <= (radius / 2.0) * (radius / 2.0);
     }
 }
 
@@ -159,6 +202,9 @@ class Rectangle extends Shape {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(color);
         g2d.setStroke(new BasicStroke(thickness));
+
+        if(selected)
+            g2d.setColor(Color.MAGENTA);
 
         g2d.translate(x + width / 2, y + height / 2);
         g2d.rotate(Math.toRadians(rotationAngle));
@@ -179,6 +225,21 @@ class Rectangle extends Shape {
             g2d.drawString(name, x + width / 2 - 10, y + height / 2);
         }
     }
+
+    @Override
+    public boolean contains(int px, int py) {
+        double radians = Math.toRadians(-rotationAngle);
+        int centerX = x + width / 2;
+        int centerY = y + height / 2;
+
+        double dx = px - centerX;
+        double dy = py - centerY;
+
+        double rx = dx * Math.cos(radians) - dy * Math.sin(radians);
+        double ry = dx * Math.sin(radians) + dy * Math.cos(radians);
+
+        return Math.abs(rx) <= width / 2 && Math.abs(ry) <= height / 2;
+    }
 }
 
 class Line extends Shape {
@@ -196,6 +257,9 @@ class Line extends Shape {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(color);
         g2d.setStroke(new BasicStroke(thickness));
+
+        if(selected)
+            g2d.setColor(Color.MAGENTA);
 
         int centerX = (x + x2) / 2;
         int centerY = (y + y2) / 2;
@@ -223,6 +287,21 @@ class Line extends Shape {
         this.y += y;
         this.x2 += x;
         this.y2 += y;
+    }
+
+    @Override
+    public boolean contains(int px, int py) {
+        int centerX = (x + x2) / 2;
+        int centerY = (y + y2) / 2;
+        double radians = Math.toRadians(rotationAngle);
+
+        // Inverse rotation to align the line with axis
+        double dx = px - centerX;
+        double dy = py - centerY;
+        double rx = dx * Math.cos(-radians) - dy * Math.sin(-radians) + centerX;
+        double ry = dx * Math.sin(-radians) + dy * Math.cos(-radians) + centerY;
+
+        return Line2D.ptSegDist(x, y, x2, y2, rx, ry) <= 3; // 3 px tolerance
     }
 }
 
@@ -257,6 +336,9 @@ class Polygon extends Shape {
         g2d.setColor(color);
         g2d.setStroke(new BasicStroke(thickness));
 
+        if(selected)
+            g2d.setColor(Color.MAGENTA);
+
         int cx = 0, cy = 0;
         for (int i = 0; i < x_points.length; i++) {
             cx += x_points[i];
@@ -287,5 +369,10 @@ class Polygon extends Shape {
             g2d.setFont(new Font("Arial", Font.BOLD, 14));
             g2d.drawString(name, cx - 10, cy);
         }
+    }
+
+    @Override
+    public boolean contains(int px, int py) {
+        return false;
     }
 }

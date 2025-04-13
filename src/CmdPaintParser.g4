@@ -6,19 +6,19 @@ program: command+ EOF;
 
 command
     : DRAW NAME shape #drawOp
-    | COLORC NAME colors #colorOp
-    | ROTATE NAME INT #rotateOp
-    | MOVE NAME position #moveOp
+    | COLORC NAME? colors #colorOp
+    | ROTATE NAME? INT #rotateOp
+    | MOVE NAME? position #moveOp
     | SAVE #saveOp
-    | DELETE NAME #deleteOp
+    | DELETE NAME? #deleteOp
     | BACKGROUND colorDefinition #backgroundOp
-    | RENAME NAME NAME #renameOp
+    | RENAME NAME NAME? #renameOp
     | SHOW_NAMES #showNamesOp
-    | HOLLOW NAME #hollowOp
-    | FILL NAME #hollowOp
+    | HOLLOW NAME? #hollowOp
+    | FILL NAME? #hollowOp
     | DEFINE NAME colors #defineOp
-    | LAYER NAME INT #layerOp
-    | MOVE NAME (DOWN | UP) #layerOp
+    | LAYER NAME? INT #layerOp
+    | MOVE NAME? (DOWN | UP) #layerOp
     ;
 
 shape

@@ -41,24 +41,23 @@ public class Main {
 			} catch (Exception e) {
 				System.err.println("Error reading file: " + e.getMessage());
 			}
-		} else {
-			Scanner scanner = new Scanner(System.in);
-			System.out.println("CmdPaint Interactive Mode. Type 'exit' or close the window to quit.");
+		}
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("CmdPaint Interactive Mode. Type 'exit' or close the window to quit.");
 
-			while (true) {
-				System.out.print("> ");
-				String inputLine = scanner.nextLine();
+		while (true) {
+			System.out.print("> ");
+			String inputLine = scanner.nextLine();
 
-				if (inputLine.equalsIgnoreCase("exit")) {
-					System.out.println("Exiting CmdPaint.");
-					break;
-				}
-
-				processCommand(inputLine, visitor);
+			if (inputLine.equalsIgnoreCase("exit")) {
+				System.out.println("Exiting CmdPaint.");
+				break;
 			}
 
-			scanner.close();
+			processCommand(inputLine, visitor);
 		}
+
+		scanner.close();
 	}
 
 	private static void processCommand(String command, Painter visitor) {
