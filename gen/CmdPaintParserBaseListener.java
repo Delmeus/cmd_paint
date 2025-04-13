@@ -172,6 +172,18 @@ public class CmdPaintParserBaseListener implements CmdPaintParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterSerializeOp(CmdPaintParser.SerializeOpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSerializeOp(CmdPaintParser.SerializeOpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterShape(CmdPaintParser.ShapeContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -263,6 +275,30 @@ public class CmdPaintParserBaseListener implements CmdPaintParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitLayerDefinition(CmdPaintParser.LayerDefinitionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStrokeDefinition(CmdPaintParser.StrokeDefinitionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStrokeDefinition(CmdPaintParser.StrokeDefinitionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterShapeAttributes(CmdPaintParser.ShapeAttributesContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitShapeAttributes(CmdPaintParser.ShapeAttributesContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

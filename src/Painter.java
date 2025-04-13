@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.io.*;
 import java.util.*;
 import java.util.List;
 
@@ -30,21 +31,18 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
 
         CmdPaintParser.ShapeContext shapeCtx = ctx.shape();
         if (shapeCtx.SQUARE() != null) {
-            int x = Integer.parseInt(shapeCtx.position().INT(0).getText());
-            int y = Integer.parseInt(shapeCtx.position().INT(1).getText());
+            int[] pos = getPosition(shapeCtx);
             int size = Integer.parseInt(shapeCtx.INT().getFirst().getText());
-            shape = new Square(name, x, y, size);
+            shape = new Square(name, pos[0], pos[1], size);
         } else if (shapeCtx.RECTANGLE() != null) {
-            int x = Integer.parseInt(shapeCtx.position().INT(0).getText());
-            int y = Integer.parseInt(shapeCtx.position().INT(1).getText());
+            int[] pos = getPosition(shapeCtx);
             int width = Integer.parseInt(shapeCtx.INT().get(0).getText());
             int height = Integer.parseInt(shapeCtx.INT().get(1).getText());
-            shape = new Rectangle(name, x, y, width, height);
+            shape = new Rectangle(name, pos[0], pos[1], width, height);
         } else if (shapeCtx.CIRCLE() != null) {
-            int x = Integer.parseInt(shapeCtx.position().INT(0).getText());
-            int y = Integer.parseInt(shapeCtx.position().INT(1).getText());
+            int[] pos = getPosition(shapeCtx);
             int radius = Integer.parseInt(shapeCtx.INT().getFirst().getText());
-            shape = new Circle(name, x, y, radius);
+            shape = new Circle(name, pos[0], pos[1], radius);
         } else if (shapeCtx.LINE() != null) {
             int x = Integer.parseInt(shapeCtx.line_pos().INT(0).getText());
             int y = Integer.parseInt(shapeCtx.line_pos().INT(1).getText());
@@ -69,22 +67,27 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         if(shape == null)
             return false;
 
-        if (shapeCtx.colorDefinition().colors().COLOR() != null) {
-            String color = shapeCtx.colorDefinition().colors().COLOR().getText();
-            if (definedColros.containsKey(color)) {
-                shape.setColor(definedColros.get(color));
-            } else {
-                shape.setColor(color);
+        for (CmdPaintParser.ShapeAttributesContext attrCtx : shapeCtx.shapeAttributes()) {
+            if (attrCtx.colorDefinition() != null) {
+                var colorCtx = attrCtx.colorDefinition().colors();
+                if (colorCtx.COLOR() != null) {
+                    String color = colorCtx.COLOR().getText();
+                    if (definedColros.containsKey(color)) {
+                        shape.setColor(definedColros.get(color));
+                    } else {
+                        shape.setColor(color);
+                    }
+                } else if (colorCtx.rgb_color() != null) {
+                    shape.setColor(parseRgb(attrCtx));
+                }
+            } else if (attrCtx.HOLLOW() != null) {
+                shape.hollow();
+            } else if (attrCtx.layerDefinition() != null) {
+                shape.setLayer(Integer.parseInt(attrCtx.layerDefinition().INT().getText()));
+            } else if (attrCtx.strokeDefinition() != null) {
+                shape.setThickness(Integer.parseInt(attrCtx.strokeDefinition().INT().getText()));
             }
-        } else if(shapeCtx.colorDefinition().colors().rgb_color() != null){
-            shape.setColor(parseRgb(shapeCtx));
         }
-
-        if (shapeCtx.HOLLOW() != null)
-            shape.hollow();
-
-        if (shapeCtx.layerDefinition() != null)
-            shape.setLayer(Integer.parseInt(shapeCtx.layerDefinition().INT().getText()));
 
         shapes.put(shape.name, shape);
         System.out.println("Created shape " + shape.getClass().getName() + " " + shape);
@@ -188,6 +191,10 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
     @Override
     public Boolean visitDeleteOp(CmdPaintParser.DeleteOpContext ctx) {
         System.out.println("Visit delete");
+        if (ctx.ALL() != null){
+            shapes.clear();
+            return true;
+        }
         String name = "";
         if (ctx.NAME() == null)
             if(painterFrame.hasShapeSelected())
@@ -255,8 +262,10 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         try {
             if(ctx.HOLLOW() != null)
                 shapes.get(name).hollow();
-            else
+            else if (ctx.FILL() != null)
                 shapes.get(name).fill();
+            else if (ctx.STROKE() != null)
+                shapes.get(name).setThickness(Integer.parseInt(ctx.INT().getText()));
         }catch (Exception e){
             System.err.println(e);
             return false;
@@ -301,6 +310,45 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         return true;
     }
 
+    @Override
+    public Boolean visitSerializeOp(CmdPaintParser.SerializeOpContext ctx) {
+        if(ctx.SERIALIZE() != null){
+            Map<String, Shape> toBeSerialized = new HashMap<>();
+            if (ctx.NAME().isEmpty()){
+                Shape shape = painterFrame.getSelectedShape();
+                if(shape == null)
+                    return false;
+                toBeSerialized.put(shape.name, shape);
+            } else {
+                for (int i = 0; i < ctx.NAME().size(); i++) {
+                    String name = parseName(ctx.NAME(i).getText());
+                    if (shapes.containsKey(name))
+                        toBeSerialized.put(name, shapes.get(name));
+                }
+            }
+            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("serialized/file.ser"))) {
+                oos.writeObject(toBeSerialized);
+                System.out.println("Shapes saved");
+                return true;
+            } catch (IOException e) {
+                System.err.println("Error saving shapes: " + e.getMessage());
+                return false;
+            }
+        } else if (ctx.LOAD() != null) {
+            String path = "serialized/" + parseName(ctx.NAME().getFirst().getText()) + ".ser";
+            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path))) {
+                Map<String, Shape> loadedShapes = (Map<String, Shape>) ois.readObject();
+                shapes.putAll(loadedShapes);
+                painterFrame.repaint();
+                System.out.println("Shapes loaded from " + path);
+                return true;
+            } catch (IOException | ClassNotFoundException e) {
+                System.err.println("Error loading shapes: " + e.getMessage());
+                return false;
+            }
+        }
+        return true;
+    }
 
 //--------------------------------------------------
 //               UTILITY METHODS
@@ -333,13 +381,13 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
 
         for (int i = 0; i < 3; i++) {
             rgb[i] = Integer.parseInt(ctx.rgb_color().INT(i).getText());
-            rgb[i] = Math.max(0, Math.min(255, rgb[i])); // Clamp to [0, 255]
+            rgb[i] = Math.max(0, Math.min(255, rgb[i]));
         }
 
         return new Color(rgb[0], rgb[1], rgb[2]);
     }
 
-    private Color parseRgb(CmdPaintParser.ShapeContext ctx){
+    private Color parseRgb(CmdPaintParser.ShapeAttributesContext ctx){
         int[] rgb = new int[3];
         for(int i = 0; i < 3; i++){
             rgb[i] = Integer.parseInt(ctx.colorDefinition().colors().rgb_color().INT(i).getText());
@@ -349,5 +397,21 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
                 rgb[i] = 255;
         }
         return new Color(rgb[0], rgb[1], rgb[2]);
+    }
+
+    private int[] getPosition(CmdPaintParser.ShapeContext shapeCtx){
+        int x, y;
+        if (shapeCtx.position() == null){
+            x = painterFrame.getSelectedX();
+            y = painterFrame.getSelectedY();
+        }
+        else {
+            x = Integer.parseInt(shapeCtx.position().INT(0).getText());
+            y = Integer.parseInt(shapeCtx.position().INT(1).getText());
+        }
+        int[] pos = new int[2];
+        pos[0] = x;
+        pos[1] = y;
+        return pos;
     }
 }

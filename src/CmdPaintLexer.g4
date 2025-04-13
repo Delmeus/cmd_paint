@@ -1,7 +1,6 @@
 lexer grammar CmdPaintLexer;
 
 NAME  : '"' [a-zA-Z_][a-zA-Z0-9_]* '"';
-//'red' | 'green' | 'blue' | 'yellow' | 'black' | 'white';
 INT   : '-'?[0-9]+;
 WS    : [ \t\r\n]+ -> skip;
 
@@ -16,6 +15,9 @@ SHOW_NAMES : 'names';
 RENAME : 'rename' | 'name';
 LAYER : 'layer' | 'l';
 FILL : 'fill';
+SERIALIZE : 'serialize';
+LOAD : 'load';
+CLONE : 'clone';
 
 SQUARE    : 'square' | 'sq';
 CIRCLE    : 'circle' | 'circ';
@@ -31,9 +33,10 @@ HOLLOW : 'hollow';
 SAVE   : 'save';
 DOWN   : 'down';
 UP     : 'up';
+STROKE : 'stroke' | 'st';
+ALL    : 'all';
 
 LPAREN : '(';
 RPAREN : ')';
 COMMA  : ',';
 COLOR : [a-zA-Z_][a-zA-Z0-9_]*;
-//CUSTOM_COLOR : [a-zA-Z_][a-zA-Z0-9_]*;

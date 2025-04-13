@@ -45,6 +45,14 @@ public class PainterFrame extends JFrame{
         return drawingPanel.getSelectedShape();
     }
 
+    public int getSelectedX() {
+        return drawingPanel.selectedX;
+    }
+
+    public int getSelectedY() {
+        return drawingPanel.selectedY;
+    }
+
     public boolean hasShapeSelected(){
         return drawingPanel.getSelectedShape() != null;
     }

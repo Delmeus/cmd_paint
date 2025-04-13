@@ -8,25 +8,29 @@ command
     : DRAW NAME shape #drawOp
     | COLORC NAME? colors #colorOp
     | ROTATE NAME? INT #rotateOp
-    | MOVE NAME? position #moveOp
+    | MOVE NAME? position? #moveOp
     | SAVE #saveOp
-    | DELETE NAME? #deleteOp
+    | DELETE NAME? ALL? #deleteOp
     | BACKGROUND colorDefinition #backgroundOp
     | RENAME NAME NAME? #renameOp
     | SHOW_NAMES #showNamesOp
     | HOLLOW NAME? #hollowOp
     | FILL NAME? #hollowOp
+    | STROKE NAME? INT #hollowOp
     | DEFINE NAME colors #defineOp
     | LAYER NAME? INT #layerOp
     | MOVE NAME? (DOWN | UP) #layerOp
+    | CLONE NAME? position? #cloneOp
+    | SERIALIZE NAME* #serializeOp
+    | LOAD NAME #serializeOp
     ;
 
 shape
-    : SQUARE position SIZE INT colorDefinition? HOLLOW? layerDefinition?
-    | CIRCLE position RADIUS INT colorDefinition? HOLLOW? layerDefinition?
-    | RECTANGLE position WIDTH INT HEIGHT INT colorDefinition? HOLLOW? layerDefinition?
-    | LINE line_pos colorDefinition? HOLLOW? layerDefinition?
-    | POLYGON poly_pos poly_pos colorDefinition? HOLLOW? layerDefinition?
+    : SQUARE position? SIZE INT shapeAttributes*
+    | CIRCLE position? RADIUS INT shapeAttributes*
+    | RECTANGLE position? WIDTH INT HEIGHT INT shapeAttributes*
+    | LINE line_pos shapeAttributes*
+    | POLYGON poly_pos poly_pos shapeAttributes*
     ;
 
 position
@@ -55,4 +59,15 @@ colorDefinition
 
 layerDefinition
     : LAYER INT
+    ;
+
+strokeDefinition
+    : STROKE INT
+    ;
+
+shapeAttributes
+    : colorDefinition
+    | HOLLOW
+    | layerDefinition
+    | strokeDefinition
     ;

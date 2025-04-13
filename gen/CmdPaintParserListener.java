@@ -161,6 +161,18 @@ public interface CmdPaintParserListener extends ParseTreeListener {
 	 */
 	void exitLayerOp(CmdPaintParser.LayerOpContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code serializeOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void enterSerializeOp(CmdPaintParser.SerializeOpContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code serializeOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void exitSerializeOp(CmdPaintParser.SerializeOpContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link CmdPaintParser#shape}.
 	 * @param ctx the parse tree
 	 */
@@ -240,4 +252,24 @@ public interface CmdPaintParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitLayerDefinition(CmdPaintParser.LayerDefinitionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CmdPaintParser#strokeDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void enterStrokeDefinition(CmdPaintParser.StrokeDefinitionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CmdPaintParser#strokeDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void exitStrokeDefinition(CmdPaintParser.StrokeDefinitionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CmdPaintParser#shapeAttributes}.
+	 * @param ctx the parse tree
+	 */
+	void enterShapeAttributes(CmdPaintParser.ShapeAttributesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CmdPaintParser#shapeAttributes}.
+	 * @param ctx the parse tree
+	 */
+	void exitShapeAttributes(CmdPaintParser.ShapeAttributesContext ctx);
 }

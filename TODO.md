@@ -3,10 +3,10 @@
 -[x] warstwy
 # konsy
 -[x] definicja kolorow
--[ ] serializacja, z wywolaniem utwoerzenia figury
+-[x] serializacja, z wywolaniem utwoerzenia figury
 -[ ] klonowanie figur ze zmienionymi parametrami
--[ ] położenie z pomocą myszki
--[ ] wybieranie za pomocą myszki, jak nie ma nazwy to modyfikacja aktywnej figury
+-[ ] położenie z pomocą myszki (dla polygonu i linii)
+-[x] wybieranie za pomocą myszki, jak nie ma nazwy to modyfikacja aktywnej figury
 -[ ] zapisanie aktualnego ekranu jako skrypt, wczytywanie ze skryptu
 
 # readme

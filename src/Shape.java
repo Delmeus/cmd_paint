@@ -1,7 +1,9 @@
 import java.awt.*;
 import java.awt.geom.Line2D;
+import java.io.Serial;
+import java.io.Serializable;
 
-public abstract class Shape implements Comparable<Shape> {
+public abstract class Shape implements Comparable<Shape>, Serializable {
     String name;
     int x, y;
     int layer = 0;
@@ -11,6 +13,8 @@ public abstract class Shape implements Comparable<Shape> {
     protected boolean hollow = false;
     protected boolean showName = false;
     protected boolean selected = false;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     public Shape(String name, int x, int y) {
         this.name = name;

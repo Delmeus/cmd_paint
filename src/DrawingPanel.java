@@ -9,6 +9,8 @@ import java.util.Map;
 
 public class DrawingPanel extends JPanel implements MouseListener {
     private Shape selectedShape = null;
+    int selectedX = 0;
+    int selectedY = 0;
     private final Map<String, Shape> shapes;
     private Color backgroundColor = Color.WHITE;
     public DrawingPanel(Map<String, Shape> shapes) {
@@ -23,6 +25,14 @@ public class DrawingPanel extends JPanel implements MouseListener {
 
     public Shape getSelectedShape() {
         return selectedShape;
+    }
+
+    public int getSelectedX() {
+        return selectedX;
+    }
+
+    public int getSelectedY() {
+        return selectedY;
     }
 
     @Override
@@ -42,6 +52,8 @@ public class DrawingPanel extends JPanel implements MouseListener {
     public void mouseClicked(MouseEvent e) {
         int mouseX = e.getX();
         int mouseY = e.getY();
+        selectedX = mouseX;
+        selectedY = mouseY;
 
         List<Shape> sortedShapes = new ArrayList<>(shapes.values());
         sortedShapes.sort((s1, s2) -> Integer.compare(s2.layer, s1.layer));

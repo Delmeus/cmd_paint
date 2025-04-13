@@ -100,6 +100,13 @@ public interface CmdPaintParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitLayerOp(CmdPaintParser.LayerOpContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code serializeOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSerializeOp(CmdPaintParser.SerializeOpContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link CmdPaintParser#shape}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -147,4 +154,16 @@ public interface CmdPaintParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitLayerDefinition(CmdPaintParser.LayerDefinitionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CmdPaintParser#strokeDefinition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStrokeDefinition(CmdPaintParser.StrokeDefinitionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CmdPaintParser#shapeAttributes}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitShapeAttributes(CmdPaintParser.ShapeAttributesContext ctx);
 }
