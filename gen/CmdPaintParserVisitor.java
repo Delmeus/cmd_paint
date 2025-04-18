@@ -1,4 +1,4 @@
-// Generated from G:/Projekty_Studia/MiASI/cmdPaint/src/CmdPaintParser.g4 by ANTLR 4.13.2
+// Generated from /home/antek/studia/magisterka/semI/MiASI/cmd_paint/src/CmdPaintParser.g4 by ANTLR 4.13.2
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -100,12 +100,26 @@ public interface CmdPaintParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitLayerOp(CmdPaintParser.LayerOpContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code cloneOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCloneOp(CmdPaintParser.CloneOpContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code serializeOp}
 	 * labeled alternative in {@link CmdPaintParser#command}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitSerializeOp(CmdPaintParser.SerializeOpContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code groupOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGroupOp(CmdPaintParser.GroupOpContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CmdPaintParser#shape}.
 	 * @param ctx the parse tree

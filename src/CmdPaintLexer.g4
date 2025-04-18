@@ -16,6 +16,7 @@ RENAME : 'rename' | 'name';
 LAYER : 'layer' | 'l';
 FILL : 'fill';
 SERIALIZE : 'serialize';
+GROUP : 'group';
 LOAD : 'load';
 CLONE : 'clone';
 
@@ -26,6 +27,7 @@ POLYGON : 'polygon' | 'poly';
 LINE : 'line';
 
 SIZE   : 'size' | 's';
+LENGTH : 'length';
 RADIUS : 'radius' | 'r';
 WIDTH  : 'width' | 'w';
 HEIGHT : 'height' | 'h';

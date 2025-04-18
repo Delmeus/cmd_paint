@@ -1,4 +1,4 @@
-// Generated from G:/Projekty_Studia/MiASI/cmdPaint/src/CmdPaintParser.g4 by ANTLR 4.13.2
+// Generated from /home/antek/studia/magisterka/semI/MiASI/cmd_paint/src/CmdPaintParser.g4 by ANTLR 4.13.2
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -172,6 +172,18 @@ public class CmdPaintParserBaseListener implements CmdPaintParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterCloneOp(CmdPaintParser.CloneOpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCloneOp(CmdPaintParser.CloneOpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterSerializeOp(CmdPaintParser.SerializeOpContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -179,6 +191,18 @@ public class CmdPaintParserBaseListener implements CmdPaintParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSerializeOp(CmdPaintParser.SerializeOpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterGroupOp(CmdPaintParser.GroupOpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGroupOp(CmdPaintParser.GroupOpContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

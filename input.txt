@@ -8,10 +8,17 @@ move "rect" up
 draw "c" square (300, 300) size 100 color (200, 0, 200) layer 2
 draw "d" square (300, 300) size 100 color (200, 200, 0) layer 1
 layer "d" 3
-serialize "B"
+serialize "b_serialized" "B"
 delete "B"
-load "file"
+load "b_serialized"
 draw "rect1" rect (150, 200) w 70 h 100 color green hollow
 draw "rect5" rect (300, 200) w 70 h 100 color green hollow st 5
 draw "line" line (10, 500, 500, 500) color (128, 128, 0)
 stroke "line" 15
+clone "c" (400, 10)
+draw "triangle" poly (300, 400, 500) (500, 350, 500) color green
+clone "triangle" (100, 100)
+rotate "triangle" 45
+group "grupa" "line" "d" "rect" "triangle"
+move "grupa" (150, 150)
+rotate "grupa" 30

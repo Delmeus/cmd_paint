@@ -1,4 +1,4 @@
-// Generated from G:/Projekty_Studia/MiASI/cmdPaint/src/CmdPaintParser.g4 by ANTLR 4.13.2
+// Generated from /home/antek/studia/magisterka/semI/MiASI/cmd_paint/src/CmdPaintParser.g4 by ANTLR 4.13.2
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -161,6 +161,18 @@ public interface CmdPaintParserListener extends ParseTreeListener {
 	 */
 	void exitLayerOp(CmdPaintParser.LayerOpContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code cloneOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void enterCloneOp(CmdPaintParser.CloneOpContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code cloneOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void exitCloneOp(CmdPaintParser.CloneOpContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code serializeOp}
 	 * labeled alternative in {@link CmdPaintParser#command}.
 	 * @param ctx the parse tree
@@ -172,6 +184,18 @@ public interface CmdPaintParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSerializeOp(CmdPaintParser.SerializeOpContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code groupOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void enterGroupOp(CmdPaintParser.GroupOpContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code groupOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void exitGroupOp(CmdPaintParser.GroupOpContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CmdPaintParser#shape}.
 	 * @param ctx the parse tree
