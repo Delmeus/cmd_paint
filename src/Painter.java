@@ -1,14 +1,18 @@
 import java.awt.*;
 import java.io.*;
 import java.util.*;
-import java.util.List;
 
 public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
 
     private final String error_name = "CHANGE THIS NAME";
-    private final Map<String, Shape> shapes = new HashMap<>();
-    private final Map<String, Color> definedColros = new HashMap<>();
-    private final PainterFrame painterFrame = new PainterFrame(shapes);
+    private final Map<String, Shape> shapes;// = new HashMap<>();
+    private final Map<String, Color> definedColors = new HashMap<>();
+    private final PainterFrame painterFrame; // = new PainterFrame(shapes);
+
+    public Painter(Map<String, Shape> shapes, PainterFrame frame) {
+        this.shapes = shapes;
+        this.painterFrame = frame;
+    }
 
     boolean namesVisible = false;
 
@@ -81,8 +85,8 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
                 var colorCtx = attrCtx.colorDefinition().colors();
                 if (colorCtx.COLOR() != null) {
                     String color = colorCtx.COLOR().getText();
-                    if (definedColros.containsKey(color)) {
-                        shape.setColor(definedColros.get(color));
+                    if (definedColors.containsKey(color)) {
+                        shape.setColor(definedColors.get(color));
                     } else {
                         shape.setColor(color);
                     }
@@ -122,9 +126,9 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
 
         try {
             if(ctx.colors().COLOR() != null)
-                if(definedColros.containsKey(ctx.colors().COLOR().getText())) {
-                    shapes.get(name).setColor(definedColros.get(ctx.colors().COLOR().getText()));
-                    System.out.println(ctx.colors().COLOR().getText() + " to " + definedColros.get(ctx.colors().COLOR().getText()).toString());
+                if(definedColors.containsKey(ctx.colors().COLOR().getText())) {
+                    shapes.get(name).setColor(definedColors.get(ctx.colors().COLOR().getText()));
+                    System.out.println(ctx.colors().COLOR().getText() + " to " + definedColors.get(ctx.colors().COLOR().getText()).toString());
                 }
                 else
                     shapes.get(name).setColor(ctx.colors().COLOR().getText());
@@ -226,8 +230,8 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
     @Override
     public Boolean visitBackgroundOp(CmdPaintParser.BackgroundOpContext ctx) {
         if(ctx.colorDefinition().colors().COLOR() != null)
-            if(definedColros.containsKey(ctx.colorDefinition().colors().COLOR().getText()))
-                painterFrame.setBackgroundColor(definedColros.get(ctx.colorDefinition().colors().COLOR().getText()));
+            if(definedColors.containsKey(ctx.colorDefinition().colors().COLOR().getText()))
+                painterFrame.setBackgroundColor(definedColors.get(ctx.colorDefinition().colors().COLOR().getText()));
             else
                 painterFrame.setBackgroundColor(ctx.colorDefinition().colors().COLOR().getText());
         else if(ctx.colorDefinition().colors().rgb_color() != null)
@@ -294,7 +298,7 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         else
             name = parseName(ctx.NAME().getText());
         Color color = parseRgb(ctx.colors());
-        definedColros.put(name, color);
+        definedColors.put(name, color);
         return true;
     }
 
