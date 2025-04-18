@@ -46,11 +46,18 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
             int radius = Integer.parseInt(shapeCtx.INT().getFirst().getText());
             shape = new Circle(name, pos[0], pos[1], radius);
         } else if (shapeCtx.LINE() != null) {
-            int x = Integer.parseInt(shapeCtx.line_pos().INT(0).getText());
-            int y = Integer.parseInt(shapeCtx.line_pos().INT(1).getText());
-            int x2 = Integer.parseInt(shapeCtx.line_pos().INT(2).getText());
-            int y2 = Integer.parseInt(shapeCtx.line_pos().INT(3).getText());
-            shape = new Line(name, x, y, x2, y2);
+            if (shapeCtx.line_pos() != null) {
+                int x = Integer.parseInt(shapeCtx.line_pos().INT(0).getText());
+                int y = Integer.parseInt(shapeCtx.line_pos().INT(1).getText());
+                int x2 = Integer.parseInt(shapeCtx.line_pos().INT(2).getText());
+                int y2 = Integer.parseInt(shapeCtx.line_pos().INT(3).getText());
+                shape = new Line(name, x, y, x2, y2);
+            } else {
+                int x = painterFrame.getSelectedX();
+                int y = painterFrame.getSelectedY();
+                int length = Integer.parseInt(shapeCtx.INT().getFirst().getText());
+                shape = new Line(name, x, y, length);
+            }
         } else if (shapeCtx.POLYGON() != null) {
             if (shapeCtx.poly_pos(0).getChildCount() == shapeCtx.poly_pos(1).getChildCount()) {
                 int size = shapeCtx.poly_pos(0).INT().size();

@@ -2,6 +2,8 @@ import java.awt.*;
 import java.awt.geom.Line2D;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Shape implements Comparable<Shape>, Serializable {
     String name;
@@ -103,6 +105,21 @@ public abstract class Shape implements Comparable<Shape>, Serializable {
     public abstract void draw(Graphics g);
 
     public abstract Shape clone(int x, int y);
+//    public abstract String getScript(); TODO: retrun command which would draw shape
+
+    protected void setColor(Graphics2D g2d) {
+        if(selected) {
+            if(color.getAlpha() < 180)
+                g2d.setColor(color.brighter());
+            else
+                g2d.setColor(color.darker());
+            g2d.setStroke(new BasicStroke(thickness + 2));
+        }
+        else {
+            g2d.setColor(color);
+            g2d.setStroke(new BasicStroke(thickness));
+        }
+    }
 }
 
 class Square extends Shape {
@@ -116,10 +133,7 @@ class Square extends Shape {
     @Override
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(color);
-
-        if(selected)
-            g2d.setColor(Color.MAGENTA);
+        setColor(g2d);
 
         g2d.translate(x + size / 2, y + size / 2);
         g2d.rotate(Math.toRadians(rotationAngle));
@@ -180,11 +194,7 @@ class Circle extends Shape {
     @Override
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(color);
-        g2d.setStroke(new BasicStroke(thickness));
-
-        if(selected)
-            g2d.setColor(Color.MAGENTA);
+        setColor(g2d);
 
         if(hollow)
             g2d.drawOval(x, y, radius, radius);
@@ -226,11 +236,7 @@ class Rectangle extends Shape {
     @Override
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(color);
-        g2d.setStroke(new BasicStroke(thickness));
-
-        if(selected)
-            g2d.setColor(Color.MAGENTA);
+        setColor(g2d);
 
         g2d.translate(x + width / 2, y + height / 2);
         g2d.rotate(Math.toRadians(rotationAngle));
@@ -275,22 +281,25 @@ class Rectangle extends Shape {
 
 class Line extends Shape {
     int x2, y2;
-
+    int length;
     public Line(String name, int x1, int y1, int x2, int y2) {
         super(name, x1, y1);
         this.x2 = x2;
         this.y2 = y2;
+        this.length = (int) Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     }
 
-    //add rotation
+    public Line(String name, int x, int y, int length) {
+        super(name, x, y);
+        this.length = length;
+        x2 = x + length;
+        y2 = y;
+    }
+
     @Override
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(color);
-        g2d.setStroke(new BasicStroke(thickness));
-
-        if(selected)
-            g2d.setColor(Color.MAGENTA);
+        setColor(g2d);
 
         int centerX = (x + x2) / 2;
         int centerY = (y + y2) / 2;
@@ -298,7 +307,6 @@ class Line extends Shape {
         g2d.translate(centerX, centerY);
         g2d.rotate(Math.toRadians(rotationAngle));
 
-        // Draw the line, but now with the origin at the center of the line
         g2d.drawLine(x - centerX, y - centerY, x2 - centerX, y2 - centerY);
 
         g2d.rotate(-Math.toRadians(rotationAngle));
@@ -326,13 +334,12 @@ class Line extends Shape {
         int centerY = (y + y2) / 2;
         double radians = Math.toRadians(rotationAngle);
 
-        // Inverse rotation to align the line with axis
         double dx = px - centerX;
         double dy = py - centerY;
         double rx = dx * Math.cos(-radians) - dy * Math.sin(-radians) + centerX;
         double ry = dx * Math.sin(-radians) + dy * Math.cos(-radians) + centerY;
 
-        return Line2D.ptSegDist(x, y, x2, y2, rx, ry) <= 3; // 3 px tolerance
+        return Line2D.ptSegDist(x, y, x2, y2, rx, ry) <= 3;
     }
 
     @Override
@@ -369,11 +376,7 @@ class Polygon extends Shape {
     @Override
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(color);
-        g2d.setStroke(new BasicStroke(thickness));
-
-        if(selected)
-            g2d.setColor(Color.MAGENTA);
+        setColor(g2d);
 
         int cx = 0, cy = 0;
         for (int i = 0; i < x_points.length; i++) {
@@ -409,7 +412,100 @@ class Polygon extends Shape {
 
     @Override
     public boolean contains(int px, int py) {
+        int cx = 0, cy = 0;
+        for (int i = 0; i < x_points.length; i++) {
+            cx += x_points[i];
+            cy += y_points[i];
+        }
+        cx /= x_points.length;
+        cy /= y_points.length;
+
+        int[] rotatedX = new int[x_points.length];
+        int[] rotatedY = new int[y_points.length];
+        double radians = Math.toRadians(rotationAngle);
+
+        for (int i = 0; i < x_points.length; i++) {
+            int x = x_points[i] - cx;
+            int y = y_points[i] - cy;
+            rotatedX[i] = (int) (x * Math.cos(radians) - y * Math.sin(radians)) + cx;
+            rotatedY[i] = (int) (x * Math.sin(radians) + y * Math.cos(radians)) + cy;
+        }
+
+        java.awt.Polygon poly = new java.awt.Polygon(rotatedX, rotatedY, rotatedX.length);
+        return poly.contains(px, py);
+    }
+
+    @Override
+    public Shape clone(int x, int y) {
+        int cx = 0, cy = 0;
+        for (int i = 0; i < x_points.length; i++) {
+            cx += x_points[i];
+            cy += y_points[i];
+        }
+        cx /= x_points.length;
+        cy /= y_points.length;
+
+        int dx = x - cx;
+        int dy = y - cy;
+
+        int[] newX = new int[x_points.length];
+        int[] newY = new int[y_points.length];
+        for (int i = 0; i < x_points.length; i++) {
+            newX[i] = x_points[i] + dx;
+            newY[i] = y_points[i] + dy;
+        }
+
+        Polygon cloned = new Polygon(this.name + "_copy", newX, newY);
+        cloned.setColor(this.color);
+        cloned.setLayer(this.layer);
+        cloned.setThickness(this.thickness);
+        cloned.rotationAngle = this.rotationAngle;
+        if (this.hollow)
+            cloned.hollow();
+
+        return cloned;
+    }
+}
+
+class ShapeGroup extends Shape{
+    private final List<Shape> children;
+
+    ShapeGroup(String name) {
+        super(name, 0, 0);
+        children = new ArrayList<>();
+    }
+
+    ShapeGroup(String name, List<Shape> children) {
+        super(name, 0, 0);
+        this.children = children;
+    }
+
+    public void add(Shape shape) {
+        children.add(shape);
+    }
+
+    public void remove(Shape shape) {
+        children.remove(shape);
+    }
+
+    public void remove(int index) {
+        children.remove(index);
+    }
+
+    public List<Shape> getChildren() {
+        return children;
+    }
+
+    @Override
+    public boolean contains(int x, int y) {
         return false;
+    }
+
+    @Override
+    public void draw(Graphics g) {
+        for (Shape child : children) {
+            child.draw(g);
+        }
     }
 
     @Override

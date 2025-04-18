@@ -26,6 +26,7 @@ POLYGON : 'polygon' | 'poly';
 LINE : 'line';
 
 SIZE   : 'size' | 's';
+LENGTH : 'length';
 RADIUS : 'radius' | 'r';
 WIDTH  : 'width' | 'w';
 HEIGHT : 'height' | 'h';

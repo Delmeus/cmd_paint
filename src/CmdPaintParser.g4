@@ -29,7 +29,7 @@ shape
     : SQUARE position? SIZE INT shapeAttributes*
     | CIRCLE position? RADIUS INT shapeAttributes*
     | RECTANGLE position? WIDTH INT HEIGHT INT shapeAttributes*
-    | LINE line_pos shapeAttributes*
+    | LINE (line_pos | (LENGTH INT)) shapeAttributes*
     | POLYGON poly_pos poly_pos shapeAttributes*
     ;
 
