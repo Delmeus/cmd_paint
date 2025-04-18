@@ -185,6 +185,18 @@ public interface CmdPaintParserListener extends ParseTreeListener {
 	 */
 	void exitSerializeOp(CmdPaintParser.SerializeOpContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code groupOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void enterGroupOp(CmdPaintParser.GroupOpContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code groupOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void exitGroupOp(CmdPaintParser.GroupOpContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link CmdPaintParser#shape}.
 	 * @param ctx the parse tree
 	 */

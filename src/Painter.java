@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 
 public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
 
@@ -330,8 +331,10 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
     @Override
     public Boolean visitSerializeOp(CmdPaintParser.SerializeOpContext ctx) {
         if(ctx.SERIALIZE() != null){
+            if(ctx.NAME() == null)
+                return false;
             Map<String, Shape> toBeSerialized = new HashMap<>();
-            if (ctx.NAME().isEmpty()){
+            if (ctx.NAME().size() == 1){
                 Shape shape = painterFrame.getSelectedShape();
                 if(shape == null)
                     return false;
@@ -343,7 +346,8 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
                         toBeSerialized.put(name, shapes.get(name));
                 }
             }
-            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("serialized/file.ser"))) {
+            String filename = parseName(ctx.NAME(0).getText());
+            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("serialized/" + filename + ".ser"))) {
                 oos.writeObject(toBeSerialized);
                 System.out.println("Shapes saved");
                 return true;
@@ -385,6 +389,26 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         return true;
     }
 
+    @Override
+    public Boolean visitGroupOp(CmdPaintParser.GroupOpContext ctx) {
+        if (ctx.NAME() == null)
+            return false;
+        String name = parseName(ctx.NAME(0).getText());
+        List<Shape> groupedShapes = new ArrayList<>();
+        for (int i = 1; i < ctx.NAME().size(); i++) {
+            String shapeName = parseName(ctx.NAME(i).getText());
+            Shape shape = shapes.get(shapeName);
+            if (shape != null) {
+                groupedShapes.add(shape);
+                shapes.remove(shapeName);
+            } else {
+                System.err.println("Warning: Shape \"" + shapeName + "\" not found.");
+            }
+        }
+
+        shapes.put(name, new ShapeGroup(name, groupedShapes));
+        return true;
+    }
 //--------------------------------------------------
 //               UTILITY METHODS
 //--------------------------------------------------

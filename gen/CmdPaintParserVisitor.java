@@ -114,6 +114,13 @@ public interface CmdPaintParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSerializeOp(CmdPaintParser.SerializeOpContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code groupOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGroupOp(CmdPaintParser.GroupOpContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link CmdPaintParser#shape}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

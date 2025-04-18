@@ -196,6 +196,18 @@ public class CmdPaintParserBaseListener implements CmdPaintParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterGroupOp(CmdPaintParser.GroupOpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGroupOp(CmdPaintParser.GroupOpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterShape(CmdPaintParser.ShapeContext ctx) { }
 	/**
 	 * {@inheritDoc}

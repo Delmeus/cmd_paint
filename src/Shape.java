@@ -321,11 +321,13 @@ class Line extends Shape {
     }
 
     @Override
-    public void move(int x, int y) {
-        this.x += x;
-        this.y += y;
-        this.x2 += x;
-        this.y2 += y;
+    public void move(int newX, int newY) {
+        int dx = x2 - x;
+        int dy = y2 - y;
+        this.x = newX;
+        this.y = newY;
+        this.x2 = newX + dx;
+        this.y2 = newY + dy;
     }
 
     @Override
@@ -358,7 +360,6 @@ class Polygon extends Shape {
         this.y_points = y_points;
     }
 
-    //kinda wonky? fix
     @Override
     public void move(int newX, int newY) {
         int dx = newX - x;
@@ -504,6 +505,10 @@ class ShapeGroup extends Shape{
     @Override
     public void draw(Graphics g) {
         for (Shape child : children) {
+            if (selected)
+                child.select();
+            else
+                child.unselect();
             child.hideName();
             child.draw(g);
         }

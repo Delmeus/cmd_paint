@@ -16,6 +16,7 @@ RENAME : 'rename' | 'name';
 LAYER : 'layer' | 'l';
 FILL : 'fill';
 SERIALIZE : 'serialize';
+GROUP : 'group';
 LOAD : 'load';
 CLONE : 'clone';
 

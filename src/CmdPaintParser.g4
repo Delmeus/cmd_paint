@@ -21,7 +21,8 @@ command
     | LAYER NAME? INT #layerOp
     | MOVE NAME? (DOWN | UP) #layerOp
     | CLONE NAME? position? #cloneOp
-    | SERIALIZE NAME* #serializeOp
+    | SERIALIZE NAME NAME* #serializeOp
+    | GROUP NAME NAME+ #groupOp
     | LOAD NAME #serializeOp
     ;
 
