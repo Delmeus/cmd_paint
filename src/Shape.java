@@ -504,12 +504,61 @@ class ShapeGroup extends Shape{
     @Override
     public void draw(Graphics g) {
         for (Shape child : children) {
+            child.hideName();
             child.draw(g);
+        }
+
+        if(showName){
+            java.awt.Rectangle bounds = getBounds();
+            g.setColor(Color.BLACK);
+            g.setFont(new Font("Arial", Font.BOLD, 14));
+            g.drawString(name, bounds.x + bounds.width / 2 - 10, bounds.y + bounds.height / 2);
         }
     }
 
     @Override
     public Shape clone(int x, int y) {
         return null;
+    }
+
+    @Override
+    public void move(int newX, int newY) {
+        java.awt.Rectangle bounds = getBounds();
+        int dx = newX - bounds.x;
+        int dy = newY - bounds.y;
+        for (Shape shape : children) {
+            shape.move(shape.x + dx, shape.y + dy);
+        }
+        x = newX;
+        y = newY;
+    }
+
+    @Override
+    public void rotate(int angle) {
+        for (Shape shape : children) {
+            shape.rotate(angle);
+        }
+        rotationAngle += angle;
+    }
+
+    private java.awt.Rectangle getBounds() {
+        int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE;
+        int maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE;
+
+        for (Shape shape : children) {
+            if (shape instanceof Polygon poly) {
+                for (int xp : poly.x_points) minX = Math.min(minX, xp);
+                for (int yp : poly.y_points) minY = Math.min(minY, yp);
+                for (int xp : poly.x_points) maxX = Math.max(maxX, xp);
+                for (int yp : poly.y_points) maxY = Math.max(maxY, yp);
+            } else {
+                minX = Math.min(minX, shape.x);
+                minY = Math.min(minY, shape.y);
+                maxX = Math.max(maxX, shape.x);
+                maxY = Math.max(maxY, shape.y);
+            }
+        }
+
+        return new java.awt.Rectangle(minX, minY, maxX - minX, maxY - minY);
     }
 }
