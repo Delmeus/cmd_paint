@@ -7,19 +7,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 public class PainterFrame extends JFrame{
     private final List<String> history = new ArrayList<>();
     private int historyIndex = -1;
 
-    private Map<String, Shape> shapes = new HashMap<>();
-    private Painter painter;
+    private final Map<String, Shape> shapes = new HashMap<>();
+    private final Painter painter;
 
     private final DrawingPanel drawingPanel;
     private final JTextField commandField;
@@ -136,8 +134,8 @@ public class PainterFrame extends JFrame{
         drawingPanel.setBackgroundColor(color);
     }
 
-    public Shape getSelectedShape(){
-        return drawingPanel.getSelectedShape();
+    public Set<Shape> getSelectedShapes(){
+        return drawingPanel.getSelectedShapes();
     }
 
     public int getSelectedX() {
@@ -148,8 +146,8 @@ public class PainterFrame extends JFrame{
         return drawingPanel.selectedY;
     }
 
-    public boolean hasShapeSelected(){
-        return drawingPanel.getSelectedShape() != null;
+    public boolean hasShapesSelected(){
+        return !drawingPanel.getSelectedShapes().isEmpty();
     }
 
     @Override
@@ -178,7 +176,11 @@ public class PainterFrame extends JFrame{
         }
     }
 
-    // util, won't work for commands used with mouse
+    public void popMessage(String message){
+        JOptionPane.showMessageDialog(this, message);
+    }
+
+    // util, won't work for commands used with mouse - not essential
     private void saveCommandsToFile(){
         try {
             FileWriter fw = new FileWriter("commandHistory.txt");

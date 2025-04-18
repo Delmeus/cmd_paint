@@ -112,32 +112,34 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
     @Override
     public Boolean visitColorOp(CmdPaintParser.ColorOpContext ctx) {
         System.out.println("Visit color");
-        String name = "";
-        if (ctx.NAME() == null)
-            if(painterFrame.hasShapeSelected())
-                name = painterFrame.getSelectedShape().name;
+        List<String> names = new ArrayList<>();
+        if (ctx.NAME().isEmpty())
+            if (painterFrame.hasShapesSelected()) {
+                names = getSelectedNames(painterFrame.getSelectedShapes());
+            }
             else
-                name = parseName(name);
+                names.add(parseName(""));
         else
-            name = parseName(ctx.NAME().getText());
-        if (!shapes.containsKey(name)){
-            System.out.println("There is no shape with name: " + name);
-            return false;
-        }
-
-        try {
-            if(ctx.colors().COLOR() != null)
-                if(definedColors.containsKey(ctx.colors().COLOR().getText())) {
-                    shapes.get(name).setColor(definedColors.get(ctx.colors().COLOR().getText()));
-                    System.out.println(ctx.colors().COLOR().getText() + " to " + definedColors.get(ctx.colors().COLOR().getText()).toString());
-                }
-                else
-                    shapes.get(name).setColor(ctx.colors().COLOR().getText());
-            else if(ctx.colors().rgb_color() != null)
-                shapes.get(name).setColor(parseRgb(ctx.colors()));
-        }catch (Exception e){
-            System.out.println(e);
-            return false;
+            for(int i = 0; i < ctx.NAME().size(); i++)
+                names.add(parseName(ctx.NAME(i).getText()));
+//        if (!shapes.containsKey(name)){
+//            System.out.println("There is no shape with name: " + name);
+//            return false;
+//        }
+        for (String name : names) {
+            try {
+                if (ctx.colors().COLOR() != null)
+                    if (definedColors.containsKey(ctx.colors().COLOR().getText())) {
+                        shapes.get(name).setColor(definedColors.get(ctx.colors().COLOR().getText()));
+                        System.out.println(ctx.colors().COLOR().getText() + " to " + definedColors.get(ctx.colors().COLOR().getText()).toString());
+                    } else
+                        shapes.get(name).setColor(ctx.colors().COLOR().getText());
+                else if (ctx.colors().rgb_color() != null)
+                    shapes.get(name).setColor(parseRgb(ctx.colors()));
+            } catch (Exception e) {
+                System.out.println(e);
+                return false;
+            }
         }
         painterFrame.repaint();
         return true;
@@ -146,52 +148,56 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
     @Override
     public Boolean visitRotateOp(CmdPaintParser.RotateOpContext ctx) {
         System.out.println("Visit rotate");
-        String name = "";
-        if (ctx.NAME() == null)
-            if(painterFrame.hasShapeSelected())
-                name = painterFrame.getSelectedShape().name;
+        List<String> names = new ArrayList<>();
+        if (ctx.NAME().isEmpty())
+            if(painterFrame.hasShapesSelected())
+                names = getSelectedNames(painterFrame.getSelectedShapes());
             else
-                name = parseName(name);
+                names.add(parseName(""));
         else
-            name = parseName(ctx.NAME().getText());
-        if (!shapes.containsKey(name)){
-            System.out.println("There is no shape with name: " + name);
-            return false;
-        }
+            for(int i = 0; i < ctx.NAME().size(); i++)
+                names.add(parseName(ctx.NAME(i).getText()));
+//        if (!shapes.containsKey(name)){
+//            System.out.println("There is no shape with name: " + name);
+//            return false;
+//        }
+        for (String name : names) {
+            int rotationAngle;
+            try {
+                rotationAngle = Integer.parseInt(ctx.INT().getText());
+            } catch (Exception e) {
+                System.err.println("Invalid angle: " + ctx.INT().getText());
+                rotationAngle = 0;
+            }
 
-        int rotationAngle;
-        try {
-            rotationAngle = Integer.parseInt(ctx.INT().getText());
-        }catch (Exception e){
-            System.err.println("Invalid angle: " + ctx.INT().getText());
-            rotationAngle = 0;
+            shapes.get(name).rotate(rotationAngle);
         }
-
-        shapes.get(name).rotate(rotationAngle);
         return true;
     }
 
     @Override
     public Boolean visitMoveOp(CmdPaintParser.MoveOpContext ctx) {
         System.out.println("Visit move");
-        String name = "";
-        if (ctx.NAME() == null)
-            if(painterFrame.hasShapeSelected())
-                name = painterFrame.getSelectedShape().name;
+        List<String> names = new ArrayList<>();
+        if (ctx.NAME().isEmpty())
+            if(painterFrame.hasShapesSelected())
+                names = getSelectedNames(painterFrame.getSelectedShapes());
             else
-                name = parseName(name);
+                names.add(parseName(""));
         else
-            name = parseName(ctx.NAME().getText());
-        if (!shapes.containsKey(name)){
-            System.out.println("There is no shape with name: " + name);
-            return false;
-        }
-
+            for(int i = 0; i < ctx.NAME().size(); i++)
+                names.add(parseName(ctx.NAME(i).getText()));
+//        if (!shapes.containsKey(name)){
+//            System.out.println("There is no shape with name: " + name);
+//            return false;
+//        }
+        for (String name : names) {
         try {
             shapes.get(name).move(Integer.parseInt(ctx.position().INT(0).getText()), Integer.parseInt(ctx.position().INT(1).getText()));
         }catch (Exception e){
             System.out.println(e);
             return false;
+        }
         }
         painterFrame.repaint();
         return true;
@@ -209,21 +215,18 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
             shapes.clear();
             return true;
         }
-        String name = "";
-        if (ctx.NAME() == null)
-            if(painterFrame.hasShapeSelected())
-                name = painterFrame.getSelectedShape().name;
+        List<String> names = new ArrayList<>();
+        if (ctx.NAME().isEmpty())
+            if(painterFrame.hasShapesSelected())
+                names = getSelectedNames(painterFrame.getSelectedShapes());
             else
-                name = parseName(name);
+                names.add(parseName(""));
         else
-            name = parseName(ctx.NAME().getText());
-        if (name.equals(error_name))
-            return false;
-        if (!shapes.containsKey(name)){
-            System.out.println("There is no shape with name: " + name);
-            return false;
+            for(int i = 0; i < ctx.NAME().size(); i++)
+                names.add(parseName(ctx.NAME(i).getText()));
+        for (String name : names) {
+            shapes.remove(name);
         }
-        shapes.remove(name);
         painterFrame.repaint();
         return true;
     }
@@ -261,32 +264,38 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
             for(Shape s : shapes.values()){
                 s.showName();
             }
-        } else
-            for(Shape s : shapes.values())
+            namesVisible = true;
+        } else {
+            for (Shape s : shapes.values())
                 s.hideName();
+            namesVisible = false;
+        }
         return true;
     }
 
     @Override
     public Boolean visitHollowOp(CmdPaintParser.HollowOpContext ctx) {
-        String name = "";
-        if (ctx.NAME() == null)
-            if(painterFrame.hasShapeSelected())
-                name = painterFrame.getSelectedShape().name;
+        List<String> names = new ArrayList<>();
+        if (ctx.NAME().isEmpty())
+            if(painterFrame.hasShapesSelected())
+                names = getSelectedNames(painterFrame.getSelectedShapes());
             else
-                name = parseName(name);
+                names.add(parseName(""));
         else
-            name = parseName(ctx.NAME().getText());
-        try {
-            if(ctx.HOLLOW() != null)
-                shapes.get(name).hollow();
-            else if (ctx.FILL() != null)
-                shapes.get(name).fill();
-            else if (ctx.STROKE() != null)
-                shapes.get(name).setThickness(Integer.parseInt(ctx.INT().getText()));
-        }catch (Exception e){
-            System.err.println(e);
-            return false;
+            for(int i = 0; i < ctx.NAME().size(); i++)
+                names.add(parseName(ctx.NAME(i).getText()));
+        for (String name : names) {
+            try {
+                if (ctx.HOLLOW() != null)
+                    shapes.get(name).hollow();
+                else if (ctx.FILL() != null)
+                    shapes.get(name).fill();
+                else if (ctx.STROKE() != null)
+                    shapes.get(name).setThickness(Integer.parseInt(ctx.INT().getText()));
+            } catch (Exception e) {
+                System.err.println(e);
+//                return false;
+            }
         }
         return true;
     }
@@ -305,26 +314,30 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
 
     @Override
     public Boolean visitLayerOp(CmdPaintParser.LayerOpContext ctx) {
-        String name = "";
-        if (ctx.NAME() == null)
-            if(painterFrame.hasShapeSelected())
-                name = painterFrame.getSelectedShape().name;
+        List<String> names = new ArrayList<>();
+        if (ctx.NAME().isEmpty())
+            if(painterFrame.hasShapesSelected())
+                names = getSelectedNames(painterFrame.getSelectedShapes());
             else
-                name = parseName(name);
+                names.add(parseName(""));
         else
-            name = parseName(ctx.NAME().getText());
+            for(int i = 0; i < ctx.NAME().size(); i++)
+                names.add(parseName(ctx.NAME(i).getText()));
 
-        if (!shapes.containsKey(name))
-            return false;
-
-        if(ctx.INT() != null)
-            shapes.get(name).setLayer(Math.max(0, Integer.parseInt(ctx.INT().getText())));
-        else if (ctx.DOWN() != null)
-            shapes.get(name).moveDown();
-        else if (ctx.UP() != null)
-            shapes.get(name).moveUp();
-        else
-            return false;
+        for(String name : names) {
+            try {
+                if (ctx.INT() != null)
+                    shapes.get(name).setLayer(Math.max(0, Integer.parseInt(ctx.INT().getText())));
+                else if (ctx.DOWN() != null)
+                    shapes.get(name).moveDown();
+                else if (ctx.UP() != null)
+                    shapes.get(name).moveUp();
+                else
+                    return false;
+            } catch (Exception e) {
+                System.err.println(e);
+            }
+        }
         return true;
     }
 
@@ -335,10 +348,11 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
                 return false;
             Map<String, Shape> toBeSerialized = new HashMap<>();
             if (ctx.NAME().size() == 1){
-                Shape shape = painterFrame.getSelectedShape();
-                if(shape == null)
+                Set<Shape> shapes = painterFrame.getSelectedShapes();
+                if(shapes == null)
                     return false;
-                toBeSerialized.put(shape.name, shape);
+                for(Shape shape : shapes)
+                    toBeSerialized.put(shape.name, shape);
             } else {
                 for (int i = 0; i < ctx.NAME().size(); i++) {
                     String name = parseName(ctx.NAME(i).getText());
@@ -376,10 +390,11 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         int[] pos = getPosition(ctx);
         String name = "";
         if (ctx.NAME() == null)
-            if(painterFrame.hasShapeSelected())
-                name = painterFrame.getSelectedShape().name;
+            if(painterFrame.hasShapesSelected() && painterFrame.getSelectedShapes().size() == 1)
+                name = painterFrame.getSelectedShapes().iterator().next().name;
             else
-                name = parseName(name);
+                painterFrame.popMessage("Exactly one object has to be provided for clone. " +
+                        "To clone multiple shapes try grouping them first.");
         else
             name = parseName(ctx.NAME().getText());
         if(!shapes.containsKey(name))
@@ -391,7 +406,7 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
 
     @Override
     public Boolean visitGroupOp(CmdPaintParser.GroupOpContext ctx) {
-        if (ctx.NAME() == null)
+        if (ctx.NAME().size() == 0)
             return false;
         String name = parseName(ctx.NAME(0).getText());
         List<Shape> groupedShapes = new ArrayList<>();
@@ -488,5 +503,13 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         pos[0] = x;
         pos[1] = y;
         return pos;
+    }
+
+    private List<String> getSelectedNames(Set<Shape> shapes){
+        List<String> names = new ArrayList<>();
+        for (Shape shape : shapes) {
+            names.add(shape.name);
+        }
+        return names;
     }
 }
