@@ -1,6 +1,7 @@
 -[x] miejsce do wpisywania komend w oknie
 -[ ] wybor figur za pomoca myszki i ich modyfikacja za pomocą suwaków/pól tekstowych
 -[x] warstwy
+-[ ] skalowanie
 # konsy
 -[x] definicja kolorow
 -[x] serializacja, z wywolaniem utwoerzenia figury

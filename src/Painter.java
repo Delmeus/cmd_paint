@@ -77,7 +77,7 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
                 }
                 shape = new Polygon(name, x, y);
             } else {
-                errorList.add("X.size = " + shapeCtx.poly_pos(0).INT().size() + " != Y.size = " + shapeCtx.poly_pos(1).INT().size());
+                appendError("X.size = " + shapeCtx.poly_pos(0).INT().size() + " != Y.size = " + shapeCtx.poly_pos(1).INT().size());
             }
         }
 
@@ -135,7 +135,7 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
                 else if (ctx.colors().rgb_color() != null)
                     shapes.get(name).setColor(parseRgb(ctx.colors()));
             } catch (Exception e) {
-                errorList.add(e.getMessage());
+                appendError(e.getMessage());
                 errorOccurred = true;
             }
         }
@@ -165,7 +165,7 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
                 rotationAngle = Integer.parseInt(ctx.INT().getText());
                 shapes.get(name).rotate(rotationAngle);
             } catch (Exception e) {
-                errorList.add(e.getMessage());
+                appendError(e.getMessage());
                 errorOccurred = true;
             }
         }
@@ -194,7 +194,7 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
             try {
                 shapes.get(name).move(pos[0], pos[1]);
             }catch (Exception e){
-                errorList.add(e.getMessage());
+                appendError(e.getMessage());
             }
         }
         painterFrame.repaint();
@@ -223,7 +223,7 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
                 return true;
             }
             catch (IOException e) {
-                errorList.add(e.getMessage());
+                appendError(e.getMessage());
                 errorOccurred = true;
             }
         }
@@ -317,7 +317,7 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
                 else if (ctx.STROKE() != null)
                     shapes.get(name).setStroke(Integer.parseInt(ctx.INT().getText()));
             } catch (Exception e) {
-                errorList.add(e.getMessage());
+                appendError(e.getMessage());
                 errorOccurred = true;
             }
         }
@@ -366,7 +366,7 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
                 else
                     return false;
             } catch (Exception e) {
-                errorList.add(e.getMessage());
+                appendError(e.getMessage());
                 errorOccurred = true;
             }
         }
@@ -404,7 +404,7 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
                 painterFrame.pushMessage("Saved shapes to file: serialized/" + filename + ".ser");
                 return true;
             } catch (IOException e) {
-                errorList.add(e.getMessage());
+                appendError(e.getMessage());
                 errorOccurred = true;
             }
         } else if (ctx.LOAD() != null) {
@@ -415,7 +415,7 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
                 painterFrame.repaint();
                 return true;
             } catch (IOException | ClassNotFoundException e) {
-                errorList.add(e.getMessage());
+                appendError(e.getMessage());
                 errorOccurred = true;
             }
         }
@@ -444,6 +444,40 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
             return false;
         Shape shape = shapes.get(name).clone(pos[0], pos[1]);
         shapes.put(shape.name, shape);
+        return true;
+    }
+
+    @Override
+    public Boolean visitScaleOp(CmdPaintParser.ScaleOpContext ctx) {
+        List<String> names = new ArrayList<>();
+        if (ctx.NAME().isEmpty())
+            if(painterFrame.hasShapesSelected())
+                names = getSelectedNames(painterFrame.getSelectedShapes());
+            else
+                names.add(parseName(""));
+        else
+            for(int i = 0; i < ctx.NAME().size(); i++)
+                names.add(parseName(ctx.NAME(i).getText()));
+        double factor = 1;
+
+        try {
+            if (ctx.INT() != null)
+                factor = Double.parseDouble(ctx.INT().getText());
+            else
+                factor = Double.parseDouble(parseName(ctx.FLOAT().getText()));
+            for(String name : names) {
+                shapes.get(name).scale(factor);
+            }
+        } catch (Exception e) {
+            errorOccurred = true;
+            appendError(e.getMessage());
+        }
+
+        if(errorOccurred){
+            pushErrorsToWindow("Error in Scale");
+            return false;
+        }
+
         return true;
     }
 

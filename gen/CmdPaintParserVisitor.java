@@ -121,6 +121,13 @@ public interface CmdPaintParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitGroupOp(CmdPaintParser.GroupOpContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code scaleOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitScaleOp(CmdPaintParser.ScaleOpContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link CmdPaintParser#shape}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

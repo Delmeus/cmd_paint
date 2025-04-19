@@ -113,11 +113,10 @@ public abstract class Shape implements Comparable<Shape>, Serializable {
     }
 
     public abstract boolean contains(int x, int y);
-
     public abstract void draw(Graphics g);
-
     public abstract Shape clone(int x, int y);
     public abstract List<String> getScript();
+    public abstract void scale(double factor);
 
     protected void setColor(Graphics2D g2d) {
         if(selected) {
@@ -172,7 +171,7 @@ class Square extends Shape {
         double radians = Math.toRadians(-rotationAngle);
         int centerX = x + size / 2;
         int centerY = y + size / 2;
-        
+
         double dx = px - centerX;
         double dy = py - centerY;
 
@@ -205,6 +204,11 @@ class Square extends Shape {
         if(rotationAngle != 0)
             script.add("rotate " + "\"" + name + "\" "  + rotationAngle);
         return script;
+    }
+
+    @Override
+    public void scale(double factor) {
+        size = (int)(size * factor);
     }
 }
 
@@ -258,6 +262,11 @@ class Circle extends Shape {
             drawString += " hollow";
         script.add(drawString);
         return script;
+    }
+
+    @Override
+    public void scale(double factor) {
+        radius = (int)(radius * factor);
     }
 }
 
@@ -329,6 +338,12 @@ class Rectangle extends Shape {
             script.add("rotate " + "\"" + name + "\" "  + rotationAngle);
         return script;
     }
+
+    @Override
+    public void scale(double factor) {
+        width = (int)(width * factor);
+        height = (int)(height * factor);
+    }
 }
 
 class Line extends Shape {
@@ -338,7 +353,7 @@ class Line extends Shape {
         super(name, x1, y1);
         this.x2 = x2;
         this.y2 = y2;
-        this.length = (int) Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+        this.length = calculateLength();
     }
 
     public Line(String name, int x, int y, int length) {
@@ -413,6 +428,21 @@ class Line extends Shape {
         if(rotationAngle != 0)
             script.add("rotate " + "\"" + name + "\" "  + rotationAngle);
         return script;
+    }
+
+    @Override
+    public void scale(double factor) {
+        int dx = x2 - x;
+        int dy = y2 - y;
+        dx = (int) (dx * factor);
+        dy = (int) (dy * factor);
+        x2 = x + dx;
+        y2 = y + dy;
+        length = calculateLength();
+    }
+
+    private int calculateLength() {
+        return (int) Math.sqrt(Math.pow(x2 - x, 2) + Math.pow(y2 - y, 2));
     }
 }
 
@@ -570,6 +600,26 @@ class Polygon extends Shape {
         yString.append(")");
         return yString.toString();
     }
+
+    @Override
+    public void scale(double factor) {
+        int cx = 0, cy = 0;
+        for (int i = 0; i < x_points.length; i++) {
+            cx += x_points[i];
+            cy += y_points[i];
+        }
+        cx /= x_points.length;
+        cy /= y_points.length;
+
+        for (int i = 0; i < x_points.length; i++) {
+            x_points[i] = (int)((x_points[i] - cx) * factor + cx);
+            y_points[i] = (int)((y_points[i] - cy) * factor + cy);
+        }
+
+        x = x_points[0];
+        y = y_points[0];
+    }
+
 }
 
 class ShapeGroup extends Shape{
@@ -685,4 +735,12 @@ class ShapeGroup extends Shape{
 
         return new java.awt.Rectangle(minX, minY, maxX - minX, maxY - minY);
     }
+
+    @Override
+    public void scale(double factor) {
+        for (Shape child : children) {
+            child.scale(factor);
+        }
+    }
+
 }

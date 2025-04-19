@@ -197,6 +197,18 @@ public interface CmdPaintParserListener extends ParseTreeListener {
 	 */
 	void exitGroupOp(CmdPaintParser.GroupOpContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code scaleOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void enterScaleOp(CmdPaintParser.ScaleOpContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code scaleOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void exitScaleOp(CmdPaintParser.ScaleOpContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link CmdPaintParser#shape}.
 	 * @param ctx the parse tree
 	 */

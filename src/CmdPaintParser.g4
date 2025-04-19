@@ -24,6 +24,7 @@ command
     | SERIALIZE NAME NAME* #serializeOp
     | GROUP NAME NAME+ #groupOp
     | LOAD NAME #serializeOp
+    | SCALE NAME* (FLOAT | INT) #scaleOp
     ;
 
 shape

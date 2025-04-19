@@ -192,6 +192,7 @@ public class PainterFrame extends JFrame{
 
         JTextField strokeField = new JTextField(String.valueOf(shape.stroke));
         JTextField rotationField = new JTextField(String.valueOf(shape.getRotationAngle()));
+        JTextField scaleField = new JTextField("1");
         JCheckBox hollowCheck = new JCheckBox("Hollow", shape.hollow);
 
         JTextField rField = new JTextField(String.valueOf(shape.color.getRed()));
@@ -200,6 +201,7 @@ public class PainterFrame extends JFrame{
 
         addLabeledField.accept("Stroke:", strokeField);
         addLabeledField.accept("Rotation:", rotationField);
+        addLabeledField.accept("Scale:", scaleField);
         addLabeledField.accept("Color R:", rField);
         addLabeledField.accept("Color G:", gField);
         addLabeledField.accept("Color B:", bField);
@@ -231,6 +233,7 @@ public class PainterFrame extends JFrame{
             try {
                 int stroke = Integer.parseInt(strokeField.getText());
                 int rotation = Integer.parseInt(rotationField.getText());
+                double factor = Double.parseDouble(scaleField.getText());
                 int r = Integer.parseInt(rField.getText());
                 int g = Integer.parseInt(gField.getText());
                 int b = Integer.parseInt(bField.getText());
@@ -239,6 +242,7 @@ public class PainterFrame extends JFrame{
 
                 shape.stroke = stroke;
                 shape.setRotationAngle(rotation);
+                shape.scale(factor);
                 shape.color = newColor;
                 shape.hollow = hollow;
 
