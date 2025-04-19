@@ -1,14 +1,17 @@
 import java.awt.*;
 import java.io.*;
+import java.text.ParseException;
 import java.util.*;
 import java.util.List;
 
 public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
-
     private final String error_name = "CHANGE THIS NAME";
     private final Map<String, Shape> shapes;// = new HashMap<>();
     private final Map<String, Color> definedColors = new HashMap<>();
     private final PainterFrame painterFrame; // = new PainterFrame(shapes);
+
+    private final List<String> errorList = new ArrayList<>();
+    private boolean errorOccurred = false;
 
     public Painter(Map<String, Shape> shapes, PainterFrame frame) {
         this.shapes = shapes;
@@ -22,13 +25,13 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         boolean result = true;
         for (CmdPaintParser.CommandContext command : ctx.command()) {
             result &= visit(command);
+            errorOccurred = false;
         }
         painterFrame.repaint();
         return result;
     }
     @Override
     public Boolean visitDrawOp(CmdPaintParser.DrawOpContext ctx) {
-        System.out.println("Visit draw");
         String name = "";
         if (ctx.NAME() == null)
             name = parseName(name);
@@ -74,12 +77,14 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
                 }
                 shape = new Polygon(name, x, y);
             } else {
-                System.out.println("X.size = " + shapeCtx.poly_pos(0).INT().size() + " != Y.size = " + shapeCtx.poly_pos(1).INT().size());
+                errorList.add("X.size = " + shapeCtx.poly_pos(0).INT().size() + " != Y.size = " + shapeCtx.poly_pos(1).INT().size());
             }
         }
 
-        if(shape == null)
+        if(shape == null) {
+            pushErrorsToWindow("Error when creating shape (shape is null)");
             return false;
+        }
 
         for (CmdPaintParser.ShapeAttributesContext attrCtx : shapeCtx.shapeAttributes()) {
             if (attrCtx.colorDefinition() != null) {
@@ -104,14 +109,12 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         }
 
         shapes.put(shape.name, shape);
-        System.out.println("Created shape " + shape.getClass().getName() + " " + shape);
         painterFrame.repaint();
         return true;
     }
 
     @Override
     public Boolean visitColorOp(CmdPaintParser.ColorOpContext ctx) {
-        System.out.println("Visit color");
         List<String> names = new ArrayList<>();
         if (ctx.NAME().isEmpty())
             if (painterFrame.hasShapesSelected()) {
@@ -122,32 +125,31 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         else
             for(int i = 0; i < ctx.NAME().size(); i++)
                 names.add(parseName(ctx.NAME(i).getText()));
-//        if (!shapes.containsKey(name)){
-//            System.out.println("There is no shape with name: " + name);
-//            return false;
-//        }
         for (String name : names) {
             try {
                 if (ctx.colors().COLOR() != null)
                     if (definedColors.containsKey(ctx.colors().COLOR().getText())) {
                         shapes.get(name).setColor(definedColors.get(ctx.colors().COLOR().getText()));
-                        System.out.println(ctx.colors().COLOR().getText() + " to " + definedColors.get(ctx.colors().COLOR().getText()).toString());
                     } else
                         shapes.get(name).setColor(ctx.colors().COLOR().getText());
                 else if (ctx.colors().rgb_color() != null)
                     shapes.get(name).setColor(parseRgb(ctx.colors()));
             } catch (Exception e) {
-                System.out.println(e);
-                return false;
+                errorList.add(e.getMessage());
+                errorOccurred = true;
             }
         }
         painterFrame.repaint();
+
+        if(errorOccurred){
+            pushErrorsToWindow("Error when visit color op");
+            return false;
+        }
         return true;
     }
 
     @Override
     public Boolean visitRotateOp(CmdPaintParser.RotateOpContext ctx) {
-        System.out.println("Visit rotate");
         List<String> names = new ArrayList<>();
         if (ctx.NAME().isEmpty())
             if(painterFrame.hasShapesSelected())
@@ -157,27 +159,27 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         else
             for(int i = 0; i < ctx.NAME().size(); i++)
                 names.add(parseName(ctx.NAME(i).getText()));
-//        if (!shapes.containsKey(name)){
-//            System.out.println("There is no shape with name: " + name);
-//            return false;
-//        }
         for (String name : names) {
             int rotationAngle;
             try {
                 rotationAngle = Integer.parseInt(ctx.INT().getText());
+                shapes.get(name).rotate(rotationAngle);
             } catch (Exception e) {
-                System.err.println("Invalid angle: " + ctx.INT().getText());
-                rotationAngle = 0;
+                errorList.add(e.getMessage());
+                errorOccurred = true;
             }
-
-            shapes.get(name).rotate(rotationAngle);
         }
+
+        if(errorOccurred){
+            pushErrorsToWindow("Error in rotate");
+            return false;
+        }
+
         return true;
     }
 
     @Override
     public Boolean visitMoveOp(CmdPaintParser.MoveOpContext ctx) {
-        System.out.println("Visit move");
         List<String> names = new ArrayList<>();
         if (ctx.NAME().isEmpty())
             if(painterFrame.hasShapesSelected())
@@ -187,27 +189,28 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         else
             for(int i = 0; i < ctx.NAME().size(); i++)
                 names.add(parseName(ctx.NAME(i).getText()));
-//        if (!shapes.containsKey(name)){
-//            System.out.println("There is no shape with name: " + name);
-//            return false;
-//        }
-        int pos[] = getPosition(ctx);
+        int[] pos = getPosition(ctx);
         for (String name : names) {
             try {
                 shapes.get(name).move(pos[0], pos[1]);
             }catch (Exception e){
-                System.out.println(e);
-                return false;
+                errorList.add(e.getMessage());
             }
         }
         painterFrame.repaint();
+
+        if(errorOccurred){
+            pushErrorsToWindow("Error in move");
+            return false;
+        }
+
         return true;
     }
 
     @Override
     public Boolean visitSaveOp(CmdPaintParser.SaveOpContext ctx) {
         if(ctx.savePossibility().IMAGE() != null)
-            return painterFrame.saveAsImage();
+            errorOccurred = !painterFrame.saveAsImage();
         else if (ctx.savePossibility().SCRIPT() != null) {
             try {
                 FileWriter fw = new FileWriter("script.txt");
@@ -220,16 +223,19 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
                 return true;
             }
             catch (IOException e) {
-                painterFrame.popMessage("Error with saving script: " + e.getMessage());
-                return false;
+                errorList.add(e.getMessage());
+                errorOccurred = true;
             }
         }
+
+        if(errorOccurred)
+            pushErrorsToWindow("Error in saving file");
+
         return false;
     }
 
     @Override
     public Boolean visitDeleteOp(CmdPaintParser.DeleteOpContext ctx) {
-        System.out.println("Visit delete");
         if (ctx.ALL() != null){
             shapes.clear();
             return true;
@@ -264,10 +270,9 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
 
     @Override
     public Boolean visitRenameOp(CmdPaintParser.RenameOpContext ctx) {
-        System.out.println("Visit rename");
         String oldName = ctx.NAME(0).getText().replace("\"", "");
         if (!shapes.containsKey(oldName)){
-            System.out.println("There is no shape with name: " + oldName);
+            painterFrame.pushMessage("There is no shape with name: " + oldName);
             return false;
         }
         String newName = ctx.NAME(1).getText().replace("\"", "");
@@ -312,10 +317,16 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
                 else if (ctx.STROKE() != null)
                     shapes.get(name).setStroke(Integer.parseInt(ctx.INT().getText()));
             } catch (Exception e) {
-                System.err.println(e);
-//                return false;
+                errorList.add(e.getMessage());
+                errorOccurred = true;
             }
         }
+
+        if(errorOccurred){
+            pushErrorsToWindow("Error in Hollow/Fill");
+            return false;
+        }
+
         return true;
     }
 
@@ -354,9 +365,16 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
                 else
                     return false;
             } catch (Exception e) {
-                System.err.println(e);
+                errorList.add(e.getMessage());
+                errorOccurred = true;
             }
         }
+
+        if(errorOccurred){
+            pushErrorsToWindow("Error in Layer");
+            return false;
+        }
+
         return true;
     }
 
@@ -382,11 +400,11 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
             String filename = parseName(ctx.NAME(0).getText());
             try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("serialized/" + filename + ".ser"))) {
                 oos.writeObject(toBeSerialized);
-                System.out.println("Shapes saved");
+                painterFrame.pushMessage("Saved shapes to file: serialized/" + filename + ".ser");
                 return true;
             } catch (IOException e) {
-                System.err.println("Error saving shapes: " + e.getMessage());
-                return false;
+                errorList.add(e.getMessage());
+                errorOccurred = true;
             }
         } else if (ctx.LOAD() != null) {
             String path = "serialized/" + parseName(ctx.NAME().getFirst().getText()) + ".ser";
@@ -394,13 +412,18 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
                 Map<String, Shape> loadedShapes = (Map<String, Shape>) ois.readObject();
                 shapes.putAll(loadedShapes);
                 painterFrame.repaint();
-                System.out.println("Shapes loaded from " + path);
                 return true;
             } catch (IOException | ClassNotFoundException e) {
-                System.err.println("Error loading shapes: " + e.getMessage());
-                return false;
+                errorList.add(e.getMessage());
+                errorOccurred = true;
             }
         }
+
+        if(errorOccurred){
+            pushErrorsToWindow("Error in Saving/Loading serialized shapes");
+            return false;
+        }
+
         return true;
     }
 
@@ -412,7 +435,7 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
             if(painterFrame.hasShapesSelected() && painterFrame.getSelectedShapes().size() == 1)
                 name = painterFrame.getSelectedShapes().iterator().next().name;
             else
-                painterFrame.popMessage("Exactly one object has to be provided for clone. " +
+                painterFrame.pushMessage("Exactly one object has to be provided for clone. " +
                         "To clone multiple shapes try grouping them first.");
         else
             name = parseName(ctx.NAME().getText());
@@ -436,7 +459,7 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
                 groupedShapes.add(shape);
                 shapes.remove(shapeName);
             } else {
-                System.err.println("Warning: Shape \"" + shapeName + "\" not found.");
+                painterFrame.pushMessage("Warning: Shape \"" + shapeName + "\" not found.");
             }
         }
 
@@ -546,5 +569,21 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
             names.add(shape.name);
         }
         return names;
+    }
+
+    private void appendError(String error){
+        errorList.add(error);
+    }
+
+    private void pushErrorsToWindow(String errorPrefix){
+        StringBuilder errorMessage = new StringBuilder(errorPrefix + "\nInfo: ");
+        if (!errorList.isEmpty()){
+            errorMessage.append("-");
+        }
+        for (String name : errorList) {
+            errorMessage.append(name).append("\n");
+        }
+        painterFrame.pushMessage(errorMessage.toString());
+        errorList.clear();
     }
 }

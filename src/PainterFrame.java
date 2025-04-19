@@ -150,7 +150,7 @@ public class PainterFrame extends JFrame{
         }
     }
 
-    public void popMessage(String message){
+    public void pushMessage(String message){
         JOptionPane.showMessageDialog(this, message);
     }
 
