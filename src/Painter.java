@@ -339,6 +339,7 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
             name = parseName(ctx.NAME().getText());
         Color color = parseRgb(ctx.colors());
         definedColors.put(name, color);
+        painterFrame.addDefinedColor(name, color);
         return true;
     }
 

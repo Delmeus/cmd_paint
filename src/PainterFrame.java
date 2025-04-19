@@ -20,6 +20,8 @@ public class PainterFrame extends JFrame{
     private final Map<String, Shape> shapes = new HashMap<>();
     private final Painter painter;
 
+    private final Map<String, Color> availableColors = new HashMap<>();
+
     private final DrawingPanel drawingPanel;
     private final JTextField commandField;
     private final JPanel shapeInfoPanel = new JPanel();
@@ -89,7 +91,10 @@ public class PainterFrame extends JFrame{
         shapeInfoPanel.add(new JScrollPane(editorContainer), BorderLayout.CENTER);
         shapeInfoPanel.setPreferredSize(new Dimension(300, getHeight()));
         add(shapeInfoPanel, BorderLayout.EAST);
+    }
 
+    public void addDefinedColor(String name, Color color){
+        availableColors.put(name, color);
     }
 
     public void setBackgroundColor(String colorStr) {
@@ -243,6 +248,8 @@ public class PainterFrame extends JFrame{
             }
         });
 
+
+        addColorsWindow(panel, rField, gField, bField);
         return panel;
     }
 
@@ -276,6 +283,28 @@ public class PainterFrame extends JFrame{
         panel.add(row);
     }
 
+    private void addColorsWindow(JPanel panel, JTextField rField, JTextField gField, JTextField bField) {
+        setDefaultColors();
+        JPanel colorRow = new JPanel(new GridLayout(0, 8, 5, 5));
+        colorRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        colorRow.setBorder(BorderFactory.createTitledBorder("Quick Colors"));
+
+        for (Color c : availableColors.values()) {
+            JButton colorBtn = new JButton();
+            colorBtn.setBackground(c);
+            colorBtn.setPreferredSize(new Dimension(20, 20));
+            colorBtn.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+            colorBtn.setFocusPainted(false);
+            colorBtn.addActionListener(e -> {
+                rField.setText(String.valueOf(c.getRed()));
+                gField.setText(String.valueOf(c.getGreen()));
+                bField.setText(String.valueOf(c.getBlue()));
+            });
+            colorRow.add(colorBtn);
+        }
+        panel.add(colorRow);
+    }
+
     private void handleInputFile(String filename) {
         new Thread(() -> {
             try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
@@ -292,6 +321,18 @@ public class PainterFrame extends JFrame{
                         JOptionPane.showMessageDialog(this, "Error reading file: " + e.getMessage()));
             }
         }).start();
+    }
+
+    private void setDefaultColors() {
+        availableColors.put("red", Color.RED);
+        availableColors.put("green", Color.GREEN);
+        availableColors.put("blue", Color.BLUE);
+        availableColors.put("yellow", Color.YELLOW);
+        availableColors.put("orange", Color.ORANGE);
+        availableColors.put("magenta", Color.MAGENTA);
+        availableColors.put("cyan", Color.CYAN);
+        availableColors.put("white", Color.WHITE);
+        availableColors.put("black", Color.BLACK);
     }
 
     // util, won't work for commands used with mouse - not essential

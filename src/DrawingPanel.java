@@ -71,13 +71,12 @@ public class DrawingPanel extends JPanel implements MouseListener {
                             selectedShapes.remove(shape);
                         } else {
                             selectedShapes.add(shape);
-                            parent.updateShapeInfoPanel();
                         }
                     } else {
                         selectedShapes.clear();
                         selectedShapes.add(shape);
-                        parent.updateShapeInfoPanel();
                     }
+                    parent.updateShapeInfoPanel();
                     System.out.println("Clicked on: " + shape.name);
                     break;
                 }
@@ -95,6 +94,7 @@ public class DrawingPanel extends JPanel implements MouseListener {
             for (Shape shape : shapes.values()) {
                 shape.unselect();
             }
+            parent.updateShapeInfoPanel();
         }
 
         repaint();

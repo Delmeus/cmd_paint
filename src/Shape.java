@@ -117,7 +117,7 @@ public abstract class Shape implements Comparable<Shape>, Serializable {
     public abstract void draw(Graphics g);
 
     public abstract Shape clone(int x, int y);
-    public abstract List<String> getScript(); // TODO: retrun command which would draw shape
+    public abstract List<String> getScript();
 
     protected void setColor(Graphics2D g2d) {
         if(selected) {
@@ -172,8 +172,7 @@ class Square extends Shape {
         double radians = Math.toRadians(-rotationAngle);
         int centerX = x + size / 2;
         int centerY = y + size / 2;
-
-        // Translate and rotate point around the square center
+        
         double dx = px - centerX;
         double dy = py - centerY;
 
