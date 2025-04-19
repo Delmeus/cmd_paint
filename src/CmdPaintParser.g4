@@ -9,7 +9,7 @@ command
     | COLORC NAME* colors #colorOp
     | ROTATE NAME* INT #rotateOp
     | MOVE NAME* position? #moveOp
-    | SAVE #saveOp
+    | SAVE savePossibility #saveOp
     | DELETE NAME* ALL? #deleteOp
     | BACKGROUND colorDefinition #backgroundOp
     | RENAME NAME NAME? #renameOp
@@ -71,4 +71,8 @@ shapeAttributes
     | HOLLOW
     | layerDefinition
     | strokeDefinition
+    ;
+
+savePossibility
+    : IMAGE | SCRIPT
     ;

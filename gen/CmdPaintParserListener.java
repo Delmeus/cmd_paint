@@ -296,4 +296,14 @@ public interface CmdPaintParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitShapeAttributes(CmdPaintParser.ShapeAttributesContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CmdPaintParser#savePossibility}.
+	 * @param ctx the parse tree
+	 */
+	void enterSavePossibility(CmdPaintParser.SavePossibilityContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CmdPaintParser#savePossibility}.
+	 * @param ctx the parse tree
+	 */
+	void exitSavePossibility(CmdPaintParser.SavePossibilityContext ctx);
 }

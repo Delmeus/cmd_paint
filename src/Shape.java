@@ -105,7 +105,7 @@ public abstract class Shape implements Comparable<Shape>, Serializable {
     public abstract void draw(Graphics g);
 
     public abstract Shape clone(int x, int y);
-//    public abstract String getScript(); TODO: retrun command which would draw shape
+    public abstract List<String> getScript(); // TODO: retrun command which would draw shape
 
     protected void setColor(Graphics2D g2d) {
         if(selected) {
@@ -181,6 +181,20 @@ class Square extends Shape {
             cloned.hollow();
         return cloned;
     }
+
+    @Override
+    public List<String> getScript() {
+        List<String> script = new ArrayList<>();
+        String drawString = "draw " + "\"" + name + "\" square (" + x + ", " + y + ") size "
+                + size + " color (" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() +
+                ") stroke " + thickness + " layer " + layer;
+        if(hollow)
+            drawString += " hollow";
+        script.add(drawString);
+        if(rotationAngle != 0)
+            script.add("rotate " + "\"" + name + "\" "  + rotationAngle);
+        return script;
+    }
 }
 
 class Circle extends Shape {
@@ -221,6 +235,18 @@ class Circle extends Shape {
     @Override
     public Shape clone(int x, int y) {
         return null;
+    }
+
+    @Override
+    public List<String> getScript() {
+        List<String> script = new ArrayList<>();
+        String drawString = "draw " + "\"" + name + "\" circle (" + x + ", " + y + ") radius "
+                + radius + " color (" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() +
+                ") stroke " + thickness + " layer " + layer;
+        if(hollow)
+            drawString += " hollow";
+        script.add(drawString);
+        return script;
     }
 }
 
@@ -276,6 +302,21 @@ class Rectangle extends Shape {
     @Override
     public Shape clone(int x, int y) {
         return null;
+    }
+
+    @Override
+    public List<String> getScript() {
+        List<String> script = new ArrayList<>();
+        String drawString = "draw " + "\"" + name + "\" rectangle (" + x + ", " + y + ") width "
+                + width + " height " + height +
+                " color (" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() +
+                ") stroke " + thickness + " layer " + layer;
+        if(hollow)
+            drawString += " hollow";
+        script.add(drawString);
+        if(rotationAngle != 0)
+            script.add("rotate " + "\"" + name + "\" "  + rotationAngle);
+        return script;
     }
 }
 
@@ -347,6 +388,20 @@ class Line extends Shape {
     @Override
     public Shape clone(int x, int y) {
         return null;
+    }
+
+    @Override
+    public List<String> getScript() {
+        List<String> script = new ArrayList<>();
+        String drawString = "draw " + "\"" + name + "\" line (" + x + ", " + y + ", " + x2 + ", " + y2 + ") color"
+                + "(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() +
+                ") stroke " + thickness + " layer " + layer;
+        if(hollow)
+            drawString += " hollow";
+        script.add(drawString);
+        if(rotationAngle != 0)
+            script.add("rotate " + "\"" + name + "\" "  + rotationAngle);
+        return script;
     }
 }
 
@@ -466,6 +521,44 @@ class Polygon extends Shape {
 
         return cloned;
     }
+
+    @Override
+    public List<String> getScript() {
+        List<String> script = new ArrayList<>();
+        String drawString = "draw " + "\"" + name + "\" polygon " + getXString() + " " + getYString() +
+                " color (" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() +
+                ") stroke " + thickness + " layer " + layer;
+        if(hollow)
+            drawString += " hollow";
+        script.add(drawString);
+        if(rotationAngle != 0)
+            script.add("rotate " + "\"" + name + "\" "  + rotationAngle);
+        return script;
+    }
+
+    private String getXString(){
+        StringBuilder xString = new StringBuilder("(");
+        for (int i = 0; i < x_points.length; i++) {
+            if(i != x_points.length - 1)
+                xString.append(x_points[i]).append(", ");
+            else
+                xString.append(x_points[i]);
+        }
+        xString.append(")");
+        return xString.toString();
+    }
+
+    private String getYString(){
+        StringBuilder yString = new StringBuilder("(");
+        for (int i = 0; i < y_points.length; i++) {
+            if(i != y_points.length - 1)
+                yString.append(y_points[i]).append(", ");
+            else
+                yString.append(y_points[i]);
+        }
+        yString.append(")");
+        return yString.toString();
+    }
 }
 
 class ShapeGroup extends Shape{
@@ -544,6 +637,21 @@ class ShapeGroup extends Shape{
             shape.rotate(angle);
         }
         rotationAngle += angle;
+    }
+
+    @Override
+    public List<String> getScript() {
+        List<String> script = new ArrayList<>();
+        for (Shape child : children) {
+            script.addAll(child.getScript());
+        }
+        StringBuilder groupString = new StringBuilder("group \"" + name + "\" ");
+        for (Shape child : children) {
+            groupString.append("\"").append(child.name).append("\" ");
+        }
+        script.add(groupString.toString());
+        script.add("move \"" + name + "\" (" + x + "," + y + ")");
+        return script;
     }
 
     private java.awt.Rectangle getBounds() {

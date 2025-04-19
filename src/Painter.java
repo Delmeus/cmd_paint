@@ -205,7 +205,25 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
 
     @Override
     public Boolean visitSaveOp(CmdPaintParser.SaveOpContext ctx) {
-        return painterFrame.saveAsImage();
+        if(ctx.savePossibility().IMAGE() != null)
+            return painterFrame.saveAsImage();
+        else if (ctx.savePossibility().SCRIPT() != null) {
+            try {
+                FileWriter fw = new FileWriter("script.txt");
+                for (Shape shape : shapes.values()) {
+                    List<String> lines = shape.getScript();
+                    for(String line : lines)
+                        fw.write(line + "\n");
+                }
+                fw.close();
+                return true;
+            }
+            catch (IOException e) {
+                painterFrame.popMessage("Error with saving script: " + e.getMessage());
+                return false;
+            }
+        }
+        return false;
     }
 
     @Override

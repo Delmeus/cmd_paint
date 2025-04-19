@@ -38,6 +38,9 @@ UP     : 'up';
 STROKE : 'stroke' | 'st';
 ALL    : 'all';
 
+IMAGE : 'image' | 'img';
+SCRIPT : 'script';
+
 LPAREN : '(';
 RPAREN : ')';
 COMMA  : ',';

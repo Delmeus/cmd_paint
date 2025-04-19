@@ -323,6 +323,18 @@ public class CmdPaintParserBaseListener implements CmdPaintParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitShapeAttributes(CmdPaintParser.ShapeAttributesContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSavePossibility(CmdPaintParser.SavePossibilityContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSavePossibility(CmdPaintParser.SavePossibilityContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

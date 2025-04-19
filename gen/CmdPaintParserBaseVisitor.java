@@ -193,4 +193,11 @@ public class CmdPaintParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> im
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitShapeAttributes(CmdPaintParser.ShapeAttributesContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitSavePossibility(CmdPaintParser.SavePossibilityContext ctx) { return visitChildren(ctx); }
 }

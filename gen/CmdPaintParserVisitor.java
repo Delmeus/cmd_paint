@@ -180,4 +180,10 @@ public interface CmdPaintParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitShapeAttributes(CmdPaintParser.ShapeAttributesContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CmdPaintParser#savePossibility}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSavePossibility(CmdPaintParser.SavePossibilityContext ctx);
 }
