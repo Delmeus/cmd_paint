@@ -99,7 +99,7 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
             } else if (attrCtx.layerDefinition() != null) {
                 shape.setLayer(Integer.parseInt(attrCtx.layerDefinition().INT().getText()));
             } else if (attrCtx.strokeDefinition() != null) {
-                shape.setThickness(Integer.parseInt(attrCtx.strokeDefinition().INT().getText()));
+                shape.setStroke(Integer.parseInt(attrCtx.strokeDefinition().INT().getText()));
             }
         }
 
@@ -191,13 +191,14 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
 //            System.out.println("There is no shape with name: " + name);
 //            return false;
 //        }
+        int pos[] = getPosition(ctx);
         for (String name : names) {
-        try {
-            shapes.get(name).move(Integer.parseInt(ctx.position().INT(0).getText()), Integer.parseInt(ctx.position().INT(1).getText()));
-        }catch (Exception e){
-            System.out.println(e);
-            return false;
-        }
+            try {
+                shapes.get(name).move(pos[0], pos[1]);
+            }catch (Exception e){
+                System.out.println(e);
+                return false;
+            }
         }
         painterFrame.repaint();
         return true;
@@ -309,7 +310,7 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
                 else if (ctx.FILL() != null)
                     shapes.get(name).fill();
                 else if (ctx.STROKE() != null)
-                    shapes.get(name).setThickness(Integer.parseInt(ctx.INT().getText()));
+                    shapes.get(name).setStroke(Integer.parseInt(ctx.INT().getText()));
             } catch (Exception e) {
                 System.err.println(e);
 //                return false;
@@ -500,6 +501,22 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         else {
             x = Integer.parseInt(shapeCtx.position().INT(0).getText());
             y = Integer.parseInt(shapeCtx.position().INT(1).getText());
+        }
+        int[] pos = new int[2];
+        pos[0] = x;
+        pos[1] = y;
+        return pos;
+    }
+
+    private int[] getPosition(CmdPaintParser.MoveOpContext ctx){
+        int x, y;
+        if (ctx.position() == null){
+            x = painterFrame.getSelectedX();
+            y = painterFrame.getSelectedY();
+        }
+        else {
+            x = Integer.parseInt(ctx.position().INT(0).getText());
+            y = Integer.parseInt(ctx.position().INT(1).getText());
         }
         int[] pos = new int[2];
         pos[0] = x;
