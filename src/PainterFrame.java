@@ -11,6 +11,7 @@ import java.util.*;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 public class PainterFrame extends JFrame{
     private final List<String> history = new ArrayList<>();
@@ -21,16 +22,18 @@ public class PainterFrame extends JFrame{
 
     private final DrawingPanel drawingPanel;
     private final JTextField commandField;
+    private final JPanel shapeInfoPanel = new JPanel();
+    private final JPanel editorContainer = new JPanel();
 
     public PainterFrame() {
         this(null);
     }
 
     public PainterFrame(String filename){
-        this.drawingPanel = new DrawingPanel(shapes);
+        this.drawingPanel = new DrawingPanel(shapes, this);
         painter = new Painter(shapes, this);
         setTitle("CmdPaint - Drawing");
-        setSize(800, 600);
+        setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         this.addWindowListener(new WindowAdapter() {
@@ -78,44 +81,15 @@ public class PainterFrame extends JFrame{
                 }
             }
         });
-
         add(commandField, BorderLayout.SOUTH);
 
-    }
+        editorContainer.setLayout(new BoxLayout(editorContainer, BoxLayout.Y_AXIS));
+        shapeInfoPanel.setLayout(new BorderLayout());
+        shapeInfoPanel.setBorder(BorderFactory.createTitledBorder("Selected Shape Editor"));
+        shapeInfoPanel.add(new JScrollPane(editorContainer), BorderLayout.CENTER);
+        shapeInfoPanel.setPreferredSize(new Dimension(300, getHeight()));
+        add(shapeInfoPanel, BorderLayout.EAST);
 
-    private void processCommand(String command) {
-        try {
-            history.add(command);
-            CharStream input = CharStreams.fromString(command);
-            CmdPaintLexer lexer = new CmdPaintLexer(input);
-            CommonTokenStream tokens = new CommonTokenStream(lexer);
-            CmdPaintParser parser = new CmdPaintParser(tokens);
-
-            ParseTree tree = parser.program();
-            painter.visit(tree);
-
-            drawingPanel.repaint();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Command Error:\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void handleInputFile(String filename) {
-        new Thread(() -> {
-            try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    if (!line.trim().isEmpty()) {
-                        String finalLine = line;
-                        SwingUtilities.invokeLater(() -> processCommand(finalLine));
-                        Thread.sleep(500);
-                    }
-                }
-            } catch (Exception e) {
-                SwingUtilities.invokeLater(() ->
-                        JOptionPane.showMessageDialog(this, "Error reading file: " + e.getMessage()));
-            }
-        }).start();
     }
 
     public void setBackgroundColor(String colorStr) {
@@ -180,6 +154,146 @@ public class PainterFrame extends JFrame{
         JOptionPane.showMessageDialog(this, message);
     }
 
+    public void updateShapeInfoPanel() {
+        editorContainer.removeAll();
+        Set<Shape> selected = getSelectedShapes();
+
+        if (selected.isEmpty()) {
+            JLabel label = new JLabel("No shapes selected.");
+            editorContainer.add(label);
+        } else if (selected.size() == 1) {
+            editorContainer.add(createShapeEditor(selected.iterator().next()));
+        } else {
+            JLabel label = new JLabel("More than one shape selected");
+            editorContainer.add(label);
+        }
+
+        editorContainer.revalidate();
+        editorContainer.repaint();
+    }
+
+    private JPanel createShapeEditor(Shape shape) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createTitledBorder(shape.name));
+
+        BiConsumer<String, JComponent> addLabeledField = (label, field) -> {
+            JPanel row = new JPanel(new BorderLayout(5, 0));
+            row.add(new JLabel(label), BorderLayout.WEST);
+            row.add(field, BorderLayout.CENTER);
+            row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+            panel.add(row);
+        };
+
+        JTextField strokeField = new JTextField(String.valueOf(shape.stroke));
+        JTextField rotationField = new JTextField(String.valueOf(shape.getRotationAngle()));
+        JCheckBox hollowCheck = new JCheckBox("Hollow", shape.hollow);
+
+        JTextField rField = new JTextField(String.valueOf(shape.color.getRed()));
+        JTextField gField = new JTextField(String.valueOf(shape.color.getGreen()));
+        JTextField bField = new JTextField(String.valueOf(shape.color.getBlue()));
+
+        addLabeledField.accept("Stroke:", strokeField);
+        addLabeledField.accept("Rotation:", rotationField);
+        addLabeledField.accept("Color R:", rField);
+        addLabeledField.accept("Color G:", gField);
+        addLabeledField.accept("Color B:", bField);
+
+        if(shape instanceof Line){
+            addPositionRow(panel, "x1", shape.x, "\ty1", shape.y);
+            addPositionRow(panel, "x2", ((Line) shape).x2, "\ty2", ((Line) shape).y2);
+        } else if (shape instanceof Polygon) {
+            for(int i = 0; i < ((Polygon) shape).x_points.length; i++){
+                addPositionRow(panel, "x" + i, ((Polygon) shape).x_points[i],
+                        "\ty" + i, (((Polygon) shape).y_points[i]));
+            }
+        } else if (shape instanceof ShapeGroup) {
+            ;
+        } else {
+            addPositionRow(panel, "x", shape.x, "\ty", shape.y);
+        }
+
+        JPanel hollowRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        hollowRow.add(hollowCheck);
+        panel.add(hollowRow);
+
+        JButton applyButton = new JButton("Apply Changes");
+        JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonRow.add(applyButton);
+        panel.add(buttonRow);
+
+        applyButton.addActionListener(e -> {
+            try {
+                int stroke = Integer.parseInt(strokeField.getText());
+                int rotation = Integer.parseInt(rotationField.getText());
+                int r = Integer.parseInt(rField.getText());
+                int g = Integer.parseInt(gField.getText());
+                int b = Integer.parseInt(bField.getText());
+                Color newColor = new Color(r, g, b);
+                boolean hollow = hollowCheck.isSelected();
+
+                shape.stroke = stroke;
+                shape.setRotationAngle(rotation);
+                shape.color = newColor;
+                shape.hollow = hollow;
+
+                repaint();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error updating shape: " + ex.getMessage());
+            }
+        });
+
+        return panel;
+    }
+
+    private void processCommand(String command) {
+        try {
+            history.add(command);
+            CharStream input = CharStreams.fromString(command);
+            CmdPaintLexer lexer = new CmdPaintLexer(input);
+            CommonTokenStream tokens = new CommonTokenStream(lexer);
+            CmdPaintParser parser = new CmdPaintParser(tokens);
+
+            ParseTree tree = parser.program();
+            painter.visit(tree);
+
+            drawingPanel.repaint();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Command Error:\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void addPositionRow(JPanel panel, String xString, int x, String yString, int y) {
+        JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+
+        JLabel xLabel = new JLabel(xString + ": " + x);
+        JLabel yLabel = new JLabel(yString + ": " + y);
+
+        row.add(xLabel);
+        row.add(yLabel);
+
+        panel.add(row);
+    }
+
+    private void handleInputFile(String filename) {
+        new Thread(() -> {
+            try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (!line.trim().isEmpty()) {
+                        String finalLine = line;
+                        SwingUtilities.invokeLater(() -> processCommand(finalLine));
+                        Thread.sleep(500);
+                    }
+                }
+            } catch (Exception e) {
+                SwingUtilities.invokeLater(() ->
+                        JOptionPane.showMessageDialog(this, "Error reading file: " + e.getMessage()));
+            }
+        }).start();
+    }
+
     // util, won't work for commands used with mouse - not essential
     private void saveCommandsToFile(){
         try {
@@ -187,6 +301,7 @@ public class PainterFrame extends JFrame{
             for (String command : history) {
                 fw.write(command + "\n");
             }
+            fw.close();
         }catch (IOException e){
             System.out.println("Error saving commands to file: " + e.getMessage());
         }

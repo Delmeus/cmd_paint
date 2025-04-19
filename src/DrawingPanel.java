@@ -6,12 +6,15 @@ import java.util.*;
 import java.util.List;
 
 public class DrawingPanel extends JPanel implements MouseListener {
+    private final PainterFrame parent;
+
     private Set<Shape> selectedShapes = new HashSet<>();
     int selectedX = 0;
     int selectedY = 0;
     private final Map<String, Shape> shapes;
     private Color backgroundColor = Color.WHITE;
-    public DrawingPanel(Map<String, Shape> shapes) {
+    public DrawingPanel(Map<String, Shape> shapes, PainterFrame parent) {
+        this.parent = parent;
         this.shapes = shapes;
         addMouseListener(this);
     }
@@ -68,10 +71,12 @@ public class DrawingPanel extends JPanel implements MouseListener {
                             selectedShapes.remove(shape);
                         } else {
                             selectedShapes.add(shape);
+                            parent.updateShapeInfoPanel();
                         }
                     } else {
                         selectedShapes.clear();
                         selectedShapes.add(shape);
+                        parent.updateShapeInfoPanel();
                     }
                     System.out.println("Clicked on: " + shape.name);
                     break;

@@ -9,7 +9,7 @@ public abstract class Shape implements Comparable<Shape>, Serializable {
     String name;
     int x, y;
     int layer = 0;
-    int thickness = 1;
+    int stroke = 1;
     Color color = Color.black;
     protected int rotationAngle = 0;
     protected boolean hollow = false;
@@ -49,6 +49,18 @@ public abstract class Shape implements Comparable<Shape>, Serializable {
         rotationAngle += angle;
     }
 
+    public int getRotationAngle() {
+        return rotationAngle;
+    }
+
+    public void setRotationAngle(int angle) {
+        rotationAngle = angle;
+    }
+
+    public boolean isHollow() {
+        return hollow;
+    }
+
     public void hollow() {
         hollow = true;
     }
@@ -65,8 +77,8 @@ public abstract class Shape implements Comparable<Shape>, Serializable {
         showName = true;
     }
 
-    public void setThickness(int thickness) {
-        this.thickness = thickness;
+    public void setStroke(int stroke) {
+        this.stroke = stroke;
     }
 
     public void setLayer(int layer){
@@ -113,11 +125,11 @@ public abstract class Shape implements Comparable<Shape>, Serializable {
                 g2d.setColor(color.brighter());
             else
                 g2d.setColor(color.darker());
-            g2d.setStroke(new BasicStroke(thickness + 2));
+            g2d.setStroke(new BasicStroke(stroke + 2));
         }
         else {
             g2d.setColor(color);
-            g2d.setStroke(new BasicStroke(thickness));
+            g2d.setStroke(new BasicStroke(stroke));
         }
     }
 }
@@ -176,7 +188,7 @@ class Square extends Shape {
         Square cloned = new Square(this.name + "_copy", x, y, this.size);
         cloned.setColor(this.color);
         cloned.setLayer(this.layer);
-        cloned.setThickness(this.thickness);
+        cloned.setStroke(this.stroke);
         if (hollow)
             cloned.hollow();
         return cloned;
@@ -187,7 +199,7 @@ class Square extends Shape {
         List<String> script = new ArrayList<>();
         String drawString = "draw " + "\"" + name + "\" square (" + x + ", " + y + ") size "
                 + size + " color (" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() +
-                ") stroke " + thickness + " layer " + layer;
+                ") stroke " + stroke + " layer " + layer;
         if(hollow)
             drawString += " hollow";
         script.add(drawString);
@@ -242,7 +254,7 @@ class Circle extends Shape {
         List<String> script = new ArrayList<>();
         String drawString = "draw " + "\"" + name + "\" circle (" + x + ", " + y + ") radius "
                 + radius + " color (" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() +
-                ") stroke " + thickness + " layer " + layer;
+                ") stroke " + stroke + " layer " + layer;
         if(hollow)
             drawString += " hollow";
         script.add(drawString);
@@ -310,7 +322,7 @@ class Rectangle extends Shape {
         String drawString = "draw " + "\"" + name + "\" rectangle (" + x + ", " + y + ") width "
                 + width + " height " + height +
                 " color (" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() +
-                ") stroke " + thickness + " layer " + layer;
+                ") stroke " + stroke + " layer " + layer;
         if(hollow)
             drawString += " hollow";
         script.add(drawString);
@@ -395,7 +407,7 @@ class Line extends Shape {
         List<String> script = new ArrayList<>();
         String drawString = "draw " + "\"" + name + "\" line (" + x + ", " + y + ", " + x2 + ", " + y2 + ") color"
                 + "(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() +
-                ") stroke " + thickness + " layer " + layer;
+                ") stroke " + stroke + " layer " + layer;
         if(hollow)
             drawString += " hollow";
         script.add(drawString);
@@ -514,7 +526,7 @@ class Polygon extends Shape {
         Polygon cloned = new Polygon(this.name + "_copy", newX, newY);
         cloned.setColor(this.color);
         cloned.setLayer(this.layer);
-        cloned.setThickness(this.thickness);
+        cloned.setStroke(this.stroke);
         cloned.rotationAngle = this.rotationAngle;
         if (this.hollow)
             cloned.hollow();
@@ -527,7 +539,7 @@ class Polygon extends Shape {
         List<String> script = new ArrayList<>();
         String drawString = "draw " + "\"" + name + "\" polygon " + getXString() + " " + getYString() +
                 " color (" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() +
-                ") stroke " + thickness + " layer " + layer;
+                ") stroke " + stroke + " layer " + layer;
         if(hollow)
             drawString += " hollow";
         script.add(drawString);
