@@ -18,6 +18,7 @@ LAYER : 'layer' | 'l';
 FILL : 'fill';
 SERIALIZE : 'serialize';
 GROUP : 'group';
+DEGROUP : 'degroup';
 LOAD : 'load';
 CLONE : 'clone';
 SCALE : 'scale';

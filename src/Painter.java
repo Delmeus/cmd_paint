@@ -1,14 +1,13 @@
 import java.awt.*;
 import java.io.*;
-import java.text.ParseException;
 import java.util.*;
 import java.util.List;
 
 public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
     private final String error_name = "CHANGE THIS NAME";
-    private final Map<String, Shape> shapes;// = new HashMap<>();
+    private final Map<String, Shape> shapes;
     private final Map<String, Color> definedColors = new HashMap<>();
-    private final PainterFrame painterFrame; // = new PainterFrame(shapes);
+    private final PainterFrame painterFrame;
 
     private final List<String> errorList = new ArrayList<>();
     private boolean errorOccurred = false;
@@ -108,8 +107,8 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
             }
         }
 
-        shapes.put(shape.name, shape);
-        painterFrame.repaint();
+        if(overwriteCheck(name))
+            shapes.put(shape.name, shape);
         return true;
     }
 
@@ -139,7 +138,6 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
                 errorOccurred = true;
             }
         }
-        painterFrame.repaint();
 
         if(errorOccurred){
             pushErrorsToWindow("Error when visit color op");
@@ -197,7 +195,6 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
                 appendError(e.getMessage());
             }
         }
-        painterFrame.repaint();
 
         if(errorOccurred){
             pushErrorsToWindow("Error in move");
@@ -252,7 +249,6 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         for (String name : names) {
             shapes.remove(name);
         }
-        painterFrame.repaint();
         return true;
     }
 
@@ -277,7 +273,9 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         }
         String newName = ctx.NAME(1).getText().replace("\"", "");
 
-        shapes.put(newName, shapes.remove(oldName));
+        if(overwriteCheck(newName))
+            shapes.put(newName, shapes.remove(oldName));
+
         return true;
     }
 
@@ -411,8 +409,9 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
             String path = "serialized/" + parseName(ctx.NAME().getFirst().getText()) + ".ser";
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path))) {
                 Map<String, Shape> loadedShapes = (Map<String, Shape>) ois.readObject();
-                shapes.putAll(loadedShapes);
-                painterFrame.repaint();
+                for (Shape shape : loadedShapes.values())
+                    if(overwriteCheck(shape.name))
+                        shapes.put(shape.name, shape);
                 return true;
             } catch (IOException | ClassNotFoundException e) {
                 appendError(e.getMessage());
@@ -443,7 +442,9 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         if(!shapes.containsKey(name))
             return false;
         Shape shape = shapes.get(name).clone(pos[0], pos[1]);
-        shapes.put(shape.name, shape);
+
+        if(overwriteCheck(shape.name))
+            shapes.put(shape.name, shape);
         return true;
     }
 
@@ -483,24 +484,52 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
 
     @Override
     public Boolean visitGroupOp(CmdPaintParser.GroupOpContext ctx) {
-        if (ctx.NAME().size() == 0)
-            return false;
-        String name = parseName(ctx.NAME(0).getText());
-        List<Shape> groupedShapes = new ArrayList<>();
-        for (int i = 1; i < ctx.NAME().size(); i++) {
-            String shapeName = parseName(ctx.NAME(i).getText());
-            Shape shape = shapes.get(shapeName);
-            if (shape != null) {
-                groupedShapes.add(shape);
-                shapes.remove(shapeName);
-            } else {
-                painterFrame.pushMessage("Warning: Shape \"" + shapeName + "\" not found.");
+        if (ctx.GROUP() != null) {
+            if (ctx.NAME().isEmpty()) {
+                painterFrame.pushMessage("Group name was not provided");
+                return false;
             }
-        }
+            String name = parseName(ctx.NAME(0).getText());
+            List<Shape> groupedShapes = new ArrayList<>();
+            for (int i = 1; i < ctx.NAME().size(); i++) {
+                String shapeName = parseName(ctx.NAME(i).getText());
+                Shape shape = shapes.get(shapeName);
+                if (shape != null) {
+                    groupedShapes.add(shape);
+                    shapes.remove(shapeName);
+                } else {
+                    painterFrame.pushMessage("Warning: Shape \"" + shapeName + "\" not found.");
+                }
+            }
 
-        shapes.put(name, new ShapeGroup(name, groupedShapes));
-        return true;
+            shapes.put(name, new ShapeGroup(name, groupedShapes));
+            return true;
+        } else if (ctx.DEGROUP() != null) {
+            String name;
+            if (ctx.NAME().isEmpty())
+                if(painterFrame.hasShapesSelected())
+                    name = getSelectedNames(painterFrame.getSelectedShapes()).getFirst();
+                else
+                    name = parseName("");
+            else
+                name = parseName(ctx.NAME(0).getText());
+            try{
+                List<Shape> children = ((ShapeGroup) shapes.get(name)).getChildren();
+                shapes.remove(name);
+                for(Shape child : children)
+                    if(overwriteCheck(child.name))
+                        shapes.put(child.name, child);
+            } catch (Exception e){
+                errorOccurred = true;
+                appendError(e.getMessage());
+                painterFrame.pushMessage("Error in Degroup");
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
+
 //--------------------------------------------------
 //               UTILITY METHODS
 //--------------------------------------------------
@@ -620,5 +649,10 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         }
         painterFrame.pushMessage(errorMessage.toString());
         errorList.clear();
+    }
+
+    private boolean overwriteCheck(String name){
+        return !shapes.containsKey(name) || painterFrame.confirmWindow("Shape with name \"" + name
+                + "\" already exists. Do you wish to overwrite it?");
     }
 }

@@ -23,6 +23,7 @@ command
     | CLONE NAME? position? #cloneOp
     | SERIALIZE NAME NAME* #serializeOp
     | GROUP NAME NAME+ #groupOp
+    | DEGROUP NAME? #groupOp
     | LOAD NAME #serializeOp
     | SCALE NAME* (FLOAT | INT) #scaleOp
     ;

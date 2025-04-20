@@ -7,10 +7,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.util.List;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 
 public class PainterFrame extends JFrame{
@@ -26,6 +29,9 @@ public class PainterFrame extends JFrame{
     private final JTextField commandField;
     private final JPanel shapeInfoPanel = new JPanel();
     private final JPanel editorContainer = new JPanel();
+
+    private final AtomicBoolean isConfirmWindowActive = new AtomicBoolean(false);
+
 
     public PainterFrame() {
         this(null);
@@ -157,6 +163,21 @@ public class PainterFrame extends JFrame{
 
     public void pushMessage(String message){
         JOptionPane.showMessageDialog(this, message);
+    }
+
+    public boolean confirmWindow(String message) {
+        isConfirmWindowActive.set(true);
+        try {
+            int result = JOptionPane.showConfirmDialog(
+                    this,
+                    message,
+                    "Confirm",
+                    JOptionPane.YES_NO_OPTION
+            );
+            return result == JOptionPane.YES_OPTION;
+        } finally {
+            isConfirmWindowActive.set(false);
+        }
     }
 
     public void updateShapeInfoPanel() {
@@ -315,6 +336,8 @@ public class PainterFrame extends JFrame{
                 String line;
                 while ((line = reader.readLine()) != null) {
                     if (!line.trim().isEmpty()) {
+                        while(isConfirmWindowActive.get())
+                            Thread.sleep(1000);
                         String finalLine = line;
                         SwingUtilities.invokeLater(() -> processCommand(finalLine));
                         Thread.sleep(500);
