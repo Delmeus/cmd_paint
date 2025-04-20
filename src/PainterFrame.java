@@ -261,11 +261,14 @@ public class PainterFrame extends JFrame{
                 Color newColor = new Color(r, g, b);
                 boolean hollow = hollowCheck.isSelected();
 
-                shape.stroke = stroke;
+                shape.setStroke(stroke);
                 shape.setRotationAngle(rotation);
                 shape.scale(factor);
-                shape.color = newColor;
-                shape.hollow = hollow;
+                shape.setColor(newColor);
+                if (hollow)
+                    shape.hollow();
+                else
+                    shape.fill();
 
                 repaint();
             } catch (Exception ex) {

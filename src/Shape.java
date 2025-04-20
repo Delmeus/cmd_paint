@@ -2,8 +2,9 @@ import java.awt.*;
 import java.awt.geom.Line2D;
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class Shape implements Comparable<Shape>, Serializable {
     String name;
@@ -623,48 +624,58 @@ class Polygon extends Shape {
 }
 
 class ShapeGroup extends Shape{
-    private final List<Shape> children;
-
-    ShapeGroup(String name) {
-        super(name, 0, 0);
-        children = new ArrayList<>();
-    }
+    private final List<String> drawOrder = new ArrayList<>();
+    private final Map<String, Shape> children = new HashMap<>();
 
     ShapeGroup(String name, List<Shape> children) {
         super(name, 0, 0);
-        this.children = children;
+        for(Shape child : children) {
+            this.children.put(child.name, child);
+            this.drawOrder.add(child.name);
+        }
+        sortDrawOrder();
     }
 
     public void add(Shape shape) {
-        children.add(shape);
+        children.put(shape.name, shape);
+        drawOrder.add(shape.name);
+        sortDrawOrder();
     }
 
     public void remove(Shape shape) {
-        children.remove(shape);
-    }
-
-    public void remove(int index) {
-        children.remove(index);
+        children.remove(shape.name);
+        drawOrder.remove(shape.name);
     }
 
     public List<Shape> getChildren() {
-        return children;
+        List<Shape> ordered = new ArrayList<>();
+        for (String name : drawOrder) {
+            Shape shape = children.get(name);
+            if (shape != null) ordered.add(shape);
+        }
+        return ordered;
     }
 
     @Override
     public boolean contains(int x, int y) {
+        for (String name : drawOrder) {
+            Shape child = children.get(name);
+            if (child != null && child.contains(x, y))
+                return true;
+        }
         return false;
     }
 
     @Override
     public void draw(Graphics g) {
-        for (Shape child : children) {
-            if (selected)
-                child.select();
-            else
-                child.unselect();
-            child.hideName();
-            child.draw(g);
+        for (String name : drawOrder) {
+            Shape child = children.get(name);
+            if (child != null) {
+                if (selected) child.select();
+                else child.unselect();
+                child.hideName();
+                child.draw(g);
+            }
         }
 
         if(showName){
@@ -673,6 +684,39 @@ class ShapeGroup extends Shape{
             g.setFont(new Font("Arial", Font.BOLD, 14));
             g.drawString(name, bounds.x + bounds.width / 2 - 10, bounds.y + bounds.height / 2);
         }
+    }
+
+    public void hollow(String childName) {
+        if (children.containsKey(childName))
+            children.get(childName).hollow();
+    }
+
+    public void fill(String childName) {
+        if (children.containsKey(childName))
+            children.get(childName).fill();
+    }
+
+    public void setColor(String childName, Color color) {
+        if (children.containsKey(childName))
+            children.get(childName).setColor(color);
+    }
+
+    @Override
+    public void hollow() {
+        for (Shape child : children.values())
+            child.hollow();
+    }
+
+    @Override
+    public void fill(){
+        for (Shape child : children.values())
+            child.fill();
+    }
+
+    @Override
+    public void setColor(Color color) {
+        for (Shape child : children.values())
+            child.setColor(color);
     }
 
     @Override
@@ -685,7 +729,7 @@ class ShapeGroup extends Shape{
         java.awt.Rectangle bounds = getBounds();
         int dx = newX - bounds.x;
         int dy = newY - bounds.y;
-        for (Shape shape : children) {
+        for (Shape shape : children.values()) {
             shape.move(shape.x + dx, shape.y + dy);
         }
         x = newX;
@@ -694,7 +738,7 @@ class ShapeGroup extends Shape{
 
     @Override
     public void rotate(int angle) {
-        for (Shape shape : children) {
+        for (Shape shape : children.values()) {
             shape.rotate(angle);
         }
         rotationAngle += angle;
@@ -703,11 +747,11 @@ class ShapeGroup extends Shape{
     @Override
     public List<String> getScript() {
         List<String> script = new ArrayList<>();
-        for (Shape child : children) {
+        for (Shape child : children.values()) {
             script.addAll(child.getScript());
         }
         StringBuilder groupString = new StringBuilder("group \"" + name + "\" ");
-        for (Shape child : children) {
+        for (Shape child : children.values()) {
             groupString.append("\"").append(child.name).append("\" ");
         }
         script.add(groupString.toString());
@@ -719,7 +763,7 @@ class ShapeGroup extends Shape{
         int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE;
         int maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE;
 
-        for (Shape shape : children) {
+        for (Shape shape : children.values()) {
             if (shape instanceof Polygon poly) {
                 for (int xp : poly.x_points) minX = Math.min(minX, xp);
                 for (int yp : poly.y_points) minY = Math.min(minY, yp);
@@ -736,11 +780,24 @@ class ShapeGroup extends Shape{
         return new java.awt.Rectangle(minX, minY, maxX - minX, maxY - minY);
     }
 
+    public void scale(String childName, double factor){
+        if (children.containsKey(childName))
+            children.get(childName).scale(factor);
+    }
+
     @Override
     public void scale(double factor) {
-        for (Shape child : children) {
+        for (Shape child : children.values()) {
             child.scale(factor);
         }
+    }
+
+    private void sortDrawOrder() {
+        drawOrder.sort((name1, name2) -> {
+            Shape s1 = children.get(name1);
+            Shape s2 = children.get(name2);
+            return s1.compareTo(s2);
+        });
     }
 
 }
