@@ -651,7 +651,7 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         errorList.clear();
     }
 
-    private boolean overwriteCheck(String name){
+    public boolean overwriteCheck(String name){
         return !shapes.containsKey(name) || painterFrame.confirmWindow("Shape with name \"" + name
                 + "\" already exists. Do you wish to overwrite it?");
     }

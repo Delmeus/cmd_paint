@@ -10,6 +10,7 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import javax.imageio.ImageIO;
+import javax.swing.event.ChangeEvent;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.concurrent.Semaphore;
@@ -199,6 +200,8 @@ public class PainterFrame extends JFrame{
     }
 
     private JPanel createShapeEditor(Shape shape) {
+        if(shape instanceof ShapeGroup)
+            return createEditorPanel((ShapeGroup) shape);
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createTitledBorder(shape.name));
@@ -220,6 +223,17 @@ public class PainterFrame extends JFrame{
         JTextField gField = new JTextField(String.valueOf(shape.color.getGreen()));
         JTextField bField = new JTextField(String.valueOf(shape.color.getBlue()));
 
+        JButton colorButton = new JButton("Choose color");
+        colorButton.setPreferredSize(new Dimension(130, 30));
+        colorButton.addActionListener(e -> {
+            Color chosen = JColorChooser.showDialog(panel, "Choose Color", Color.BLACK);
+            if (chosen != null) {
+                rField.setText(String.valueOf(chosen.getRed()));
+                gField.setText(String.valueOf(chosen.getGreen()));
+                bField.setText(String.valueOf(chosen.getBlue()));
+            }
+        });
+
         addLabeledField.accept("Stroke:", strokeField);
         addLabeledField.accept("Rotation:", rotationField);
         addLabeledField.accept("Scale:", scaleField);
@@ -235,8 +249,6 @@ public class PainterFrame extends JFrame{
                 addPositionRow(panel, "x" + i, ((Polygon) shape).x_points[i],
                         "\ty" + i, (((Polygon) shape).y_points[i]));
             }
-        } else if (shape instanceof ShapeGroup) {
-            ;
         } else {
             addPositionRow(panel, "x", shape.x, "\ty", shape.y);
         }
@@ -245,9 +257,11 @@ public class PainterFrame extends JFrame{
         hollowRow.add(hollowCheck);
         panel.add(hollowRow);
 
-        JButton applyButton = new JButton("Apply Changes");
+        JButton applyButton = new JButton("Apply");
+        applyButton.setPreferredSize(new Dimension(130, 30));
         JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonRow.add(applyButton);
+        buttonRow.add(colorButton);
         panel.add(buttonRow);
 
         applyButton.addActionListener(e -> {
@@ -363,6 +377,82 @@ public class PainterFrame extends JFrame{
         availableColors.put("cyan", Color.CYAN);
         availableColors.put("white", Color.WHITE);
         availableColors.put("black", Color.BLACK);
+    }
+
+    private JPanel createEditorPanel(ShapeGroup group) {
+        JPanel groupPanel = new JPanel();
+        groupPanel.setLayout(new BoxLayout(groupPanel, BoxLayout.Y_AXIS));
+        groupPanel.setBorder(BorderFactory.createTitledBorder("Edit Group: " + group.name));
+
+        for (Shape child : group.getChildren()) {
+            groupPanel.add(createChildEditor(child));
+        }
+        repaint();
+        return groupPanel;
+    }
+
+    private JPanel createChildEditor(Shape shape) {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createTitledBorder("Shape: " + shape.name));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(4, 4, 4, 4);
+        gbc.gridx = 0; gbc.gridy = 0;
+
+        JCheckBox hollowCheck = new JCheckBox("Hollow", shape.hollow);
+        hollowCheck.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getID() == ActionEvent.ACTION_PERFORMED) {
+                    boolean isSelected = hollowCheck.isSelected();
+                    System.out.println("Hollow checkbox is " + (isSelected ? "selected" : "deselected"));
+
+                    if(isSelected)
+                        shape.hollow();
+                    else
+                        shape.fill();
+                }
+            }
+        });
+        panel.add(hollowCheck, gbc);
+
+        gbc.gridx++;
+        JButton colorBtn = new JButton("Set Color");
+        colorBtn.addActionListener(e -> {
+            Color chosen = JColorChooser.showDialog(panel, "Choose Color", Color.BLACK);
+            if (chosen != null) {
+                shape.setColor(chosen);
+            }
+        });
+        panel.add(colorBtn, gbc);
+
+        // Scale slider
+        gbc.gridx++;
+        JLabel scaleLabel = new JLabel("Scale:");
+        JSlider scaleSlider = new JSlider(50, 200, 100);
+        scaleSlider.setMajorTickSpacing(50);
+        scaleSlider.setPaintTicks(true);
+        scaleSlider.setPaintLabels(true);
+        scaleSlider.addChangeListener(e -> shape.scale(scaleSlider.getValue() / 100.0));  // Scale on slider change
+        JPanel scalePanel = new JPanel(new BorderLayout());
+        scalePanel.add(scaleLabel, BorderLayout.NORTH);
+        scalePanel.add(scaleSlider, BorderLayout.SOUTH);
+        panel.add(scalePanel, gbc);
+
+        // Layer spinner
+        gbc.gridx = 0; gbc.gridy++;
+        gbc.gridwidth = 3;
+        JPanel layerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        layerPanel.add(new JLabel("Layer:"));
+        SpinnerNumberModel model = new SpinnerNumberModel(shape.layer, 0, 100, 1);
+        JSpinner spinner = new JSpinner(model);
+        spinner.addChangeListener((ChangeEvent e) -> {
+            shape.layer = (int) spinner.getValue();
+        });
+        layerPanel.add(spinner);
+        panel.add(layerPanel, gbc);
+
+        return panel;
     }
 
     // util, won't work for commands used with mouse - not essential
