@@ -40,6 +40,10 @@ public abstract class Shape implements Comparable<Shape>, Serializable {
         this.color = color;
     }
 
+    public Color getColor() {
+        return color;
+    }
+
     public void move(int newX, int newY) {
         this.x = newX;
         this.y = newY;
@@ -118,19 +122,13 @@ public abstract class Shape implements Comparable<Shape>, Serializable {
     public abstract Shape clone(int x, int y);
     public abstract List<String> getScript();
     public abstract void scale(double factor);
-
-    protected void setColor(Graphics2D g2d) {
-        if(selected) {
-            if(color.getAlpha() < 180)
-                g2d.setColor(color.brighter());
+    protected Stroke getStroke(){
+        if (selected)
+            if (hollow)
+                return new BasicStroke(stroke + 2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, new float[]{9}, 0.0f);
             else
-                g2d.setColor(color.darker());
-            g2d.setStroke(new BasicStroke(stroke + 2));
-        }
-        else {
-            g2d.setColor(color);
-            g2d.setStroke(new BasicStroke(stroke));
-        }
+                return new BasicStroke(4, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, new float[]{9}, 0.0f);
+        return new BasicStroke(stroke);
     }
 }
 
@@ -145,19 +143,24 @@ class Square extends Shape {
     @Override
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        setColor(g2d);
+        g2d.setColor(color);
+        g2d.setStroke(getStroke());
 
         g2d.translate(x + size / 2, y + size / 2);
         g2d.rotate(Math.toRadians(rotationAngle));
 
         if(hollow)
             g2d.drawRect(-size / 2, -size / 2, size, size);
-        else
+        else {
             g2d.fillRect(-size / 2, -size / 2, size, size);
+            if(selected){
+                g2d.setColor(Color.BLACK);
+                g2d.drawRect(-size / 2, -size / 2, size, size);
+            }
+        }
 
         g2d.rotate(-Math.toRadians(rotationAngle));
         g2d.translate(-(x + size / 2), -(y + size / 2));
-        g.setColor(color);
 
         // smart coloring should be implemented
         if(showName){
@@ -224,12 +227,18 @@ class Circle extends Shape {
     @Override
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        setColor(g2d);
+        g2d.setColor(color);
+        g2d.setStroke(getStroke());
 
         if(hollow)
             g2d.drawOval(x, y, radius, radius);
-        else
+        else {
             g2d.fillOval(x, y, radius, radius);
+            if(selected){
+                g2d.setColor(Color.BLACK);
+                g2d.drawOval(x, y, radius, radius);
+            }
+        }
 
         // smart coloring should be implemented
         if(showName){
@@ -283,19 +292,24 @@ class Rectangle extends Shape {
     @Override
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        setColor(g2d);
+        g2d.setColor(color);
+        g2d.setStroke(getStroke());
 
         g2d.translate(x + width / 2, y + height / 2);
         g2d.rotate(Math.toRadians(rotationAngle));
 
         if(hollow)
             g2d.drawRect(-width / 2, -height / 2, width, height);
-        else
+        else {
             g2d.fillRect(-width / 2, -height / 2, width, height);
+            if (selected) {
+                g2d.setColor(Color.BLACK);
+                g2d.drawRect(-width / 2, -height / 2, width, height);
+            }
+        }
 
         g2d.rotate(-Math.toRadians(rotationAngle));
         g2d.translate(-(x + width / 2), -(y + height / 2));
-        g.setColor(color);
 
         // smart coloring should be implemented
         if(showName){
@@ -367,7 +381,8 @@ class Line extends Shape {
     @Override
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        setColor(g2d);
+        g2d.setColor(color);
+        g2d.setStroke(getStroke());
 
         int centerX = (x + x2) / 2;
         int centerY = (y + y2) / 2;
@@ -474,7 +489,8 @@ class Polygon extends Shape {
     @Override
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        setColor(g2d);
+        g2d.setColor(color);
+        g2d.setStroke(getStroke());
 
         int cx = 0, cy = 0;
         for (int i = 0; i < x_points.length; i++) {
@@ -497,8 +513,13 @@ class Polygon extends Shape {
 
         if(hollow)
             g2d.drawPolygon(rotatedX, rotatedY, x_points.length);
-        else
+        else {
             g2d.fillPolygon(rotatedX, rotatedY, x_points.length);
+            if (selected) {
+                g2d.setColor(Color.BLACK);
+                g2d.drawPolygon(rotatedX, rotatedY, x_points.length);
+            }
+        }
 
         // smart coloring should be implemented
         if(showName){

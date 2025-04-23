@@ -7,19 +7,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import javax.imageio.ImageIO;
 import javax.swing.event.ChangeEvent;
 import java.awt.image.BufferedImage;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 
 public class PainterFrame extends JFrame{
     private final List<String> history = new ArrayList<>();
     private int historyIndex = -1;
+    private boolean forceOverwrite = false; // Used to suppress messages and overwrite checks when file is being read
 
     private final Map<String, Shape> shapes = new HashMap<>();
     private final Painter painter;
@@ -163,10 +162,14 @@ public class PainterFrame extends JFrame{
     }
 
     public void pushMessage(String message){
+        if(forceOverwrite)
+            return;
         JOptionPane.showMessageDialog(this, message);
     }
 
     public boolean confirmWindow(String message) {
+        if(forceOverwrite)
+            return true;
         isConfirmWindowActive.set(true);
         try {
             int result = JOptionPane.showConfirmDialog(
@@ -347,26 +350,6 @@ public class PainterFrame extends JFrame{
         panel.add(colorRow);
     }
 
-    private void handleInputFile(String filename) {
-        new Thread(() -> {
-            try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    if (!line.trim().isEmpty()) {
-                        while(isConfirmWindowActive.get())
-                            Thread.sleep(1000);
-                        String finalLine = line;
-                        SwingUtilities.invokeLater(() -> processCommand(finalLine));
-                        Thread.sleep(500);
-                    }
-                }
-            } catch (Exception e) {
-                SwingUtilities.invokeLater(() ->
-                        JOptionPane.showMessageDialog(this, "Error reading file: " + e.getMessage()));
-            }
-        }).start();
-    }
-
     private void setDefaultColors() {
         availableColors.put("red", Color.RED);
         availableColors.put("green", Color.GREEN);
@@ -377,6 +360,26 @@ public class PainterFrame extends JFrame{
         availableColors.put("cyan", Color.CYAN);
         availableColors.put("white", Color.WHITE);
         availableColors.put("black", Color.BLACK);
+    }
+
+    private void handleInputFile(String filename) {
+        new Thread(() -> {
+            try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+                forceOverwrite = true;
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (!line.trim().isEmpty()) {
+                        String finalLine = line;
+                        SwingUtilities.invokeLater(() -> processCommand(finalLine));
+                        Thread.sleep(100); // 500
+                    }
+                }
+                forceOverwrite = false;
+            } catch (Exception e) {
+                SwingUtilities.invokeLater(() ->
+                        JOptionPane.showMessageDialog(this, "Error reading file: " + e.getMessage()));
+            }
+        }).start();
     }
 
     private JPanel createEditorPanel(ShapeGroup group) {
@@ -399,47 +402,37 @@ public class PainterFrame extends JFrame{
         gbc.gridx = 0; gbc.gridy = 0;
 
         JCheckBox hollowCheck = new JCheckBox("Hollow", shape.hollow);
-        hollowCheck.addActionListener(new ActionListener() {
+        hollowCheck.addActionListener(e -> {
+            if (e.getID() == ActionEvent.ACTION_PERFORMED) {
+                boolean isSelected = hollowCheck.isSelected();
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getID() == ActionEvent.ACTION_PERFORMED) {
-                    boolean isSelected = hollowCheck.isSelected();
-                    System.out.println("Hollow checkbox is " + (isSelected ? "selected" : "deselected"));
-
-                    if(isSelected)
-                        shape.hollow();
-                    else
-                        shape.fill();
-                }
+                if(isSelected)
+                    shape.hollow();
+                else
+                    shape.fill();
             }
         });
         panel.add(hollowCheck, gbc);
 
         gbc.gridx++;
         JButton colorBtn = new JButton("Set Color");
+        final Color[] selectedColor = {null};
         colorBtn.addActionListener(e -> {
-            Color chosen = JColorChooser.showDialog(panel, "Choose Color", Color.BLACK);
+            Color chosen = JColorChooser.showDialog(panel, "Choose Color", shape.getColor());
             if (chosen != null) {
-                shape.setColor(chosen);
+                selectedColor[0] = chosen;
             }
         });
         panel.add(colorBtn, gbc);
 
-        // Scale slider
         gbc.gridx++;
         JLabel scaleLabel = new JLabel("Scale:");
-        JSlider scaleSlider = new JSlider(50, 200, 100);
-        scaleSlider.setMajorTickSpacing(50);
-        scaleSlider.setPaintTicks(true);
-        scaleSlider.setPaintLabels(true);
-        scaleSlider.addChangeListener(e -> shape.scale(scaleSlider.getValue() / 100.0));  // Scale on slider change
+        JTextField scaleField = new JTextField("1.0");
         JPanel scalePanel = new JPanel(new BorderLayout());
         scalePanel.add(scaleLabel, BorderLayout.NORTH);
-        scalePanel.add(scaleSlider, BorderLayout.SOUTH);
+        scalePanel.add(scaleField, BorderLayout.SOUTH);
         panel.add(scalePanel, gbc);
 
-        // Layer spinner
         gbc.gridx = 0; gbc.gridy++;
         gbc.gridwidth = 3;
         JPanel layerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -452,10 +445,31 @@ public class PainterFrame extends JFrame{
         layerPanel.add(spinner);
         panel.add(layerPanel, gbc);
 
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 3;
+        JButton applyButton = new JButton("Apply");
+        applyButton.addActionListener(e -> {
+            if (hollowCheck.isSelected()) shape.hollow();
+            else shape.fill();
+
+            if (selectedColor[0] != null) shape.setColor(selectedColor[0]);
+
+            try {
+                double scaleFactor = Double.parseDouble(scaleField.getText());
+                shape.scale(scaleFactor);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(panel, "Invalid scale value!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+            shape.layer = (int) spinner.getValue();
+            repaint();
+        });
+        panel.add(applyButton, gbc);
         return panel;
     }
 
-    // util, won't work for commands used with mouse - not essential
+    // util, won't work for commands used with mouse - not essential (just for debugging)
     private void saveCommandsToFile(){
         try {
             FileWriter fw = new FileWriter("commandHistory.txt");
