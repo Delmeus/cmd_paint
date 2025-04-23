@@ -6,10 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="0ee44014-11a2-4f1b-a214-f161d7cd943b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/serialized/b_serialized.ser" beforeDir="false" afterPath="$PROJECT_DIR$/serialized/b_serialized.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/PainterFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/PainterFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Shape.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Shape.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ShapeGroupEditorPanel.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,8 +100,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
-        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
+        <option value="jdk-21.0.2-openjdk-21.0.2-3183f394aec4-aba903c2" />
       </set>
     </attachedChunks>
   </component>
@@ -136,6 +132,8 @@
       <workItem from="1745077616492" duration="6271000" />
       <workItem from="1745152392179" duration="3643000" />
       <workItem from="1745159276811" duration="8384000" />
+      <workItem from="1745425072214" duration="43000" />
+      <workItem from="1745425121270" duration="2910000" />
     </task>
     <servers />
   </component>

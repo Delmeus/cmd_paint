@@ -32,6 +32,10 @@ public class PainterFrame extends JFrame{
 
     private final AtomicBoolean isConfirmWindowActive = new AtomicBoolean(false);
 
+    @FunctionalInterface
+    interface TriConsumer<A, B, C> {
+        void accept(A a, B b, C c);
+    }
 
     public PainterFrame() {
         this(null);
@@ -209,40 +213,62 @@ public class PainterFrame extends JFrame{
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createTitledBorder(shape.name));
 
-        BiConsumer<String, JComponent> addLabeledField = (label, field) -> {
+        TriConsumer<String, JComponent, Integer> addLabeledField = (label, field, height) -> {
+            field.setPreferredSize(new Dimension());
             JPanel row = new JPanel(new BorderLayout(5, 0));
-            row.add(new JLabel(label), BorderLayout.WEST);
+            JLabel jLabel = new JLabel(label);
+            jLabel.setPreferredSize(new Dimension(80, height));
+            row.add(jLabel, BorderLayout.WEST);
             row.add(field, BorderLayout.CENTER);
             row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
             panel.add(row);
         };
 
-        JTextField strokeField = new JTextField(String.valueOf(shape.stroke));
-        JTextField rotationField = new JTextField(String.valueOf(shape.getRotationAngle()));
-        JTextField scaleField = new JTextField("1");
         JCheckBox hollowCheck = new JCheckBox("Hollow", shape.hollow);
 
-        JTextField rField = new JTextField(String.valueOf(shape.color.getRed()));
-        JTextField gField = new JTextField(String.valueOf(shape.color.getGreen()));
-        JTextField bField = new JTextField(String.valueOf(shape.color.getBlue()));
+        JSlider rSlider = new JSlider(0, 255, shape.color.getRed());
+        JSlider gSlider = new JSlider(0, 255, shape.color.getGreen());
+        JSlider bSlider = new JSlider(0, 255, shape.color.getBlue());
+        rSlider.setValue(shape.getColor().getRed());
+        gSlider.setValue(shape.getColor().getGreen());
+        bSlider.setValue(shape.getColor().getBlue());
+
+        for (JSlider slider : List.of(rSlider, gSlider, bSlider)) {
+            slider.setMajorTickSpacing(85);
+            slider.setMinorTickSpacing(17);
+            slider.setPaintTicks(true);
+            slider.setPaintLabels(true);
+            //slider.setPreferredSize(new Dimension(200, 40));
+        }
+
+        JSpinner rotationSpinner = new JSpinner(new SpinnerNumberModel(shape.rotationAngle, 0, 360, 5));
+        JSpinner layerSpinner = new JSpinner(new SpinnerNumberModel(shape.layer, 0, 100, 1));
+        JSpinner strokeSpinner = new JSpinner(new SpinnerNumberModel(shape.stroke, 0, 100, 1));
+        JSpinner scaleSpinner = new JSpinner(new SpinnerNumberModel(1, 0, Double.MAX_VALUE, 0.1));
+
+        editSpinner(rotationSpinner);
+        editSpinner(layerSpinner);
+        editSpinner(strokeSpinner);
+        editSpinner(scaleSpinner);
 
         JButton colorButton = new JButton("Choose color");
         colorButton.setPreferredSize(new Dimension(130, 30));
         colorButton.addActionListener(e -> {
             Color chosen = JColorChooser.showDialog(panel, "Choose Color", Color.BLACK);
             if (chosen != null) {
-                rField.setText(String.valueOf(chosen.getRed()));
-                gField.setText(String.valueOf(chosen.getGreen()));
-                bField.setText(String.valueOf(chosen.getBlue()));
+                rSlider.setValue(chosen.getRed());
+                gSlider.setValue(chosen.getGreen());
+                bSlider.setValue(chosen.getBlue());
             }
         });
 
-        addLabeledField.accept("Stroke:", strokeField);
-        addLabeledField.accept("Rotation:", rotationField);
-        addLabeledField.accept("Scale:", scaleField);
-        addLabeledField.accept("Color R:", rField);
-        addLabeledField.accept("Color G:", gField);
-        addLabeledField.accept("Color B:", bField);
+        addLabeledField.accept("Stroke:", strokeSpinner, 30);
+        addLabeledField.accept("Rotation:", rotationSpinner, 30);
+        addLabeledField.accept("Scale:", scaleSpinner, 30);
+        addLabeledField.accept("Layer", layerSpinner, 30);
+        addLabeledField.accept("Color R:", rSlider, 45);
+        addLabeledField.accept("Color G:", gSlider, 45);
+        addLabeledField.accept("Color B:", bSlider, 45);
 
         if(shape instanceof Line){
             addPositionRow(panel, "x1", shape.x, "\ty1", shape.y);
@@ -269,12 +295,12 @@ public class PainterFrame extends JFrame{
 
         applyButton.addActionListener(e -> {
             try {
-                int stroke = Integer.parseInt(strokeField.getText());
-                int rotation = Integer.parseInt(rotationField.getText());
-                double factor = Double.parseDouble(scaleField.getText());
-                int r = Integer.parseInt(rField.getText());
-                int g = Integer.parseInt(gField.getText());
-                int b = Integer.parseInt(bField.getText());
+                int stroke = (int) strokeSpinner.getValue();
+                int rotation = (int) rotationSpinner.getValue();
+                double factor = (double) scaleSpinner.getValue();
+                int r = rSlider.getValue();
+                int g = gSlider.getValue();
+                int b = bSlider.getValue();
                 Color newColor = new Color(r, g, b);
                 boolean hollow = hollowCheck.isSelected();
 
@@ -286,6 +312,7 @@ public class PainterFrame extends JFrame{
                     shape.hollow();
                 else
                     shape.fill();
+                shape.layer = (int) layerSpinner.getValue();
 
                 repaint();
             } catch (Exception ex) {
@@ -294,8 +321,19 @@ public class PainterFrame extends JFrame{
         });
 
 
-        addColorsWindow(panel, rField, gField, bField);
+    addColorsWindow(panel, rSlider, gSlider, bSlider);
         return panel;
+    }
+
+    private void editSpinner(JSpinner spinner){
+        JComponent editor = spinner.getEditor();
+        if (editor instanceof JSpinner.DefaultEditor defaultEditor) {
+            JFormattedTextField textField = defaultEditor.getTextField();
+            textField.setHorizontalAlignment(SwingConstants.LEFT);
+        }
+        Dimension size = spinner.getPreferredSize();
+        size.height = 60;
+        spinner.setPreferredSize(size);
     }
 
     private void processCommand(String command) {
@@ -328,7 +366,7 @@ public class PainterFrame extends JFrame{
         panel.add(row);
     }
 
-    private void addColorsWindow(JPanel panel, JTextField rField, JTextField gField, JTextField bField) {
+    private void addColorsWindow(JPanel panel, JSlider rSlider, JSlider gSlider, JSlider bSlider) {
         setDefaultColors();
         JPanel colorRow = new JPanel(new GridLayout(0, 8, 5, 5));
         colorRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
@@ -341,9 +379,9 @@ public class PainterFrame extends JFrame{
             colorBtn.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
             colorBtn.setFocusPainted(false);
             colorBtn.addActionListener(e -> {
-                rField.setText(String.valueOf(c.getRed()));
-                gField.setText(String.valueOf(c.getGreen()));
-                bField.setText(String.valueOf(c.getBlue()));
+                rSlider.setValue(c.getRed());
+                gSlider.setValue(c.getGreen());
+                bSlider.setValue(c.getBlue());
             });
             colorRow.add(colorBtn);
         }
