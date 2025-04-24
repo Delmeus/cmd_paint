@@ -3,6 +3,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,29 +46,7 @@ public class EditorPanelsCreator {
             parent.repaint();
         });
 
-        JSlider rSlider = new JSlider(0, 255, shape.color.getRed());
-        JSlider gSlider = new JSlider(0, 255, shape.color.getGreen());
-        JSlider bSlider = new JSlider(0, 255, shape.color.getBlue());
-        rSlider.setValue(shape.getColor().getRed());
-        gSlider.setValue(shape.getColor().getGreen());
-        bSlider.setValue(shape.getColor().getBlue());
-
-        ChangeListener colorListener = e -> {
-            int r = rSlider.getValue();
-            int g = gSlider.getValue();
-            int b = bSlider.getValue();
-            shape.setColor(new Color(r, g, b));
-            parent.repaint();
-        };
-
-
-        for (JSlider slider : List.of(rSlider, gSlider, bSlider)) {
-            slider.setMajorTickSpacing(85);
-            slider.setMinorTickSpacing(17);
-            slider.setPaintTicks(true);
-            slider.setPaintLabels(true);
-            slider.addChangeListener(colorListener);
-        }
+        List<JSlider> colorSliders = getColorSliders(shape);
 
         JSpinner rotationSpinner = new JSpinner(new SpinnerNumberModel(shape.rotationAngle, 0, 360, 5));
         JSpinner layerSpinner = new JSpinner(new SpinnerNumberModel(shape.layer, 0, 100, 1));
@@ -101,9 +80,9 @@ public class EditorPanelsCreator {
         colorButton.addActionListener(e -> {
             Color chosen = JColorChooser.showDialog(panel, "Choose Color", Color.BLACK);
             if (chosen != null) {
-                rSlider.setValue(chosen.getRed());
-                gSlider.setValue(chosen.getGreen());
-                bSlider.setValue(chosen.getBlue());
+                colorSliders.get(0).setValue(chosen.getRed());
+                colorSliders.get(1).setValue(chosen.getGreen());
+                colorSliders.get(2).setValue(chosen.getBlue());
             }
         });
 
@@ -111,9 +90,9 @@ public class EditorPanelsCreator {
         addLabeledField.accept("Rotation:", rotationSpinner, 30);
         addLabeledField.accept("Scale:", scaleSpinner, 30);
         addLabeledField.accept("Layer", layerSpinner, 30);
-        addLabeledField.accept("Color R:", rSlider, 45);
-        addLabeledField.accept("Color G:", gSlider, 45);
-        addLabeledField.accept("Color B:", bSlider, 45);
+        addLabeledField.accept("Color R:", colorSliders.get(0), 45);
+        addLabeledField.accept("Color G:", colorSliders.get(1), 45);
+        addLabeledField.accept("Color B:", colorSliders.get(2), 45);
 
         if(shape instanceof Line){
             addPositionRow(panel, "x1", shape.x, "\ty1", shape.y);
@@ -134,7 +113,7 @@ public class EditorPanelsCreator {
         buttonRow.add(colorButton);
         panel.add(buttonRow);
 
-        addColorsWindow(panel, rSlider, gSlider, bSlider);
+        addColorsWindow(panel, colorSliders.get(0), colorSliders.get(1), colorSliders.get(2));
         return panel;
     }
 
@@ -202,12 +181,13 @@ public class EditorPanelsCreator {
         groupPanel.setBorder(BorderFactory.createTitledBorder("Edit Group: " + group.name));
 
         for (Shape child : group.getChildren()) {
-            groupPanel.add(createChildEditor(child));
+            groupPanel.add(createShapeEditor(child));
         }
-//        repaint();
+        parent.repaint();
         return groupPanel;
     }
 
+    @Deprecated
     private JPanel createChildEditor(Shape shape) {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBorder(BorderFactory.createTitledBorder("Shape: " + shape.name));
@@ -258,29 +238,37 @@ public class EditorPanelsCreator {
         });
         layerPanel.add(spinner);
         panel.add(layerPanel, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy++;
-        gbc.gridwidth = 3;
-        JButton applyButton = new JButton("Apply");
-        applyButton.addActionListener(e -> {
-            if (hollowCheck.isSelected()) shape.hollow();
-            else shape.fill();
-
-            if (selectedColor[0] != null) shape.setColor(selectedColor[0]);
-
-            try {
-                double scaleFactor = Double.parseDouble(scaleField.getText());
-                shape.scale(scaleFactor);
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(panel, "Invalid scale value!", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-
-            shape.layer = (int) spinner.getValue();
-//            repaint();
-        });
-        panel.add(applyButton, gbc);
         return panel;
     }
 
+    private List<JSlider> getColorSliders(Shape shape){
+        JSlider rSlider = new JSlider(0, 255, shape.color.getRed());
+        JSlider gSlider = new JSlider(0, 255, shape.color.getGreen());
+        JSlider bSlider = new JSlider(0, 255, shape.color.getBlue());
+        rSlider.setValue(shape.getColor().getRed());
+        gSlider.setValue(shape.getColor().getGreen());
+        bSlider.setValue(shape.getColor().getBlue());
+
+        ChangeListener colorListener = e -> {
+            int r = rSlider.getValue();
+            int g = gSlider.getValue();
+            int b = bSlider.getValue();
+            shape.setColor(new Color(r, g, b));
+            parent.repaint();
+        };
+
+
+        for (JSlider slider : List.of(rSlider, gSlider, bSlider)) {
+            slider.setMajorTickSpacing(85);
+            slider.setMinorTickSpacing(17);
+            slider.setPaintTicks(true);
+            slider.setPaintLabels(true);
+            slider.addChangeListener(colorListener);
+        }
+        List<JSlider> sliders = new ArrayList<>();
+        sliders.add(rSlider);
+        sliders.add(gSlider);
+        sliders.add(bSlider);
+        return sliders;
+    }
 }
