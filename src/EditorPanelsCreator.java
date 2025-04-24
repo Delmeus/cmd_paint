@@ -3,10 +3,12 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class EditorPanelsCreator {
     private final PainterFrame parent;
@@ -94,16 +96,20 @@ public class EditorPanelsCreator {
         addLabeledField.accept("Color G:", colorSliders.get(1), 45);
         addLabeledField.accept("Color B:", colorSliders.get(2), 45);
 
-        if(shape instanceof Line){
-            addPositionRow(panel, "x1", shape.x, "\ty1", shape.y);
-            addPositionRow(panel, "x2", ((Line) shape).x2, "\ty2", ((Line) shape).y2);
-        } else if (shape instanceof Polygon) {
-            for(int i = 0; i < ((Polygon) shape).x_points.length; i++){
-                addPositionRow(panel, "x" + i, ((Polygon) shape).x_points[i],
-                        "\ty" + i, (((Polygon) shape).y_points[i]));
+        if(shape instanceof Line line){
+            addPositionRow(panel, "x1", line.x, "y1", line.y, x -> line.x = x, y -> line.y = y);
+            addPositionRow(panel, "x2", line.x2, "y2", line.y2, x -> line.x2 = x, y -> line.y2 = y);
+        } else if (shape instanceof Polygon poly) {
+            for (int i = 0; i < poly.x_points.length; i++) {
+                int index = i;
+                addPositionRow(panel, "x" + i, poly.x_points[i], "y" + i, poly.y_points[i],
+                        x -> poly.x_points[index] = x,
+                        y -> poly.y_points[index] = y);
             }
         } else {
-            addPositionRow(panel, "x", shape.x, "\ty", shape.y);
+            addPositionRow(panel, "x", shape.x, "y", shape.y,
+                    x -> shape.x = x,
+                    y -> shape.y = y);
         }
 
         JPanel hollowRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -117,15 +123,35 @@ public class EditorPanelsCreator {
         return panel;
     }
 
-    private void addPositionRow(JPanel panel, String xString, int x, String yString, int y) {
+    private void addPositionRow(JPanel panel, String xString, int x, String yString, int y, Consumer<Integer> setter1, Consumer<Integer> setter2) {
         JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
 
-        JLabel xLabel = new JLabel(xString + ": " + x);
-        JLabel yLabel = new JLabel(yString + ": " + y);
+        JLabel xLabel = new JLabel(xString + ": ");
+        JLabel yLabel = new JLabel(yString + ": ");
+        //TODO: change to sliders
+        JTextField xField = new JTextField(String.valueOf(x), 4);
+        JTextField yField = new JTextField(String.valueOf(y), 4);
 
         row.add(xLabel);
+        row.add(xField);
         row.add(yLabel);
+        row.add(yField);
+
+        ActionListener applyChange = e -> {
+            try {
+                int newX = Integer.parseInt(xField.getText());
+                int newY = Integer.parseInt(yField.getText());
+                setter1.accept(newX);
+                setter2.accept(newY);
+                //parent.repaint();
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(panel, "Invalid coordinate input.");
+            }
+        };
+
+        xField.addActionListener(applyChange);
+        yField.addActionListener(applyChange);
 
         panel.add(row);
     }
