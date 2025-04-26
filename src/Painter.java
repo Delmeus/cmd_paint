@@ -530,6 +530,12 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         return false;
     }
 
+    @Override
+    public Boolean visitGridOp(CmdPaintParser.GridOpContext ctx) {
+        painterFrame.toggleGrid();
+        return true;
+    }
+
 //--------------------------------------------------
 //               UTILITY METHODS
 //--------------------------------------------------

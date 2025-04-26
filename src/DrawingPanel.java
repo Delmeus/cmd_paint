@@ -13,6 +13,8 @@ public class DrawingPanel extends JPanel implements MouseListener {
     int selectedY = 0;
     private final Map<String, Shape> shapes;
     private Color backgroundColor = Color.WHITE;
+
+    private boolean isGridActive = false;
     public DrawingPanel(Map<String, Shape> shapes, PainterFrame parent) {
         this.parent = parent;
         this.shapes = shapes;
@@ -26,6 +28,10 @@ public class DrawingPanel extends JPanel implements MouseListener {
 
     public Set<Shape> getSelectedShapes() {
         return selectedShapes;
+    }
+
+    public void toggleGrid(){
+        isGridActive = !isGridActive;
     }
 
     public int getSelectedX() {
@@ -42,6 +48,11 @@ public class DrawingPanel extends JPanel implements MouseListener {
         sortedShapes.sort(Comparator.naturalOrder());
         super.paintComponent(g);
         setBackground(backgroundColor);
+
+        if(isGridActive) {
+            Graphics2D g2d = (Graphics2D) g.create();
+            drawGrid(g2d);
+        }
 
         for (Shape shape : sortedShapes) {
             if (selectedShapes.contains(shape)) {
@@ -98,6 +109,36 @@ public class DrawingPanel extends JPanel implements MouseListener {
         }
 
         repaint();
+    }
+
+    private void drawGrid(Graphics2D g2d) {
+        Color gridColor;
+        if(checkIfBackgroundIsGray())
+            gridColor = Color.BLACK;
+        else
+            gridColor = new Color(220, 220, 220);
+        g2d.setColor(gridColor);
+        int gridSize = 50;
+        int width = getWidth();
+        int height = getHeight();
+
+        for (int x = 0; x <= width; x += gridSize) {
+            g2d.drawLine(x, 0, x, height);
+            g2d.setFont(new Font("Arial", Font.PLAIN, 10));
+            g2d.drawString(Integer.toString(x), x + 2, 10);
+        }
+
+        for (int y = 0; y <= height; y += gridSize) {
+            g2d.drawLine(0, y, width, y);
+            g2d.setFont(new Font("Arial", Font.PLAIN, 10));
+            g2d.drawString(Integer.toString(y), 2, y - 2);
+        }
+    }
+
+    private boolean checkIfBackgroundIsGray(){
+        Color c = backgroundColor;
+        return c.getRed() > 200 && c.getRed() < 240 && c.getGreen() > 200 && c.getGreen() < 240
+                && c.getBlue() > 200 && c.getBlue() < 240;
     }
 
     @Override

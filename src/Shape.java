@@ -129,6 +129,18 @@ public abstract class Shape implements Comparable<Shape>, Serializable {
                 return new BasicStroke(4, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, new float[]{9}, 0.0f);
         return new BasicStroke(stroke);
     }
+
+    protected boolean isColorDark(){
+        return color.getRed() < 110 && color.getBlue() < 110 && color.getGreen() < 110;
+    }
+
+    protected void setFont(Graphics2D g2d){
+        if (isColorDark())
+            g2d.setColor(new Color(220, 220, 220));
+        else
+            g2d.setColor(Color.BLACK);
+        g2d.setFont(new Font("Arial", Font.BOLD, 14));
+    }
 }
 
 class Square extends Shape {
@@ -161,10 +173,8 @@ class Square extends Shape {
         g2d.rotate(-Math.toRadians(rotationAngle));
         g2d.translate(-(x + size / 2), -(y + size / 2));
 
-        // smart coloring should be implemented
-        if(showName){
-            g2d.setColor(Color.BLACK);
-            g2d.setFont(new Font("Arial", Font.BOLD, 14));
+        if (showName){
+            setFont(g2d);
             g2d.drawString(name, x + size / 2 - 10, y + size / 2);
         }
     }
@@ -239,10 +249,8 @@ class Circle extends Shape {
             }
         }
 
-        // smart coloring should be implemented
         if(showName){
-            g2d.setColor(Color.BLACK);
-            g2d.setFont(new Font("Arial", Font.BOLD, 14));
+            setFont(g2d);
             g2d.drawString(name, x + radius / 2 - 10, y + radius / 2);
         }
     }
@@ -310,10 +318,8 @@ class Rectangle extends Shape {
         g2d.rotate(-Math.toRadians(rotationAngle));
         g2d.translate(-(x + width / 2), -(y + height / 2));
 
-        // smart coloring should be implemented
         if(showName){
-            g2d.setColor(Color.BLACK);
-            g2d.setFont(new Font("Arial", Font.BOLD, 14));
+            setFont(g2d);
             g2d.drawString(name, x + width / 2 - 10, y + height / 2);
         }
     }
@@ -387,10 +393,8 @@ class Line extends Shape {
         int centerY = (y + y2) / 2;
         g2d.drawLine(x, y, x2, y2);
 
-        // smart coloring should be implemented
         if(showName){
-            g.setColor(Color.BLACK);
-            g.setFont(new Font("Arial", Font.BOLD, 14));
+            setFont(g2d);
             g.drawString(name, centerX, centerY + 10);
         }
     }
@@ -540,10 +544,8 @@ class Polygon extends Shape {
             }
         }
 
-        // smart coloring should be implemented
         if(showName){
-            g2d.setColor(Color.BLACK);
-            g2d.setFont(new Font("Arial", Font.BOLD, 14));
+            setFont(g2d);
             g2d.drawString(name, cx - 10, cy);
         }
     }

@@ -92,7 +92,11 @@ public class PainterFrame extends JFrame{
                 }
             }
         });
-        add(commandField, BorderLayout.SOUTH);
+        JLabel commandLabel = new JLabel("Command:");
+        JPanel commandPanel = new JPanel(new BorderLayout(5, 5));
+        commandPanel.add(commandLabel, BorderLayout.WEST);
+        commandPanel.add(commandField, BorderLayout.CENTER);
+        add(commandPanel, BorderLayout.SOUTH);
 
         editorContainer.setLayout(new BoxLayout(editorContainer, BoxLayout.Y_AXIS));
         shapeInfoPanel.setLayout(new BorderLayout());
@@ -203,6 +207,10 @@ public class PainterFrame extends JFrame{
 
         editorContainer.revalidate();
         editorContainer.repaint();
+    }
+
+    public void toggleGrid(){
+        drawingPanel.toggleGrid();
     }
 
     private void processCommand(String command) {

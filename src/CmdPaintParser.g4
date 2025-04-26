@@ -26,6 +26,7 @@ command
     | DEGROUP NAME? #groupOp
     | LOAD NAME #serializeOp
     | SCALE NAME* (FLOAT | INT) #scaleOp
+    | GRID #gridOp
     ;
 
 shape

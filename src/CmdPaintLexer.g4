@@ -22,6 +22,7 @@ DEGROUP : 'degroup';
 LOAD : 'load';
 CLONE : 'clone';
 SCALE : 'scale';
+GRID : 'grid';
 
 SQUARE    : 'square' | 'sq';
 CIRCLE    : 'circle' | 'circ';
@@ -30,7 +31,7 @@ POLYGON : 'polygon' | 'poly';
 LINE : 'line';
 
 SIZE   : 'size' | 's';
-LENGTH : 'length';
+LENGTH : 'length' | 'len';
 RADIUS : 'radius' | 'r';
 WIDTH  : 'width' | 'w';
 HEIGHT : 'height' | 'h';
