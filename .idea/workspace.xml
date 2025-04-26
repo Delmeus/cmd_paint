@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="0ee44014-11a2-4f1b-a214-f161d7cd943b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/input.txt" beforeDir="false" afterPath="$PROJECT_DIR$/input.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/EditorPanelsCreator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/EditorPanelsCreator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Painter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Painter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Shape.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Shape.java" afterDir="false" />
@@ -69,7 +70,7 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="Application.fromFile">
+  <component name="RunManager" selected="Application.fromFileInteractive">
     <configuration name="cmdPaint" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="cmdPaint" />
@@ -138,7 +139,10 @@
       <workItem from="1745425121270" duration="3287000" />
       <workItem from="1745439898017" duration="1016000" />
       <workItem from="1745495063102" duration="116000" />
-      <workItem from="1745496807400" duration="1459000" />
+      <workItem from="1745496807400" duration="1546000" />
+      <workItem from="1745577069749" duration="5967000" />
+      <workItem from="1745586364181" duration="719000" />
+      <workItem from="1745700598370" duration="409000" />
     </task>
     <servers />
   </component>

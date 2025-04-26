@@ -22,3 +22,5 @@ rotate "triangle" 45
 group "grupa" "line" "d" "rect" "triangle"
 move "grupa" (150, 150)
 rotate "grupa" 30
+draw "nowa_linia" line (100, 500, 500, 500) stroke 10 color blue
+rotate "nowa_linia" 90

@@ -2,7 +2,7 @@ import java.awt.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
-// TODO: Update x and y based on rotation for line and polygon
+
 public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
     private final String error_name = "CHANGE THIS NAME";
     private final Map<String, Shape> shapes;

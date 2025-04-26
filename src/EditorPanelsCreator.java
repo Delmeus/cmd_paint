@@ -50,7 +50,7 @@ public class EditorPanelsCreator {
 
         List<JSlider> colorSliders = getColorSliders(shape);
 
-        JSpinner rotationSpinner = new JSpinner(new SpinnerNumberModel(shape.rotationAngle, 0, 360, 5));
+        JSpinner rotationSpinner = new JSpinner(new SpinnerNumberModel(shape.rotationAngle, -360, 360, 5));
         JSpinner layerSpinner = new JSpinner(new SpinnerNumberModel(shape.layer, 0, 100, 1));
         JSpinner strokeSpinner = new JSpinner(new SpinnerNumberModel(shape.stroke, 0, 100, 1));
         JSpinner scaleSpinner = new JSpinner(new SpinnerNumberModel(1, 0, Double.MAX_VALUE, 0.1));
@@ -66,6 +66,8 @@ public class EditorPanelsCreator {
         });
         rotationSpinner.addChangeListener(e -> {
             shape.setRotationAngle((int) rotationSpinner.getValue());
+            if (shape instanceof Line || shape instanceof Polygon)
+                rotationSpinner.setValue(0);
             parent.repaint();
         });
         layerSpinner.addChangeListener(e -> {
@@ -129,29 +131,30 @@ public class EditorPanelsCreator {
 
         JLabel xLabel = new JLabel(xString + ": ");
         JLabel yLabel = new JLabel(yString + ": ");
-        //TODO: change to sliders
-        JTextField xField = new JTextField(String.valueOf(x), 4);
-        JTextField yField = new JTextField(String.valueOf(y), 4);
+
+        JSpinner xSpinner = new JSpinner(new SpinnerNumberModel(x, Integer.MIN_VALUE, Integer.MAX_VALUE, 10));
+        JSpinner ySpinner = new JSpinner(new SpinnerNumberModel(y, Integer.MIN_VALUE, Integer.MAX_VALUE, 10));
+
+        Dimension spinnerSize = new Dimension(60, 25);
+        xSpinner.setPreferredSize(spinnerSize);
+        ySpinner.setPreferredSize(spinnerSize);
+
+        xSpinner.addChangeListener(e -> {
+            int newX = (int) xSpinner.getValue();
+            setter1.accept(newX);
+            parent.repaint();
+        });
+
+        ySpinner.addChangeListener(e -> {
+            int newY = (int) ySpinner.getValue();
+            setter2.accept(newY);
+            parent.repaint();
+        });
 
         row.add(xLabel);
-        row.add(xField);
+        row.add(xSpinner);
         row.add(yLabel);
-        row.add(yField);
-
-        ActionListener applyChange = e -> {
-            try {
-                int newX = Integer.parseInt(xField.getText());
-                int newY = Integer.parseInt(yField.getText());
-                setter1.accept(newX);
-                setter2.accept(newY);
-                //parent.repaint();
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(panel, "Invalid coordinate input.");
-            }
-        };
-
-        xField.addActionListener(applyChange);
-        yField.addActionListener(applyChange);
+        row.add(ySpinner);
 
         panel.add(row);
     }
@@ -211,60 +214,6 @@ public class EditorPanelsCreator {
         }
         parent.repaint();
         return groupPanel;
-    }
-
-    @Deprecated
-    private JPanel createChildEditor(Shape shape) {
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Shape: " + shape.name));
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(4, 4, 4, 4);
-        gbc.gridx = 0; gbc.gridy = 0;
-
-        JCheckBox hollowCheck = new JCheckBox("Hollow", shape.hollow);
-        hollowCheck.addActionListener(e -> {
-            if (e.getID() == ActionEvent.ACTION_PERFORMED) {
-                boolean isSelected = hollowCheck.isSelected();
-
-                if(isSelected)
-                    shape.hollow();
-                else
-                    shape.fill();
-            }
-        });
-        panel.add(hollowCheck, gbc);
-
-        gbc.gridx++;
-        JButton colorBtn = new JButton("Set Color");
-        final Color[] selectedColor = {null};
-        colorBtn.addActionListener(e -> {
-            Color chosen = JColorChooser.showDialog(panel, "Choose Color", shape.getColor());
-            if (chosen != null) {
-                selectedColor[0] = chosen;
-            }
-        });
-        panel.add(colorBtn, gbc);
-
-        gbc.gridx++;
-        JLabel scaleLabel = new JLabel("Scale:");
-        JTextField scaleField = new JTextField("1.0");
-        JPanel scalePanel = new JPanel(new BorderLayout());
-        scalePanel.add(scaleLabel, BorderLayout.NORTH);
-        scalePanel.add(scaleField, BorderLayout.SOUTH);
-        panel.add(scalePanel, gbc);
-
-        gbc.gridx = 0; gbc.gridy++;
-        gbc.gridwidth = 3;
-        JPanel layerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        layerPanel.add(new JLabel("Layer:"));
-        SpinnerNumberModel model = new SpinnerNumberModel(shape.layer, 0, 100, 1);
-        JSpinner spinner = new JSpinner(model);
-        spinner.addChangeListener((ChangeEvent e) -> {
-            shape.layer = (int) spinner.getValue();
-        });
-        layerPanel.add(spinner);
-        panel.add(layerPanel, gbc);
-        return panel;
     }
 
     private List<JSlider> getColorSliders(Shape shape){

@@ -50,7 +50,6 @@ public abstract class Shape implements Comparable<Shape>, Serializable {
     }
 
     public void rotate(int angle) {
-        System.out.println(name + " rotated by " + angle + " degrees");
         rotationAngle += angle;
     }
 
@@ -386,14 +385,7 @@ class Line extends Shape {
 
         int centerX = (x + x2) / 2;
         int centerY = (y + y2) / 2;
-
-        g2d.translate(centerX, centerY);
-        g2d.rotate(Math.toRadians(rotationAngle));
-
-        g2d.drawLine(x - centerX, y - centerY, x2 - centerX, y2 - centerY);
-
-        g2d.rotate(-Math.toRadians(rotationAngle));
-        g2d.translate(-centerX, -centerY);
+        g2d.drawLine(x, y, x2, y2);
 
         // smart coloring should be implemented
         if(showName){
@@ -401,6 +393,44 @@ class Line extends Shape {
             g.setFont(new Font("Arial", Font.BOLD, 14));
             g.drawString(name, centerX, centerY + 10);
         }
+    }
+
+    @Override
+    public void setRotationAngle(int angle){
+        rotationAngle = angle;
+        applyRotation();
+    }
+
+    @Override
+    public void rotate(int angle){
+        rotationAngle = angle;
+        applyRotation();
+    }
+
+    public void applyRotation() {
+        int centerX = (x + x2) / 2;
+        int centerY = (y + y2) / 2;
+
+        double angleRad = Math.toRadians(rotationAngle);
+
+        int[] newPoint1 = rotatePoint(x, y, centerX, centerY, angleRad);
+        x = newPoint1[0];
+        y = newPoint1[1];
+
+        int[] newPoint2 = rotatePoint(x2, y2, centerX, centerY, angleRad);
+        x2 = newPoint2[0];
+        y2 = newPoint2[1];
+
+        rotationAngle = 0;
+    }
+
+    private int[] rotatePoint(int px, int py, int cx, int cy, double angle) {
+        double dx = px - cx;
+        double dy = py - cy;
+
+        int rx = (int) Math.round(cx + dx * Math.cos(angle) - dy * Math.sin(angle));
+        int ry = (int) Math.round(cy + dx * Math.sin(angle) + dy * Math.cos(angle));
+        return new int[]{rx, ry};
     }
 
     @Override
@@ -500,24 +530,13 @@ class Polygon extends Shape {
         cx /= x_points.length;
         cy /= y_points.length;
 
-        int[] rotatedX = new int[x_points.length];
-        int[] rotatedY = new int[y_points.length];
-        double radians = Math.toRadians(rotationAngle);
-
-        for (int i = 0; i < x_points.length; i++) {
-            int x = x_points[i] - cx;
-            int y = y_points[i] - cy;
-            rotatedX[i] = (int) (x * Math.cos(radians) - y * Math.sin(radians)) + cx;
-            rotatedY[i] = (int) (x * Math.sin(radians) + y * Math.cos(radians)) + cy;
-        }
-
-        if(hollow)
-            g2d.drawPolygon(rotatedX, rotatedY, x_points.length);
+        if (hollow)
+            g2d.drawPolygon(x_points, y_points, x_points.length);
         else {
-            g2d.fillPolygon(rotatedX, rotatedY, x_points.length);
+            g2d.fillPolygon(x_points, y_points, x_points.length);
             if (selected) {
                 g2d.setColor(Color.BLACK);
-                g2d.drawPolygon(rotatedX, rotatedY, x_points.length);
+                g2d.drawPolygon(x_points, y_points, x_points.length);
             }
         }
 
@@ -527,6 +546,45 @@ class Polygon extends Shape {
             g2d.setFont(new Font("Arial", Font.BOLD, 14));
             g2d.drawString(name, cx - 10, cy);
         }
+    }
+
+    @Override
+    public void rotate(int angle){
+        this.rotationAngle = angle;
+        applyRotation();
+    }
+
+    @Override
+    public void setRotationAngle(int angle) {
+        this.rotationAngle = angle;
+        applyRotation();
+    }
+
+    private void applyRotation() {
+        int cx = 0, cy = 0;
+        for (int i = 0; i < x_points.length; i++) {
+            cx += x_points[i];
+            cy += y_points[i];
+        }
+        cx /= x_points.length;
+        cy /= y_points.length;
+
+        double angleRad = Math.toRadians(rotationAngle);
+
+        for (int i = 0; i < x_points.length; i++) {
+            int dx = x_points[i] - cx;
+            int dy = y_points[i] - cy;
+
+            int rotatedX = (int) Math.round(cx + dx * Math.cos(angleRad) - dy * Math.sin(angleRad));
+            int rotatedY = (int) Math.round(cy + dx * Math.sin(angleRad) + dy * Math.cos(angleRad));
+
+            x_points[i] = rotatedX;
+            y_points[i] = rotatedY;
+        }
+
+        this.x = x_points[0];
+        this.y = y_points[0];
+        rotationAngle = 0;
     }
 
     @Override
