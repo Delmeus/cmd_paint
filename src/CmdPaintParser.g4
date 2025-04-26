@@ -9,7 +9,7 @@ command
     | COLORC NAME* colors #colorOp
     | ROTATE NAME* INT #rotateOp
     | MOVE NAME* position? #moveOp
-    | SAVE #saveOp
+    | SAVE savePossibility #saveOp
     | DELETE NAME* ALL? #deleteOp
     | BACKGROUND colorDefinition #backgroundOp
     | RENAME NAME NAME? #renameOp
@@ -23,7 +23,10 @@ command
     | CLONE NAME? position? #cloneOp
     | SERIALIZE NAME NAME* #serializeOp
     | GROUP NAME NAME+ #groupOp
+    | DEGROUP NAME? #groupOp
     | LOAD NAME #serializeOp
+    | SCALE NAME* (FLOAT | INT) #scaleOp
+    | GRID #gridOp
     ;
 
 shape
@@ -71,4 +74,8 @@ shapeAttributes
     | HOLLOW
     | layerDefinition
     | strokeDefinition
+    ;
+
+savePossibility
+    : IMAGE | SCRIPT
     ;

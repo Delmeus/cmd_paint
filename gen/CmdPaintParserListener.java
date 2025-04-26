@@ -1,4 +1,4 @@
-// Generated from /home/antek/studia/magisterka/semI/MiASI/cmd_paint/src/CmdPaintParser.g4 by ANTLR 4.13.2
+// Generated from G:/Projekty_Studia/MiASI/cmdPaint/src/CmdPaintParser.g4 by ANTLR 4.13.2
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -197,6 +197,30 @@ public interface CmdPaintParserListener extends ParseTreeListener {
 	 */
 	void exitGroupOp(CmdPaintParser.GroupOpContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code scaleOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void enterScaleOp(CmdPaintParser.ScaleOpContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code scaleOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void exitScaleOp(CmdPaintParser.ScaleOpContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code gridOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void enterGridOp(CmdPaintParser.GridOpContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code gridOp}
+	 * labeled alternative in {@link CmdPaintParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void exitGridOp(CmdPaintParser.GridOpContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link CmdPaintParser#shape}.
 	 * @param ctx the parse tree
 	 */
@@ -296,4 +320,14 @@ public interface CmdPaintParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitShapeAttributes(CmdPaintParser.ShapeAttributesContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CmdPaintParser#savePossibility}.
+	 * @param ctx the parse tree
+	 */
+	void enterSavePossibility(CmdPaintParser.SavePossibilityContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CmdPaintParser#savePossibility}.
+	 * @param ctx the parse tree
+	 */
+	void exitSavePossibility(CmdPaintParser.SavePossibilityContext ctx);
 }

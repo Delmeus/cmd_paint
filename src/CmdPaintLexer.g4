@@ -2,6 +2,7 @@ lexer grammar CmdPaintLexer;
 
 NAME  : '"' [a-zA-Z_][a-zA-Z0-9_]* '"';
 INT   : '-'?[0-9]+;
+FLOAT : '-'?[0-9]+'.'?[0-9]*;
 WS    : [ \t\r\n]+ -> skip;
 
 DRAW   : 'draw' | 'd';
@@ -17,8 +18,11 @@ LAYER : 'layer' | 'l';
 FILL : 'fill';
 SERIALIZE : 'serialize';
 GROUP : 'group';
+DEGROUP : 'degroup';
 LOAD : 'load';
 CLONE : 'clone';
+SCALE : 'scale';
+GRID : 'grid';
 
 SQUARE    : 'square' | 'sq';
 CIRCLE    : 'circle' | 'circ';
@@ -27,7 +31,7 @@ POLYGON : 'polygon' | 'poly';
 LINE : 'line';
 
 SIZE   : 'size' | 's';
-LENGTH : 'length';
+LENGTH : 'length' | 'len';
 RADIUS : 'radius' | 'r';
 WIDTH  : 'width' | 'w';
 HEIGHT : 'height' | 'h';
@@ -37,6 +41,9 @@ DOWN   : 'down';
 UP     : 'up';
 STROKE : 'stroke' | 'st';
 ALL    : 'all';
+
+IMAGE : 'image' | 'img';
+SCRIPT : 'script';
 
 LPAREN : '(';
 RPAREN : ')';
