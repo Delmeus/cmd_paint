@@ -1,6 +1,4 @@
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import javax.swing.*;
@@ -160,10 +158,10 @@ public class PainterFrame extends JFrame{
 
         try {
             ImageIO.write(image, "PNG", new File("drawing.png"));
-            System.out.println("Image saved successfully.");
+            pushMessage("Image saved successfully.");
             return true;
         } catch (IOException e) {
-            System.out.println("Error saving image: " + e.getMessage());
+            pushMessage("Error saving image: " + e.getMessage());
             return false;
         }
     }
@@ -209,8 +207,8 @@ public class PainterFrame extends JFrame{
         editorContainer.repaint();
     }
 
-    public void toggleGrid(){
-        drawingPanel.toggleGrid();
+    public boolean toggleGrid(){
+        return drawingPanel.toggleGrid();
     }
 
     private void processCommand(String command) {
@@ -220,6 +218,17 @@ public class PainterFrame extends JFrame{
             CmdPaintLexer lexer = new CmdPaintLexer(input);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             CmdPaintParser parser = new CmdPaintParser(tokens);
+
+            parser.removeErrorListeners();
+            parser.addErrorListener(new BaseErrorListener() {
+                @Override
+                public void syntaxError(Recognizer<?, ?> recognizer,
+                                        Object offendingSymbol,
+                                        int line, int charPositionInLine,
+                                        String msg, RecognitionException e) {
+                    pushMessage("Invalid command: " + msg);
+                }
+            });
 
             ParseTree tree = parser.program();
             painter.visit(tree);

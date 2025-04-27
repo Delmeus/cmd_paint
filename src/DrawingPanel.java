@@ -2,10 +2,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.*;
 import java.util.List;
 
-public class DrawingPanel extends JPanel implements MouseListener {
+public class DrawingPanel extends JPanel implements MouseListener, MouseMotionListener {
     private final PainterFrame parent;
 
     private Set<Shape> selectedShapes = new HashSet<>();
@@ -15,10 +16,14 @@ public class DrawingPanel extends JPanel implements MouseListener {
     private Color backgroundColor = Color.WHITE;
 
     private boolean isGridActive = false;
+
+    private int dragStartX, dragStartY;
+    private boolean dragging = false;
     public DrawingPanel(Map<String, Shape> shapes, PainterFrame parent) {
         this.parent = parent;
         this.shapes = shapes;
         addMouseListener(this);
+        addMouseMotionListener(this);
     }
 
     public void setBackgroundColor(Color color) {
@@ -30,8 +35,9 @@ public class DrawingPanel extends JPanel implements MouseListener {
         return selectedShapes;
     }
 
-    public void toggleGrid(){
+    public boolean toggleGrid(){
         isGridActive = !isGridActive;
+        return isGridActive;
     }
 
     public int getSelectedX() {
@@ -88,7 +94,6 @@ public class DrawingPanel extends JPanel implements MouseListener {
                         selectedShapes.add(shape);
                     }
                     parent.updateShapeInfoPanel();
-                    System.out.println("Clicked on: " + shape.name);
                     break;
                 }
             }
@@ -110,6 +115,37 @@ public class DrawingPanel extends JPanel implements MouseListener {
 
         repaint();
     }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            dragStartX = e.getX();
+            dragStartY = e.getY();
+            dragging = true;
+        }
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        if (dragging && !selectedShapes.isEmpty()) {
+            int deltaX = e.getX() - dragStartX;
+            int deltaY = e.getY() - dragStartY;
+
+            for (Shape shape : selectedShapes) {
+                shape.moveBy(deltaX, deltaY);
+            }
+
+            dragStartX = e.getX();
+            dragStartY = e.getY();
+            parent.updateShapeInfoPanel();
+            repaint();
+        }
+    }
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        dragging = false;
+    }
+
 
     private void drawGrid(Graphics2D g2d) {
         Color gridColor;
@@ -142,16 +178,6 @@ public class DrawingPanel extends JPanel implements MouseListener {
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
-    @Override
     public void mouseEntered(MouseEvent e) {
 
     }
@@ -160,4 +186,10 @@ public class DrawingPanel extends JPanel implements MouseListener {
     public void mouseExited(MouseEvent e) {
 
     }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+
+    }
+
 }

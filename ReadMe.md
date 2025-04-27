@@ -77,7 +77,7 @@ Changes the stroke width (outline thickness) of shapes. If no names are provided
 ## Define
 Syntax: ```define <color_name> <color>```
 
-Defines a custom color name for later use. Quotation marks are *not required* for color name
+Defines a custom color name for later use. Quotation marks are *required* for color name initialization. They are not required when then used with ```color``` command
 
 ## Layer
 Syntax: ```layer <shape_names>* <layer_number>``` or ```move <shape_names>* up/down```

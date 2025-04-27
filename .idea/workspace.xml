@@ -5,21 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0ee44014-11a2-4f1b-a214-f161d7cd943b" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ReadMe.md" beforeDir="false" afterPath="$PROJECT_DIR$/ReadMe.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gen/CmdPaintLexer.interp" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintLexer.interp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gen/CmdPaintLexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintLexer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gen/CmdPaintLexer.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintLexer.tokens" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gen/CmdPaintParser.interp" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParser.interp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gen/CmdPaintParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gen/CmdPaintParser.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParser.tokens" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gen/CmdPaintParserBaseListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParserBaseListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gen/CmdPaintParserBaseVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParserBaseVisitor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gen/CmdPaintParserListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParserListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gen/CmdPaintParserVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParserVisitor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CmdPaintLexer.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/CmdPaintLexer.g4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CmdPaintParser.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/CmdPaintParser.g4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/DrawingPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DrawingPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/EditorPanelsCreator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/EditorPanelsCreator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Painter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Painter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/PainterFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/PainterFrame.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Shape.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Shape.java" afterDir="false" />
@@ -155,7 +146,8 @@
       <workItem from="1745496807400" duration="1546000" />
       <workItem from="1745577069749" duration="5967000" />
       <workItem from="1745586364181" duration="719000" />
-      <workItem from="1745700598370" duration="6142000" />
+      <workItem from="1745700598370" duration="6258000" />
+      <workItem from="1745737443992" duration="5949000" />
     </task>
     <servers />
   </component>

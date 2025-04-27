@@ -4,20 +4,19 @@ import java.util.*;
 import java.util.List;
 
 public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
-    private final String error_name = "CHANGE THIS NAME";
     private final Map<String, Shape> shapes;
     private final Map<String, Color> definedColors = new HashMap<>();
     private final PainterFrame painterFrame;
 
     private final List<String> errorList = new ArrayList<>();
     private boolean errorOccurred = false;
-
     public Painter(Map<String, Shape> shapes, PainterFrame frame) {
         this.shapes = shapes;
         this.painterFrame = frame;
     }
 
-    boolean namesVisible = false;
+    private boolean gridVisible = false;
+    private boolean namesVisible = false;
 
     @Override
     public Boolean visitProgram(CmdPaintParser.ProgramContext ctx) {
@@ -31,11 +30,7 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
     }
     @Override
     public Boolean visitDrawOp(CmdPaintParser.DrawOpContext ctx) {
-        String name = "";
-        if (ctx.NAME() == null)
-            name = parseName(name);
-        else
-            name = parseName(ctx.NAME().getText());
+        String name = parseName(ctx.NAME().getText());
         Shape shape = null;
 
         CmdPaintParser.ShapeContext shapeCtx = ctx.shape();
@@ -106,6 +101,9 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
                 shape.setStroke(Integer.parseInt(attrCtx.strokeDefinition().INT().getText()));
             }
         }
+
+        if (namesVisible)
+            shape.showName();
 
         if(overwriteCheck(name))
             shapes.put(shape.name, shape);
@@ -216,6 +214,10 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
                     for(String line : lines)
                         fw.write(line + "\n");
                 }
+                if (namesVisible)
+                    fw.write("names\n");
+                if (gridVisible)
+                    fw.write("grid\n");
                 fw.close();
                 return true;
             }
@@ -272,10 +274,10 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
             return false;
         }
         String newName = ctx.NAME(1).getText().replace("\"", "");
-
-        if(overwriteCheck(newName))
+        if(overwriteCheck(newName)) {
             shapes.put(newName, shapes.remove(oldName));
-
+            shapes.get(newName).name = newName;
+        }
         return true;
     }
 
@@ -532,7 +534,7 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
 
     @Override
     public Boolean visitGridOp(CmdPaintParser.GridOpContext ctx) {
-        painterFrame.toggleGrid();
+        gridVisible = painterFrame.toggleGrid();
         return true;
     }
 
@@ -540,18 +542,15 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
 //               UTILITY METHODS
 //--------------------------------------------------
     private String parseName(String passedName){
-        if (passedName.isEmpty()){
-            System.err.println("Name not provided, name set to " +
-                    error_name + "\n failing to provide proper name will lead do overriding this shape");
-            return error_name;
+        String errorName = "CHANGE_THIS_NAME";
+        if (passedName.equals("<missing NAME>")){
+            return errorName;
         }
-        String name = "";
+        String name;
         try{
             name = passedName.replace("\"", "");
         }catch (Exception e){
-            System.err.println("Error in parsing name, name set to " +
-                    error_name + "\n failing to provide proper name will lead do overriding this shape");
-            name = error_name;
+            name = errorName;
         }
         return name;
     }
