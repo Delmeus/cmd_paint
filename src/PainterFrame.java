@@ -7,11 +7,9 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 import javax.imageio.ImageIO;
-import javax.swing.event.ChangeEvent;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.BiConsumer;
 
 public class PainterFrame extends JFrame{
     private final List<String> history = new ArrayList<>();
@@ -34,16 +32,13 @@ public class PainterFrame extends JFrame{
         void accept(A a, B b, C c);
     }
 
-    public PainterFrame() {
-        this(null);
-    }
-
     public PainterFrame(String filename){
         this.drawingPanel = new DrawingPanel(shapes, this);
         painter = new Painter(shapes, this);
         setTitle("CmdPaint - Drawing");
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setMinimumSize(new Dimension(800, 600));
 
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -99,7 +94,10 @@ public class PainterFrame extends JFrame{
         editorContainer.setLayout(new BoxLayout(editorContainer, BoxLayout.Y_AXIS));
         shapeInfoPanel.setLayout(new BorderLayout());
         shapeInfoPanel.setBorder(BorderFactory.createTitledBorder("Selected Shape Editor"));
-        shapeInfoPanel.add(new JScrollPane(editorContainer), BorderLayout.CENTER);
+
+        JScrollPane editorScrollPane = new JScrollPane(editorContainer);
+        editorScrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        shapeInfoPanel.add(editorScrollPane, BorderLayout.CENTER);
         shapeInfoPanel.setPreferredSize(new Dimension(300, getHeight()));
         add(shapeInfoPanel, BorderLayout.EAST);
     }

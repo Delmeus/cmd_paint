@@ -4,7 +4,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class Shape implements Comparable<Shape>, Serializable {
     String name;
