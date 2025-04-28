@@ -1,6 +1,4 @@
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import javax.swing.*;
@@ -9,11 +7,9 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 import javax.imageio.ImageIO;
-import javax.swing.event.ChangeEvent;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.BiConsumer;
 
 public class PainterFrame extends JFrame{
     private final List<String> history = new ArrayList<>();
@@ -36,16 +32,13 @@ public class PainterFrame extends JFrame{
         void accept(A a, B b, C c);
     }
 
-    public PainterFrame() {
-        this(null);
-    }
-
     public PainterFrame(String filename){
         this.drawingPanel = new DrawingPanel(shapes, this);
         painter = new Painter(shapes, this);
         setTitle("CmdPaint - Drawing");
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setMinimumSize(new Dimension(800, 600));
 
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -101,7 +94,10 @@ public class PainterFrame extends JFrame{
         editorContainer.setLayout(new BoxLayout(editorContainer, BoxLayout.Y_AXIS));
         shapeInfoPanel.setLayout(new BorderLayout());
         shapeInfoPanel.setBorder(BorderFactory.createTitledBorder("Selected Shape Editor"));
-        shapeInfoPanel.add(new JScrollPane(editorContainer), BorderLayout.CENTER);
+
+        JScrollPane editorScrollPane = new JScrollPane(editorContainer);
+        editorScrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        shapeInfoPanel.add(editorScrollPane, BorderLayout.CENTER);
         shapeInfoPanel.setPreferredSize(new Dimension(300, getHeight()));
         add(shapeInfoPanel, BorderLayout.EAST);
     }
@@ -160,10 +156,10 @@ public class PainterFrame extends JFrame{
 
         try {
             ImageIO.write(image, "PNG", new File("drawing.png"));
-            System.out.println("Image saved successfully.");
+            pushMessage("Image saved successfully.");
             return true;
         } catch (IOException e) {
-            System.out.println("Error saving image: " + e.getMessage());
+            pushMessage("Error saving image: " + e.getMessage());
             return false;
         }
     }
@@ -209,8 +205,8 @@ public class PainterFrame extends JFrame{
         editorContainer.repaint();
     }
 
-    public void toggleGrid(){
-        drawingPanel.toggleGrid();
+    public boolean toggleGrid(){
+        return drawingPanel.toggleGrid();
     }
 
     private void processCommand(String command) {
@@ -220,6 +216,17 @@ public class PainterFrame extends JFrame{
             CmdPaintLexer lexer = new CmdPaintLexer(input);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             CmdPaintParser parser = new CmdPaintParser(tokens);
+
+            parser.removeErrorListeners();
+            parser.addErrorListener(new BaseErrorListener() {
+                @Override
+                public void syntaxError(Recognizer<?, ?> recognizer,
+                                        Object offendingSymbol,
+                                        int line, int charPositionInLine,
+                                        String msg, RecognitionException e) {
+                    pushMessage("Invalid command: " + msg);
+                }
+            });
 
             ParseTree tree = parser.program();
             painter.visit(tree);

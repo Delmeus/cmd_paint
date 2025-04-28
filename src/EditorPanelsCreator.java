@@ -1,9 +1,6 @@
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,8 +76,7 @@ public class EditorPanelsCreator {
             parent.repaint();
         });
 
-        JButton colorButton = new JButton("Choose color");
-        colorButton.setPreferredSize(new Dimension(130, 30));
+        JButton colorButton = getButton("Choose color");
         colorButton.addActionListener(e -> {
             Color chosen = JColorChooser.showDialog(panel, "Choose Color", Color.BLACK);
             if (chosen != null) {
@@ -88,6 +84,12 @@ public class EditorPanelsCreator {
                 colorSliders.get(1).setValue(chosen.getGreen());
                 colorSliders.get(2).setValue(chosen.getBlue());
             }
+        });
+
+        JButton updateButton = getButton("Update data");
+        updateButton.addActionListener(e -> {
+            parent.updateShapeInfoPanel();
+            parent.repaint();
         });
 
         addLabeledField.accept("Stroke:", strokeSpinner, 30);
@@ -117,9 +119,13 @@ public class EditorPanelsCreator {
         JPanel hollowRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
         hollowRow.add(hollowCheck);
         panel.add(hollowRow);
-        JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        buttonRow.add(colorButton);
-        panel.add(buttonRow);
+
+        JPanel buttonColumn = new JPanel();
+        buttonColumn.setLayout(new BoxLayout(buttonColumn, BoxLayout.Y_AXIS));
+        buttonColumn.add(colorButton);
+        buttonColumn.add(Box.createRigidArea(new Dimension(0, 10)));
+        buttonColumn.add(updateButton);
+        panel.add(buttonColumn);
 
         addColorsWindow(panel, colorSliders.get(0), colorSliders.get(1), colorSliders.get(2));
         return panel;
@@ -245,5 +251,14 @@ public class EditorPanelsCreator {
         sliders.add(gSlider);
         sliders.add(bSlider);
         return sliders;
+    }
+
+    private JButton getButton(String text){
+        JButton button = new JButton(text);
+        Dimension buttonSize = new Dimension(200, 30);
+        button.setPreferredSize(buttonSize);
+        button.setMaximumSize(buttonSize);
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        return button;
     }
 }

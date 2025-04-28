@@ -4,7 +4,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class Shape implements Comparable<Shape>, Serializable {
     String name;
@@ -25,13 +24,16 @@ public abstract class Shape implements Comparable<Shape>, Serializable {
         this.y = y;
     }
 
-    //Would be nice to define more colors in antlr
     public void setColor(String colorStr) {
         switch (colorStr.toLowerCase()) {
             case "red" -> this.color = Color.RED;
-            case "blue" -> this.color = Color.BLUE;
             case "green" -> this.color = Color.GREEN;
+            case "blue" -> this.color = Color.BLUE;
             case "yellow" -> this.color = Color.YELLOW;
+            case "orange" -> this.color = Color.ORANGE;
+            case "magenta" -> this.color = Color.MAGENTA;
+            case "cyan" -> this.color = Color.CYAN;
+            case "white" -> this.color = Color.WHITE;
             default -> this.color = Color.BLACK;
         }
     }
@@ -104,6 +106,11 @@ public abstract class Shape implements Comparable<Shape>, Serializable {
 
     public void unselect(){
         selected = false;
+    }
+
+    public void moveBy(int dx, int dy) {
+        this.x += dx;
+        this.y += dy;
     }
 
     @Override
@@ -448,6 +455,14 @@ class Line extends Shape {
     }
 
     @Override
+    public void moveBy(int dx, int dy) {
+        this.x += dx;
+        this.y += dy;
+        this.x2 += dx;
+        this.y2 += dy;
+    }
+
+    @Override
     public boolean contains(int px, int py) {
         int centerX = (x + x2) / 2;
         int centerY = (y + y2) / 2;
@@ -518,6 +533,14 @@ class Polygon extends Shape {
 
         this.x = newX;
         this.y = newY;
+    }
+
+    @Override
+    public void moveBy(int dx, int dy) {
+        for(int i = 0; i < x_points.length; i++){
+            x_points[i] += dx;
+            y_points[i] += dy;
+        }
     }
 
     @Override
@@ -818,6 +841,13 @@ class ShapeGroup extends Shape{
     }
 
     @Override
+    public void moveBy(int dx, int dy) {
+        for (Shape shape : children.values()) {
+            shape.moveBy(dx, dy);
+        }
+    }
+
+    @Override
     public void rotate(int angle) {
         for (Shape shape : children.values()) {
             shape.rotate(angle);
@@ -836,7 +866,6 @@ class ShapeGroup extends Shape{
             groupString.append("\"").append(child.name).append("\" ");
         }
         script.add(groupString.toString());
-        script.add("move \"" + name + "\" (" + x + "," + y + ")");
         return script;
     }
 
