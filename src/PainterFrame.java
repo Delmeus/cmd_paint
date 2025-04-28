@@ -89,6 +89,7 @@ public class PainterFrame extends JFrame{
         JPanel commandPanel = new JPanel(new BorderLayout(5, 5));
         commandPanel.add(commandLabel, BorderLayout.WEST);
         commandPanel.add(commandField, BorderLayout.CENTER);
+        commandPanel.add(new CommandHelperPanel(commandField), BorderLayout.NORTH);
         add(commandPanel, BorderLayout.SOUTH);
 
         editorContainer.setLayout(new BoxLayout(editorContainer, BoxLayout.Y_AXIS));
