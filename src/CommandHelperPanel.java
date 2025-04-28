@@ -19,6 +19,7 @@ public class CommandHelperPanel extends JPanel {
     private String command = "";
 
     private Map<String, String> options = new HashMap<>();
+    private final JPanel shapeEditorContainer = new JPanel(new BorderLayout());
 
 
     CommandHelperPanel(JTextField commandTextField) {
@@ -26,9 +27,17 @@ public class CommandHelperPanel extends JPanel {
         setLayout(new BorderLayout());
         add(createShapeChooserPanel(), BorderLayout.WEST);
 
+        shapeEditorContainer.setLayout(new BoxLayout(shapeEditorContainer, BoxLayout.Y_AXIS));
+        add(shapeEditorContainer, BorderLayout.CENTER);
+
         JButton resetButton = new JButton("Reset");
         resetButton.addActionListener(e -> {
             command = "";
+            options.clear();
+            commandTextField.setText("");
+            shapeEditorContainer.removeAll();
+            shapeEditorContainer.revalidate();
+            shapeEditorContainer.repaint();
         });
         add(resetButton, BorderLayout.EAST);
     }
@@ -36,7 +45,6 @@ public class CommandHelperPanel extends JPanel {
     private JPanel createShapeChooserPanel() {
         JPanel shapesPanel = new JPanel();
         shapesPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-
         for (ShapeType type : ShapeType.values()) {
             shapesPanel.add(createShapeButton(type));
         }
@@ -60,8 +68,10 @@ public class CommandHelperPanel extends JPanel {
         panel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                command = "draw " + type.name().toLowerCase() + " ";
+                command = "draw \"name\" " + type.name().toLowerCase() + " ";
+                options.clear();
                 commandTextField.setText(command);
+                showShapeEditor(type);
             }
         });
 
@@ -69,25 +79,107 @@ public class CommandHelperPanel extends JPanel {
     }
 
     private JPanel createShapeEditorPanel(ShapeType type) {
-        JPanel panel = new JPanel();
-        if (type == ShapeType.RECTANGLE) {
-            JSpinner widthSpinner = new JSpinner(new SpinnerNumberModel(100, 0, Integer.MAX_VALUE, 10));
-            JSpinner heightSpinner = new JSpinner(new SpinnerNumberModel(100, 0, Integer.MAX_VALUE, 10));
-
-            widthSpinner.addChangeListener(e -> {
-                options.put("width", String.valueOf(widthSpinner.getValue()));
-                updateCommandField();
-            });
-            heightSpinner.addChangeListener(e -> {
-                options.put("height", String.valueOf(heightSpinner.getValue()));
-                updateCommandField();
-            });
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+        addNameField(panel);
+        switch (type) {
+            case RECTANGLE -> {
+                addSizeSpinner("x", panel, Integer.MIN_VALUE, 0);
+                addSizeSpinner("y", panel, Integer.MIN_VALUE, 0);
+                addSizeSpinner("width", panel, 1, 100);
+                addSizeSpinner("height", panel, 1, 80);
+            }
+            case CIRCLE -> {
+                addSizeSpinner("x", panel, Integer.MIN_VALUE, 0);
+                addSizeSpinner("y", panel, Integer.MIN_VALUE, 0);
+                addSizeSpinner("radius", panel, 1, 100);
+            }
+            case SQUARE -> {
+                addSizeSpinner("x", panel, Integer.MIN_VALUE, 0);
+                addSizeSpinner("y", panel, Integer.MIN_VALUE, 0);
+                addSizeSpinner("size", panel, 1, 100);
+            }
+            case LINE -> {
+                addSizeSpinner("x", panel, Integer.MIN_VALUE, 0);
+                addSizeSpinner("y", panel, Integer.MIN_VALUE, 0);
+                addSizeSpinner("x2", panel, Integer.MIN_VALUE, 100);
+                addSizeSpinner("y2", panel, Integer.MIN_VALUE, 100);
+            }
+            case POLYGON -> {
+                panel.add(new JLabel("Please add position manually"));
+            }
+            default -> {
+                panel.add(new JLabel("No editable properties"));
+            }
         }
-        return null;
+        return panel;
+    }
+
+    private void addSizeSpinner(String name, JPanel panel, int min, int defaultValue){
+        panel.add(new JLabel(name + ":"));
+        JSpinner spinner = new JSpinner(new SpinnerNumberModel(defaultValue, min, Integer.MAX_VALUE, 10));
+        options.put(name, spinner.getValue().toString());
+        updateCommandField();
+        spinner.addChangeListener(e -> {
+            options.put(name, spinner.getValue().toString());
+            updateCommandField();
+        });
+        spinner.setPreferredSize(new Dimension(50, 20));
+        panel.add(spinner);
     }
 
     private JPanel optionalOptionsPanel() {
-        return null;
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+
+        JButton colorButton = new JButton("Pick Color");
+        colorButton.addActionListener(e -> {
+            Color selectedColor = JColorChooser.showDialog(this, "Choose a color", Color.BLACK);
+            if (selectedColor != null) {
+                String color = "(" + selectedColor.getRed() + ", " + selectedColor.getGreen() + ", " + selectedColor.getBlue() + ")";
+                options.put("color", color);
+                updateCommandField();
+            }
+        });
+        panel.add(colorButton);
+
+        panel.add(new JLabel("Stroke:"));
+        JSpinner strokeSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 100, 1));
+        options.put("stroke", strokeSpinner.getValue().toString());
+        strokeSpinner.addChangeListener(e -> {
+            options.put("stroke", strokeSpinner.getValue().toString());
+            updateCommandField();
+        });
+        panel.add(strokeSpinner);
+
+        panel.add(new JLabel("Layer:"));
+        JSpinner layerSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        options.put("layer", layerSpinner.getValue().toString());
+        layerSpinner.addChangeListener(e -> {
+            options.put("layer", layerSpinner.getValue().toString());
+            updateCommandField();
+        });
+        panel.add(layerSpinner);
+
+        JCheckBox hollowCheckBox = new JCheckBox("Hollow:");
+        hollowCheckBox.addActionListener(e -> {
+            if(hollowCheckBox.isSelected())
+                options.put("hollow", "");
+            else options.remove("hollow");
+            updateCommandField();
+        });
+        panel.add(hollowCheckBox);
+
+        return panel;
+    }
+
+    private void addNameField(JPanel panel){
+        panel.add(new JLabel("Name:"));
+        JTextField nameField = new JTextField("name");
+        nameField.addActionListener(e -> {
+           options.put("name", nameField.getText());
+           updateCommandField();
+        });
+        nameField.setPreferredSize(new Dimension(100, 20));
+        panel.add(nameField);
     }
 
     private void drawShapeIcon(Graphics g, ShapeType type) {
@@ -111,14 +203,62 @@ public class CommandHelperPanel extends JPanel {
         }
     }
 
+    private void showShapeEditor(ShapeType type) {
+        shapeEditorContainer.removeAll();
+
+        JPanel editor = createShapeEditorPanel(type);
+        shapeEditorContainer.add(editor);
+
+        JPanel optionalPanel = optionalOptionsPanel();
+        shapeEditorContainer.add(optionalPanel);
+
+        shapeEditorContainer.revalidate();
+        shapeEditorContainer.repaint();
+    }
+
     private void updateCommandField() {
         StringBuilder sb = new StringBuilder(command.trim());
 
+        if (options.containsKey("name")) {
+            String currentCommand = sb.toString();
+            int firstQuote = currentCommand.indexOf("\"");
+            int secondQuote = currentCommand.indexOf("\"", firstQuote + 1);
+            if (firstQuote != -1 && secondQuote != -1) {
+                sb = new StringBuilder(
+                        currentCommand.substring(0, firstQuote + 1) +
+                                options.get("name") +
+                                currentCommand.substring(secondQuote)
+                );
+            }
+        }
+
+        boolean hasStart = options.containsKey("x") && options.containsKey("y");
+        boolean hasEnd = options.containsKey("x2") && options.containsKey("y2");
+
+        if (hasStart)
+            sb.append(" (").append(options.get("x")).append(", ").append(options.get("y"));
+
+        if (hasEnd)
+            sb.append(", ").append(options.get("x2")).append(", ").append(options.get("y2"));
+
+        if(hasStart)
+            sb.append(")");
+
         for (Map.Entry<String, String> entry : options.entrySet()) {
-            sb.append(" ").append(entry.getKey()).append(" ").append(entry.getValue());
+            String key = entry.getKey();
+            if (checkIfKeyRequiresOmitting(key)) continue;
+            if (key.equals("hollow")){
+                sb.append(" ").append("hollow").append(" ");
+            }
+            else
+                sb.append(" ").append(entry.getKey()).append(" ").append(entry.getValue());
         }
 
         commandTextField.setText(sb.toString());
+    }
+
+    private boolean checkIfKeyRequiresOmitting(String key){
+        return key.equals("x") || key.equals("y") || key.equals("x2") || key.equals("y2") || key.equals("name");
     }
 
 }
