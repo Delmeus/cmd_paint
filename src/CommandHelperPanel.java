@@ -21,6 +21,10 @@ public class CommandHelperPanel extends JPanel {
     private Map<String, String> options = new HashMap<>();
     private final JPanel shapeEditorContainer = new JPanel(new BorderLayout());
 
+    private int selectedX = 0;
+    private int selectedY = 0;
+    private JSpinner xSpinner;
+    private JSpinner ySpinner;
 
     CommandHelperPanel(JTextField commandTextField) {
         this.commandTextField = commandTextField;
@@ -40,6 +44,18 @@ public class CommandHelperPanel extends JPanel {
             shapeEditorContainer.repaint();
         });
         add(resetButton, BorderLayout.EAST);
+    }
+
+    public void setSelectedX(int selectedX) {
+        this.selectedX = selectedX;
+        if (xSpinner != null)
+            xSpinner.setValue(selectedX);
+    }
+
+    public void setSelectedY(int selectedY) {
+        this.selectedY = selectedY;
+        if (ySpinner != null)
+            ySpinner.setValue(selectedY);
     }
 
     private JPanel createShapeChooserPanel() {
@@ -83,26 +99,34 @@ public class CommandHelperPanel extends JPanel {
         addNameField(panel);
         switch (type) {
             case RECTANGLE -> {
-                addSizeSpinner("x", panel, Integer.MIN_VALUE, 0);
-                addSizeSpinner("y", panel, Integer.MIN_VALUE, 0);
-                addSizeSpinner("width", panel, 1, 100);
-                addSizeSpinner("height", panel, 1, 80);
+                xSpinner = addSizeSpinner("x", panel, Integer.MIN_VALUE, selectedX);
+                ySpinner = addSizeSpinner("y", panel, Integer.MIN_VALUE, selectedY);
+                panel.add(xSpinner);
+                panel.add(ySpinner);
+                panel.add(addSizeSpinner("width", panel, 1, 100));
+                panel.add(addSizeSpinner("height", panel, 1, 80));
             }
             case CIRCLE -> {
-                addSizeSpinner("x", panel, Integer.MIN_VALUE, 0);
-                addSizeSpinner("y", panel, Integer.MIN_VALUE, 0);
-                addSizeSpinner("radius", panel, 1, 100);
+                xSpinner = addSizeSpinner("x", panel, Integer.MIN_VALUE, selectedX);
+                ySpinner = addSizeSpinner("y", panel, Integer.MIN_VALUE, selectedY);
+                panel.add(xSpinner);
+                panel.add(ySpinner);
+                panel.add(addSizeSpinner("radius", panel, 1, 100));
             }
             case SQUARE -> {
-                addSizeSpinner("x", panel, Integer.MIN_VALUE, 0);
-                addSizeSpinner("y", panel, Integer.MIN_VALUE, 0);
-                addSizeSpinner("size", panel, 1, 100);
+                xSpinner = addSizeSpinner("x", panel, Integer.MIN_VALUE, selectedX);
+                ySpinner = addSizeSpinner("y", panel, Integer.MIN_VALUE, selectedY);
+                panel.add(xSpinner);
+                panel.add(ySpinner);
+                panel.add(addSizeSpinner("size", panel, 1, 100));
             }
             case LINE -> {
-                addSizeSpinner("x", panel, Integer.MIN_VALUE, 0);
-                addSizeSpinner("y", panel, Integer.MIN_VALUE, 0);
-                addSizeSpinner("x2", panel, Integer.MIN_VALUE, 100);
-                addSizeSpinner("y2", panel, Integer.MIN_VALUE, 100);
+                xSpinner = addSizeSpinner("x", panel, Integer.MIN_VALUE, selectedX);
+                ySpinner = addSizeSpinner("y", panel, Integer.MIN_VALUE, selectedY);
+                panel.add(xSpinner);
+                panel.add(ySpinner);
+                panel.add(addSizeSpinner("x2", panel, Integer.MIN_VALUE, selectedX + 100));
+                panel.add(addSizeSpinner("y2", panel, Integer.MIN_VALUE, selectedY));
             }
             case POLYGON -> {
                 panel.add(new JLabel("Please add position manually"));
@@ -114,7 +138,7 @@ public class CommandHelperPanel extends JPanel {
         return panel;
     }
 
-    private void addSizeSpinner(String name, JPanel panel, int min, int defaultValue){
+    private JSpinner addSizeSpinner(String name, JPanel panel, int min, int defaultValue){
         panel.add(new JLabel(name + ":"));
         JSpinner spinner = new JSpinner(new SpinnerNumberModel(defaultValue, min, Integer.MAX_VALUE, 10));
         options.put(name, spinner.getValue().toString());
@@ -124,7 +148,8 @@ public class CommandHelperPanel extends JPanel {
             updateCommandField();
         });
         spinner.setPreferredSize(new Dimension(50, 20));
-        panel.add(spinner);
+//        panel.add(spinner);
+        return spinner;
     }
 
     private JPanel optionalOptionsPanel() {

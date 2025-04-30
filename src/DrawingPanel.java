@@ -10,8 +10,8 @@ public class DrawingPanel extends JPanel implements MouseListener, MouseMotionLi
     private final PainterFrame parent;
 
     private Set<Shape> selectedShapes = new HashSet<>();
-    int selectedX = 0;
-    int selectedY = 0;
+    private int selectedX = 0;
+    private int selectedY = 0;
     private final Map<String, Shape> shapes;
     private Color backgroundColor = Color.WHITE;
 
@@ -77,6 +77,7 @@ public class DrawingPanel extends JPanel implements MouseListener, MouseMotionLi
             int mouseY = e.getY();
             selectedX = mouseX;
             selectedY = mouseY;
+            parent.updateSelectedCoordinatesInCommandHelper(mouseX, mouseY);
 
             List<Shape> sortedShapes = new ArrayList<>(shapes.values());
             sortedShapes.sort((s1, s2) -> Integer.compare(s2.layer, s1.layer));

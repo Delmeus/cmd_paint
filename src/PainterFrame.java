@@ -19,6 +19,7 @@ public class PainterFrame extends JFrame{
     private final Map<String, Shape> shapes = new HashMap<>();
     private final Painter painter;
     private final EditorPanelsCreator creator = new EditorPanelsCreator(this);
+    private final CommandHelperPanel commandHelper;
 
     private final DrawingPanel drawingPanel;
     private final JTextField commandField;
@@ -87,9 +88,14 @@ public class PainterFrame extends JFrame{
         });
         JLabel commandLabel = new JLabel("Command:");
         JPanel commandPanel = new JPanel(new BorderLayout(5, 5));
+        commandHelper = new CommandHelperPanel(commandField);
+        commandHelper.setSelectedX(drawingPanel.getX());
+        commandHelper.setSelectedY(drawingPanel.getY());
+
         commandPanel.add(commandLabel, BorderLayout.WEST);
         commandPanel.add(commandField, BorderLayout.CENTER);
-        commandPanel.add(new CommandHelperPanel(commandField), BorderLayout.NORTH);
+//        commandPanel.add(new CommandHelperPanel(commandField), BorderLayout.NORTH);
+        commandPanel.add(commandHelper, BorderLayout.NORTH);
         add(commandPanel, BorderLayout.SOUTH);
 
         editorContainer.setLayout(new BoxLayout(editorContainer, BoxLayout.Y_AXIS));
@@ -128,11 +134,11 @@ public class PainterFrame extends JFrame{
     }
 
     public int getSelectedX() {
-        return drawingPanel.selectedX;
+        return drawingPanel.getSelectedX();
     }
 
     public int getSelectedY() {
-        return drawingPanel.selectedY;
+        return drawingPanel.getSelectedY();
     }
 
     public boolean hasShapesSelected(){
@@ -208,6 +214,11 @@ public class PainterFrame extends JFrame{
 
     public boolean toggleGrid(){
         return drawingPanel.toggleGrid();
+    }
+
+    public void updateSelectedCoordinatesInCommandHelper(int x, int y){
+        commandHelper.setSelectedX(x);
+        commandHelper.setSelectedY(y);
     }
 
     private void processCommand(String command) {
