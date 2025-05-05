@@ -12,6 +12,9 @@ public class DrawingPanel extends JPanel implements MouseListener, MouseMotionLi
     private Set<Shape> selectedShapes = new HashSet<>();
     private int selectedX = 0;
     private int selectedY = 0;
+    private int mouseX = 0;
+    private int mouseY = 0;
+
     private final Map<String, Shape> shapes;
     private Color backgroundColor = Color.WHITE;
 
@@ -68,13 +71,14 @@ public class DrawingPanel extends JPanel implements MouseListener, MouseMotionLi
             }
             shape.draw(g);
         }
+        drawMouseCoordinates(g);
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
-            int mouseX = e.getX();
-            int mouseY = e.getY();
+            mouseX = e.getX();
+            mouseY = e.getY();
             selectedX = mouseX;
             selectedY = mouseY;
             parent.updateSelectedCoordinatesInCommandHelper(mouseX, mouseY);
@@ -120,6 +124,8 @@ public class DrawingPanel extends JPanel implements MouseListener, MouseMotionLi
     @Override
     public void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
+            mouseX = e.getX();
+            mouseY = e.getY();
             dragStartX = e.getX();
             dragStartY = e.getY();
             dragging = true;
@@ -129,6 +135,8 @@ public class DrawingPanel extends JPanel implements MouseListener, MouseMotionLi
     @Override
     public void mouseDragged(MouseEvent e) {
         if (dragging && !selectedShapes.isEmpty()) {
+            mouseX = e.getX();
+            mouseY = e.getY();
             int deltaX = e.getX() - dragStartX;
             int deltaY = e.getY() - dragStartY;
 
@@ -172,10 +180,37 @@ public class DrawingPanel extends JPanel implements MouseListener, MouseMotionLi
         }
     }
 
+    private void drawMouseCoordinates(Graphics g) {
+        if (mouseX < 0 || mouseY < 0) return;
+
+        String text = "(" + mouseX + ", " + mouseY + ")";
+        Graphics2D g2d = (Graphics2D) g.create();
+        g2d.setFont(new Font("Arial", Font.PLAIN, 12));
+        FontMetrics metrics = g2d.getFontMetrics();
+        int textWidth = metrics.stringWidth(text);
+        int textHeight = metrics.getHeight();
+
+        int x = getWidth() - textWidth - 10;
+        int y = getHeight() - 10;
+
+        if (checkIfBackgroundIsDark())
+            g2d.setColor(new Color(220, 220, 220));
+        else
+            g2d.setColor(new Color(0, 0, 0, 160));
+        g2d.drawString(text, x, y);
+        g2d.dispose();
+    }
+
+
     private boolean checkIfBackgroundIsGray(){
         Color c = backgroundColor;
         return c.getRed() > 200 && c.getRed() < 240 && c.getGreen() > 200 && c.getGreen() < 240
                 && c.getBlue() > 200 && c.getBlue() < 240;
+    }
+
+    private boolean checkIfBackgroundIsDark(){
+        Color c = backgroundColor;
+        return c.getRed() < 120 && c.getBlue() < 120 && c.getGreen() < 120;
     }
 
     @Override
@@ -190,7 +225,9 @@ public class DrawingPanel extends JPanel implements MouseListener, MouseMotionLi
 
     @Override
     public void mouseMoved(MouseEvent e) {
-
+        mouseX = e.getX();
+        mouseY = e.getY();
+        repaint();
     }
 
 }

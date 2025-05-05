@@ -148,7 +148,6 @@ public class CommandHelperPanel extends JPanel {
             updateCommandField();
         });
         spinner.setPreferredSize(new Dimension(50, 20));
-//        panel.add(spinner);
         return spinner;
     }
 
