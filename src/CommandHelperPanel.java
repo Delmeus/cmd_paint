@@ -49,13 +49,13 @@ public class CommandHelperPanel extends JPanel {
 
     public void setSelectedX(int selectedX) {
         this.selectedX = selectedX;
-        if (xSpinner != null)
+        if (xSpinner != null && !options.isEmpty())
             xSpinner.setValue(selectedX);
     }
 
     public void setSelectedY(int selectedY) {
         this.selectedY = selectedY;
-        if (ySpinner != null)
+        if (ySpinner != null && !options.isEmpty())
             ySpinner.setValue(selectedY);
     }
 
@@ -101,30 +101,30 @@ public class CommandHelperPanel extends JPanel {
         switch (type) {
             case RECTANGLE -> {
                 xSpinner = addSizeSpinner("x", panel, Integer.MIN_VALUE, selectedX);
-                ySpinner = addSizeSpinner("y", panel, Integer.MIN_VALUE, selectedY);
                 panel.add(xSpinner);
+                ySpinner = addSizeSpinner("y", panel, Integer.MIN_VALUE, selectedY);
                 panel.add(ySpinner);
                 panel.add(addSizeSpinner("width", panel, 1, 100));
                 panel.add(addSizeSpinner("height", panel, 1, 80));
             }
             case CIRCLE -> {
                 xSpinner = addSizeSpinner("x", panel, Integer.MIN_VALUE, selectedX);
-                ySpinner = addSizeSpinner("y", panel, Integer.MIN_VALUE, selectedY);
                 panel.add(xSpinner);
+                ySpinner = addSizeSpinner("y", panel, Integer.MIN_VALUE, selectedY);
                 panel.add(ySpinner);
                 panel.add(addSizeSpinner("radius", panel, 1, 100));
             }
             case SQUARE -> {
                 xSpinner = addSizeSpinner("x", panel, Integer.MIN_VALUE, selectedX);
-                ySpinner = addSizeSpinner("y", panel, Integer.MIN_VALUE, selectedY);
                 panel.add(xSpinner);
+                ySpinner = addSizeSpinner("y", panel, Integer.MIN_VALUE, selectedY);
                 panel.add(ySpinner);
                 panel.add(addSizeSpinner("size", panel, 1, 100));
             }
             case LINE -> {
                 xSpinner = addSizeSpinner("x", panel, Integer.MIN_VALUE, selectedX);
-                ySpinner = addSizeSpinner("y", panel, Integer.MIN_VALUE, selectedY);
                 panel.add(xSpinner);
+                ySpinner = addSizeSpinner("y", panel, Integer.MIN_VALUE, selectedY);
                 panel.add(ySpinner);
                 panel.add(addSizeSpinner("x2", panel, Integer.MIN_VALUE, selectedX + 100));
                 panel.add(addSizeSpinner("y2", panel, Integer.MIN_VALUE, selectedY));

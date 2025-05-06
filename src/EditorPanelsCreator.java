@@ -68,7 +68,7 @@ public class EditorPanelsCreator {
             parent.repaint();
         });
         layerSpinner.addChangeListener(e -> {
-            shape.layer = (int) layerSpinner.getValue();
+            shape.setLayer((int) layerSpinner.getValue());
             parent.repaint();
         });
         scaleSpinner.addChangeListener(e -> {

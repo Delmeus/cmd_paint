@@ -210,6 +210,7 @@ class Square extends Shape {
         cloned.setStroke(this.stroke);
         if (hollow)
             cloned.hollow();
+        cloned.setRotationAngle(this.rotationAngle);
         return cloned;
     }
 
@@ -361,6 +362,7 @@ class Rectangle extends Shape {
         cloned.setStroke(this.stroke);
         if (hollow)
             cloned.hollow();
+        cloned.setRotationAngle(this.rotationAngle);
         return cloned;
     }
 
@@ -791,6 +793,7 @@ class ShapeGroup extends Shape{
 
     @Override
     public void draw(Graphics g) {
+        sortDrawOrder();
         for (String name : drawOrder) {
             Shape child = children.get(name);
             if (child != null) {
@@ -844,10 +847,20 @@ class ShapeGroup extends Shape{
 
     @Override
     public Shape clone(int x, int y) {
+        java.awt.Rectangle bounds = getBounds();
+        int dx = x - bounds.x;
+        int dy = y - bounds.y;
+
         List<Shape> copies = new ArrayList<>();
-        for (Shape child : children.values())
-            copies.add(child.clone(x, y));
-        return new ShapeGroup(name + "_c", copies);
+        for (Shape child : getChildren()) {
+            Shape clonedChild = child.clone(child.x + dx, child.y + dy);
+            copies.add(clonedChild);
+        }
+
+        ShapeGroup clonedGroup = new ShapeGroup(name + "_c", copies);
+        clonedGroup.setLayer(this.layer);
+        clonedGroup.setStroke(this.stroke);
+        return clonedGroup;
     }
 
     @Override
