@@ -128,6 +128,7 @@ public abstract class Shape implements Comparable<Shape>, Serializable {
     public abstract Shape clone(int x, int y);
     public abstract List<String> getScript();
     public abstract void scale(double factor);
+
     protected Stroke getStroke(){
         if (selected)
             if (hollow)
@@ -138,7 +139,7 @@ public abstract class Shape implements Comparable<Shape>, Serializable {
     }
 
     protected boolean isColorDark(){
-        return color.getRed() < 110 && color.getBlue() < 110 && color.getGreen() < 110;
+        return color.getRed() < 120 && color.getBlue() < 120 && color.getGreen() < 120;
     }
 
     protected void setFont(Graphics2D g2d){
@@ -203,7 +204,7 @@ class Square extends Shape {
 
     @Override
     public Shape clone(int x, int y) {
-        Square cloned = new Square(this.name + "_copy", x, y, this.size);
+        Square cloned = new Square(this.name + "_c", x, y, this.size);
         cloned.setColor(this.color);
         cloned.setLayer(this.layer);
         cloned.setStroke(this.stroke);
@@ -273,7 +274,13 @@ class Circle extends Shape {
 
     @Override
     public Shape clone(int x, int y) {
-        return null;
+        Circle cloned = new Circle(name + "_c", x, y, radius);
+        cloned.setColor(this.color);
+        cloned.setLayer(this.layer);
+        cloned.setStroke(this.stroke);
+        if (hollow)
+            cloned.hollow();
+        return cloned;
     }
 
     @Override
@@ -348,7 +355,13 @@ class Rectangle extends Shape {
 
     @Override
     public Shape clone(int x, int y) {
-        return null;
+        Rectangle cloned = new Rectangle(name + "_c", x, y, width, height);
+        cloned.setColor(this.color);
+        cloned.setLayer(this.layer);
+        cloned.setStroke(this.stroke);
+        if (hollow)
+            cloned.hollow();
+        return cloned;
     }
 
     @Override
@@ -478,7 +491,13 @@ class Line extends Shape {
 
     @Override
     public Shape clone(int x, int y) {
-        return null;
+        Line cloned = new Line(name + "_c", this.x, this.y, this.x2, this.y2);
+        cloned.setColor(this.color);
+        cloned.setLayer(this.layer);
+        cloned.setStroke(this.stroke);
+        if (hollow)
+            cloned.hollow();
+        return cloned;
     }
 
     @Override
@@ -657,7 +676,7 @@ class Polygon extends Shape {
             newY[i] = y_points[i] + dy;
         }
 
-        Polygon cloned = new Polygon(this.name + "_copy", newX, newY);
+        Polygon cloned = new Polygon(this.name + "_c", newX, newY);
         cloned.setColor(this.color);
         cloned.setLayer(this.layer);
         cloned.setStroke(this.stroke);
@@ -825,7 +844,10 @@ class ShapeGroup extends Shape{
 
     @Override
     public Shape clone(int x, int y) {
-        return null;
+        List<Shape> copies = new ArrayList<>();
+        for (Shape child : children.values())
+            copies.add(child.clone(x, y));
+        return new ShapeGroup(name + "_c", copies);
     }
 
     @Override
@@ -866,6 +888,7 @@ class ShapeGroup extends Shape{
             groupString.append("\"").append(child.name).append("\" ");
         }
         script.add(groupString.toString());
+        script.add("layer \"" + name + "\" " + layer);
         return script;
     }
 

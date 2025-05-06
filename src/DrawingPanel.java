@@ -19,6 +19,7 @@ public class DrawingPanel extends JPanel implements MouseListener, MouseMotionLi
     private Color backgroundColor = Color.WHITE;
 
     private boolean isGridActive = false;
+    private boolean cooridnatesBlockedFromDisplaying = false;
 
     private int dragStartX, dragStartY;
     private boolean dragging = false;
@@ -41,6 +42,23 @@ public class DrawingPanel extends JPanel implements MouseListener, MouseMotionLi
     public boolean toggleGrid(){
         isGridActive = !isGridActive;
         return isGridActive;
+    }
+
+    public void prepareForSavingImage(){
+        cooridnatesBlockedFromDisplaying = true;
+        for (Shape shape : selectedShapes) {
+            shape.unselect();
+        }
+        selectedShapes.clear();
+    }
+
+    public void reenableFeaturesAfterSavingImage(){
+        cooridnatesBlockedFromDisplaying = false;
+    }
+
+    public String getBackgroundColorScript(){
+        return "background color (" + backgroundColor.getRed() + ","
+                + backgroundColor.getGreen() + "," + backgroundColor.getBlue() + ")";
     }
 
     public int getSelectedX() {
@@ -181,6 +199,8 @@ public class DrawingPanel extends JPanel implements MouseListener, MouseMotionLi
     }
 
     private void drawMouseCoordinates(Graphics g) {
+        if (cooridnatesBlockedFromDisplaying)
+            return;
         if (mouseX < 0 || mouseY < 0) return;
 
         String text = "(" + mouseX + ", " + mouseY + ")";

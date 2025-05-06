@@ -4,6 +4,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Arrays;
 
 enum ShapeType{
     SQUARE,
@@ -268,15 +269,26 @@ public class CommandHelperPanel extends JPanel {
         if(hasStart)
             sb.append(")");
 
+        String[] requiredOrder = {"size", "width", "height", "radius"};
+
+        for (String key : requiredOrder) {
+            if (options.containsKey(key)) {
+                sb.append(" ").append(key).append(" ").append(options.get(key));
+            }
+        }
+
         for (Map.Entry<String, String> entry : options.entrySet()) {
             String key = entry.getKey();
             if (checkIfKeyRequiresOmitting(key)) continue;
-            if (key.equals("hollow")){
-                sb.append(" ").append("hollow").append(" ");
+            if (Arrays.asList("size", "width", "height", "radius").contains(key)) continue;
+
+            if (key.equals("hollow")) {
+                sb.append(" hollow");
+            } else {
+                sb.append(" ").append(key).append(" ").append(entry.getValue());
             }
-            else
-                sb.append(" ").append(entry.getKey()).append(" ").append(entry.getValue());
         }
+
 
         commandTextField.setText(sb.toString());
     }

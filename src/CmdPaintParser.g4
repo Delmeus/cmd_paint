@@ -22,7 +22,7 @@ command
     | MOVE NAME* (DOWN | UP) #layerOp
     | CLONE NAME? position? #cloneOp
     | SERIALIZE NAME NAME* #serializeOp
-    | GROUP NAME NAME+ #groupOp
+    | GROUP NAME NAME* #groupOp
     | DEGROUP NAME? #groupOp
     | LOAD NAME #serializeOp
     | SCALE NAME* (FLOAT | INT) #scaleOp

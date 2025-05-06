@@ -218,6 +218,7 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
                     fw.write("names\n");
                 if (gridVisible)
                     fw.write("grid\n");
+                fw.write(painterFrame.getBackgroundColorScript());
                 fw.close();
                 return true;
             }
@@ -493,14 +494,21 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
             }
             String name = parseName(ctx.NAME(0).getText());
             List<Shape> groupedShapes = new ArrayList<>();
-            for (int i = 1; i < ctx.NAME().size(); i++) {
-                String shapeName = parseName(ctx.NAME(i).getText());
-                Shape shape = shapes.get(shapeName);
-                if (shape != null) {
-                    groupedShapes.add(shape);
-                    shapes.remove(shapeName);
-                } else {
-                    painterFrame.pushMessage("Warning: Shape \"" + shapeName + "\" not found.");
+            if(ctx.NAME().size() == 1){
+                groupedShapes = new ArrayList<>(painterFrame.getSelectedShapes());
+                for (Shape shape : groupedShapes)
+                    shapes.remove(shape.name);
+            }
+            else {
+                for (int i = 1; i < ctx.NAME().size(); i++) {
+                    String shapeName = parseName(ctx.NAME(i).getText());
+                    Shape shape = shapes.get(shapeName);
+                    if (shape != null) {
+                        groupedShapes.add(shape);
+                        shapes.remove(shapeName);
+                    } else {
+                        painterFrame.pushMessage("Warning: Shape \"" + shapeName + "\" not found.");
+                    }
                 }
             }
 
@@ -576,10 +584,7 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
         int[] rgb = new int[3];
         for(int i = 0; i < 3; i++){
             rgb[i] = Integer.parseInt(ctx.colorDefinition().colors().rgb_color().INT(i).getText());
-            if(rgb[i] < 0)
-                rgb[i] = 0;
-            else if (rgb[i] > 255)
-                rgb[i] = 255;
+            rgb[i] = Math.max(0, Math.min(255, rgb[i]));
         }
         return new Color(rgb[0], rgb[1], rgb[2]);
     }

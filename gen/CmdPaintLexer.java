@@ -1,4 +1,4 @@
-// Generated from G:/Projekty_Studia/MiASI/cmdPaint/src/CmdPaintLexer.g4 by ANTLR 4.13.2
+// Generated from /home/antek/studia/magisterka/semI/MiASI/cmd_paint/src/CmdPaintLexer.g4 by ANTLR 4.13.2
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;

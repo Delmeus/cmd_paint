@@ -11,8 +11,19 @@
   <component name="ChangeListManager">
     <list default="true" id="0ee44014-11a2-4f1b-a214-f161d7cd943b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CmdPaintLexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintLexer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CmdPaintParser.interp" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParser.interp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CmdPaintParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CmdPaintParserBaseListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParserBaseListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CmdPaintParserBaseVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParserBaseVisitor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CmdPaintParserListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParserListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CmdPaintParserVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CmdPaintParserVisitor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CmdPaintParser.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/CmdPaintParser.g4" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/CommandHelperPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CommandHelperPanel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/DrawingPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DrawingPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Painter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Painter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/PainterFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/PainterFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Shape.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Shape.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -150,7 +161,9 @@
       <workItem from="1745737443992" duration="5949000" />
       <workItem from="1745773985174" duration="713000" />
       <workItem from="1745869867540" duration="4390000" />
-      <workItem from="1746439840044" duration="928000" />
+      <workItem from="1746439840044" duration="1113000" />
+      <workItem from="1746519329596" duration="1365000" />
+      <workItem from="1746528261079" duration="4601000" />
     </task>
     <servers />
   </component>

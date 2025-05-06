@@ -41,12 +41,12 @@ public class PainterFrame extends JFrame{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(800, 600));
 
-        this.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                saveCommandsToFile();
-            }
-        });
+//        this.addWindowListener(new WindowAdapter() {
+//            @Override
+//            public void windowClosing(WindowEvent e) {
+//                saveCommandsToFile();
+//            }
+//        });
 
         setVisible(true);
         add(drawingPanel);
@@ -156,11 +156,11 @@ public class PainterFrame extends JFrame{
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
         Graphics2D g2d = image.createGraphics();
-
+        drawingPanel.prepareForSavingImage();
         drawingPanel.paint(g2d);
 
         g2d.dispose();
-
+        drawingPanel.reenableFeaturesAfterSavingImage();
         try {
             ImageIO.write(image, "PNG", new File("drawing.png"));
             pushMessage("Image saved successfully.");
@@ -221,6 +221,10 @@ public class PainterFrame extends JFrame{
         commandHelper.setSelectedY(y);
     }
 
+    public String getBackgroundColorScript() {
+        return drawingPanel.getBackgroundColorScript();
+    }
+
     private void processCommand(String command) {
         try {
             history.add(command);
@@ -258,7 +262,7 @@ public class PainterFrame extends JFrame{
                     if (!line.trim().isEmpty()) {
                         String finalLine = line;
                         SwingUtilities.invokeLater(() -> processCommand(finalLine));
-                        Thread.sleep(100); // 500
+                        Thread.sleep(100);
                     }
                 }
                 forceOverwrite = false;
@@ -270,6 +274,7 @@ public class PainterFrame extends JFrame{
     }
 
     // util, won't work for commands used with mouse - not essential (just for debugging)
+    @Deprecated
     private void saveCommandsToFile(){
         try {
             FileWriter fw = new FileWriter("commandHistory.txt");
