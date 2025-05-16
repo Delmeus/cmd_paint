@@ -269,12 +269,20 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
 
     @Override
     public Boolean visitRenameOp(CmdPaintParser.RenameOpContext ctx) {
-        String oldName = ctx.NAME(0).getText().replace("\"", "");
-        if (!shapes.containsKey(oldName)){
-            painterFrame.pushMessage("There is no shape with name: " + oldName);
-            return false;
+        String oldName;
+        String newName;
+        if(ctx.NAME().size() == 2) {
+            oldName = ctx.NAME(0).getText().replace("\"", "");
+            newName = ctx.NAME(1).getText().replace("\"", "");
+            if (!shapes.containsKey(oldName)) {
+                painterFrame.pushMessage("There is no shape with name: " + oldName);
+                return false;
+            }
         }
-        String newName = ctx.NAME(1).getText().replace("\"", "");
+        else {
+            oldName = getSelectedNames(painterFrame.getSelectedShapes()).getFirst();
+            newName = ctx.NAME(0).getText().replace("\"", "");
+        }
         if(overwriteCheck(newName)) {
             shapes.put(newName, shapes.remove(oldName));
             shapes.get(newName).name = newName;

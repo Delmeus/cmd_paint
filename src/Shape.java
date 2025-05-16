@@ -493,7 +493,11 @@ class Line extends Shape {
 
     @Override
     public Shape clone(int x, int y) {
-        Line cloned = new Line(name + "_c", this.x, this.y, this.x2, this.y2);
+        int dx = this.x2 - this.x;
+        int dy = this.y2 - this.y;
+
+        Line cloned = new Line(name + "_c", x, y, x + dx, y + dy);
+
         cloned.setColor(this.color);
         cloned.setLayer(this.layer);
         cloned.setStroke(this.stroke);

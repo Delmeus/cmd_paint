@@ -41,13 +41,6 @@ public class PainterFrame extends JFrame{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(800, 600));
 
-//        this.addWindowListener(new WindowAdapter() {
-//            @Override
-//            public void windowClosing(WindowEvent e) {
-//                saveCommandsToFile();
-//            }
-//        });
-
         setVisible(true);
         add(drawingPanel);
 
@@ -94,7 +87,6 @@ public class PainterFrame extends JFrame{
 
         commandPanel.add(commandLabel, BorderLayout.WEST);
         commandPanel.add(commandField, BorderLayout.CENTER);
-//        commandPanel.add(new CommandHelperPanel(commandField), BorderLayout.NORTH);
         commandPanel.add(commandHelper, BorderLayout.NORTH);
         add(commandPanel, BorderLayout.SOUTH);
 
