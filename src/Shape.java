@@ -664,23 +664,8 @@ class Polygon extends Shape {
 
     @Override
     public Shape clone(int x, int y) {
-        int cx = 0, cy = 0;
-        for (int i = 0; i < x_points.length; i++) {
-            cx += x_points[i];
-            cy += y_points[i];
-        }
-        cx /= x_points.length;
-        cy /= y_points.length;
-
-        int dx = x - cx;
-        int dy = y - cy;
-
-        int[] newX = new int[x_points.length];
-        int[] newY = new int[y_points.length];
-        for (int i = 0; i < x_points.length; i++) {
-            newX[i] = x_points[i] + dx;
-            newY[i] = y_points[i] + dy;
-        }
+        int[] newX = Arrays.copyOf(this.x_points, this.x_points.length);
+        int[] newY = Arrays.copyOf(this.y_points, this.y_points.length);
 
         Polygon cloned = new Polygon(this.name + "_c", newX, newY);
         cloned.setColor(this.color);
@@ -690,6 +675,7 @@ class Polygon extends Shape {
         if (this.hollow)
             cloned.hollow();
 
+        cloned.move(x, y);
         return cloned;
     }
 

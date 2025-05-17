@@ -11,9 +11,7 @@
   <component name="ChangeListManager">
     <list default="true" id="0ee44014-11a2-4f1b-a214-f161d7cd943b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmdPaint.iml" beforeDir="false" afterPath="$PROJECT_DIR$/cmdPaint.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Painter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Painter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/PainterFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/PainterFrame.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Shape.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Shape.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -52,6 +50,7 @@
     "Application.cmdPaint.executor": "Run",
     "Application.fromFile.executor": "Run",
     "Application.fromFileInteractive.executor": "Run",
+    "Application.quick_test.executor": "Run",
     "Downloaded.Files.Path.Enabled": "false",
     "JUnit.All in cmdPaint.executor": "Run",
     "JUnit.LineTest.testClone.executor": "Run",
@@ -92,7 +91,7 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.LineTest.testClone">
+  <component name="RunManager" selected="Application.quick_test">
     <configuration name="cmdPaint" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="cmdPaint" />
@@ -112,6 +111,14 @@
       <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="cmdPaint" />
       <option name="PROGRAM_PARAMETERS" value="script.txt" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="quick_test" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="Main" />
+      <module name="cmdPaint" />
+      <option name="PROGRAM_PARAMETERS" value="test.txt" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -136,6 +143,7 @@
     </configuration>
     <list>
       <item itemvalue="Application.cmdPaint" />
+      <item itemvalue="Application.quick_test" />
       <item itemvalue="Application.fromFile" />
       <item itemvalue="Application.fromFileInteractive" />
       <item itemvalue="JUnit.LineTest.testClone" />
@@ -198,7 +206,8 @@
       <workItem from="1747143738743" duration="1354000" />
       <workItem from="1747147124861" duration="590000" />
       <workItem from="1747402169358" duration="2202000" />
-      <workItem from="1747420054799" duration="1689000" />
+      <workItem from="1747420054799" duration="2274000" />
+      <workItem from="1747503957354" duration="1487000" />
     </task>
     <servers />
   </component>

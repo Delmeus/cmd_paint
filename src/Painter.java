@@ -440,7 +440,6 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
 
     @Override
     public Boolean visitCloneOp(CmdPaintParser.CloneOpContext ctx) {
-        int[] pos = getPosition(ctx);
         String name = "";
         if (ctx.NAME() == null)
             if(painterFrame.hasShapesSelected() && painterFrame.getSelectedShapes().size() == 1)
@@ -452,6 +451,8 @@ public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
             name = parseName(ctx.NAME().getText());
         if(!shapes.containsKey(name))
             return false;
+
+        int[] pos = getPosition(ctx);
         Shape shape = shapes.get(name).clone(pos[0], pos[1]);
 
         if(overwriteCheck(shape.name))
