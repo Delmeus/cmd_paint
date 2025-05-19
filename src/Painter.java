@@ -6,7 +6,7 @@ import java.util.List;
 public class Painter extends CmdPaintParserBaseVisitor<Boolean> {
     private final Map<String, Shape> shapes;
     private final Map<String, Color> definedColors = new HashMap<>();
-    private final PainterFrame painterFrame;
+    private PainterFrame painterFrame;
 
     private final List<String> errorList = new ArrayList<>();
     private boolean errorOccurred = false;

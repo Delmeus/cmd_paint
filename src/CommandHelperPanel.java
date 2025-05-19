@@ -59,6 +59,10 @@ public class CommandHelperPanel extends JPanel {
             ySpinner.setValue(selectedY);
     }
 
+    public void clearOptions(){
+        options.clear();
+    }
+
     private JPanel createShapeChooserPanel() {
         JPanel shapesPanel = new JPanel();
         shapesPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));

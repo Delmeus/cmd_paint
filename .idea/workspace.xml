@@ -11,8 +11,10 @@
   <component name="ChangeListManager">
     <list default="true" id="0ee44014-11a2-4f1b-a214-f161d7cd943b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmdPaint.iml" beforeDir="false" afterPath="$PROJECT_DIR$/cmdPaint.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CommandHelperPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CommandHelperPanel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Painter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Painter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Shape.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Shape.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/PainterFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/PainterFrame.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,10 +55,13 @@
     "Application.quick_test.executor": "Run",
     "Downloaded.Files.Path.Enabled": "false",
     "JUnit.All in cmdPaint.executor": "Run",
+    "JUnit.ColorOpTest.testVisitColorOp.executor": "Run",
     "JUnit.LineTest.testClone.executor": "Run",
-    "Repository.Attach.Annotations": "false",
-    "Repository.Attach.JavaDocs": "false",
-    "Repository.Attach.Sources": "false",
+    "JUnit.PainterTest and 1 more.executor": "Run",
+    "JUnit.SquareTest and 3 more.executor": "Run",
+    "Repository.Attach.Annotations": "true",
+    "Repository.Attach.JavaDocs": "true",
+    "Repository.Attach.Sources": "true",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
@@ -91,7 +96,7 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.quick_test">
+  <component name="RunManager" selected="JUnit.PainterTest and 1 more">
     <configuration name="cmdPaint" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="cmdPaint" />
@@ -131,6 +136,16 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="ColorOpTest.testVisitColorOp" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="cmdPaint" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="ColorOpTest" />
+      <option name="METHOD_NAME" value="testVisitColorOp" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="LineTest.testClone" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="cmdPaint" />
       <option name="PACKAGE_NAME" value="" />
@@ -141,18 +156,48 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="PainterTest and 1 more" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="cmdPaint" />
+      <option name="TEST_OBJECT" value="pattern" />
+      <patterns>
+        <pattern testClass="PainterTest" />
+        <pattern testClass="ColorOpTest" />
+      </patterns>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SquareTest and 3 more" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="cmdPaint" />
+      <option name="TEST_OBJECT" value="pattern" />
+      <patterns>
+        <pattern testClass="SquareTest" />
+        <pattern testClass="RectangleTest" />
+        <pattern testClass="CircleTest" />
+        <pattern testClass="LineTest" />
+      </patterns>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Application.cmdPaint" />
       <item itemvalue="Application.quick_test" />
       <item itemvalue="Application.fromFile" />
       <item itemvalue="Application.fromFileInteractive" />
+      <item itemvalue="JUnit.ColorOpTest.testVisitColorOp" />
+      <item itemvalue="JUnit.PainterTest and 1 more" />
+      <item itemvalue="JUnit.SquareTest and 3 more" />
       <item itemvalue="JUnit.LineTest.testClone" />
       <item itemvalue="JUnit.All in cmdPaint" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.LineTest.testClone" />
+        <item itemvalue="JUnit.PainterTest and 1 more" />
+        <item itemvalue="JUnit.SquareTest and 3 more" />
+        <item itemvalue="JUnit.ColorOpTest.testVisitColorOp" />
         <item itemvalue="JUnit.All in cmdPaint" />
+        <item itemvalue="JUnit.LineTest.testClone" />
       </list>
     </recent_temporary>
   </component>
@@ -207,7 +252,8 @@
       <workItem from="1747147124861" duration="590000" />
       <workItem from="1747402169358" duration="2202000" />
       <workItem from="1747420054799" duration="2274000" />
-      <workItem from="1747503957354" duration="1487000" />
+      <workItem from="1747503957354" duration="2532000" />
+      <workItem from="1747562949364" duration="3461000" />
     </task>
     <servers />
   </component>

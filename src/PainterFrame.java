@@ -48,11 +48,15 @@ public class PainterFrame extends JFrame{
             handleInputFile(filename);
 
         commandField = new JTextField();
+        commandHelper = new CommandHelperPanel(commandField);
+        commandHelper.setSelectedX(drawingPanel.getX());
+        commandHelper.setSelectedY(drawingPanel.getY());
         commandField.addActionListener(e -> {
             historyIndex = -1;
             String command = commandField.getText();
             processCommand(command);
             commandField.setText("");
+            commandHelper.clearOptions();
         });
 
         commandField.addKeyListener(new KeyAdapter() {
@@ -81,9 +85,6 @@ public class PainterFrame extends JFrame{
         });
         JLabel commandLabel = new JLabel("Command:");
         JPanel commandPanel = new JPanel(new BorderLayout(5, 5));
-        commandHelper = new CommandHelperPanel(commandField);
-        commandHelper.setSelectedX(drawingPanel.getX());
-        commandHelper.setSelectedY(drawingPanel.getY());
 
         commandPanel.add(commandLabel, BorderLayout.WEST);
         commandPanel.add(commandField, BorderLayout.CENTER);
@@ -263,19 +264,5 @@ public class PainterFrame extends JFrame{
                         JOptionPane.showMessageDialog(this, "Error reading file: " + e.getMessage()));
             }
         }).start();
-    }
-
-    // util, won't work for commands used with mouse - not essential (just for debugging)
-    @Deprecated
-    private void saveCommandsToFile(){
-        try {
-            FileWriter fw = new FileWriter("commandHistory.txt");
-            for (String command : history) {
-                fw.write(command + "\n");
-            }
-            fw.close();
-        }catch (IOException e){
-            System.out.println("Error saving commands to file: " + e.getMessage());
-        }
     }
 }
